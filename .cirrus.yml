@@ -5,7 +5,7 @@ container:
   kvm: true
 
 env:
-  CC_TEST_REPORTER_ID: ENCRYPTED[7c5bfc893d9eb27dd5854ff42af1e3d3f589c6258aebf40691dfc692cfed64fee4a3cdfaf77fdbaf3d50988386d3bcdf]
+  CC_TEST_REPORTER_ID: ENCRYPTED[108bba037a7d6bf2368a62d8bbaaeb37c3717e6d126596c980f427df86e0254146cef6e1e481252aa629f125a89cf106]
 
 check_android_task:
   name: Run Android tests
