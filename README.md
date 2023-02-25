@@ -1,2 +1,0 @@
-# procrastinot
-A SDP repository
