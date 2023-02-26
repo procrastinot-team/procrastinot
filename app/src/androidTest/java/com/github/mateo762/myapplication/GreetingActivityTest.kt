@@ -1,4 +1,4 @@
-package com.github.mateo762.myapplication;
+package com.github.mateo762.myapplication
 
 import android.content.Intent
 import androidx.test.core.app.ActivityScenario

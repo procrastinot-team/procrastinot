@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'jacoco'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -54,10 +55,15 @@ dependencies {
     //noinspection GradleDependency
     implementation 'com.google.code.gson:gson:2.8.7'
     // Room dependencies
+    kapt("androidx.room:room-compiler:2.5.0")
     implementation("androidx.room:room-runtime:2.5.0")
-    annotationProcessor("androidx.room:room-compiler:2.5.0")
-    // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:2.5.0")
+    annotationProcessor("androidx.room:room-compiler:2.5.0")
+    // Coroutines
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.0-rc01"
+
+
 }
 
 tasks.withType(Test) {

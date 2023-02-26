@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:maxWidth="325dp"
         android:maxHeight="500dp"
-        android:text="Activity"
+        android:text=" "
         android:textAlignment="center"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"

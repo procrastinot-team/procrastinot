@@ -1,9 +1,9 @@
 package com.github.mateo762.myapplication
 
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 
 interface BoredApi {
     @GET("activity")
-    fun getActivity(): Call<BoredActivityData>
+    suspend fun getActivity(): Response<BoredActivityData>
 }
