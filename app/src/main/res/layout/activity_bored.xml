@@ -8,9 +8,12 @@
 
     <TextView
         android:id="@+id/boredApiResponseText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:maxWidth="325dp"
+        android:maxHeight="500dp"
         android:text="Activity"
+        android:textAlignment="center"
         android:textSize="28sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

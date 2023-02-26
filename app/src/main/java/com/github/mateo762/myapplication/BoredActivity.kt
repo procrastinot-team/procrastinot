@@ -35,7 +35,6 @@ class BoredActivity : AppCompatActivity() {
                 activityText.text = response.body()?.activity
             }
 
-            @SuppressLint("SetTextI18n")
             override fun onFailure(call: Call<BoredActivityData>, t: Throwable) {
                 // TODO: Handle the error
                 val activityText = findViewById<TextView>(R.id.boredApiResponseText)
