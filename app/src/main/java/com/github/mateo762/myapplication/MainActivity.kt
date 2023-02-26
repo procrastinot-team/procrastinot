@@ -17,5 +17,11 @@ class MainActivity : AppCompatActivity() {
             greetIntent.putExtra("name", name.text.toString())
             this@MainActivity.startActivity(greetIntent)
         }
+
+        val boredApiButton = findViewById<Button>(R.id.mainBoredButton)
+        boredApiButton.setOnClickListener {
+            val apiIntent = Intent(this@MainActivity, BoredActivity::class.java)
+            this@MainActivity.startActivity(apiIntent)
+        }
     }
 }
