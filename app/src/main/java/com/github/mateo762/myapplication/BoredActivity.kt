@@ -4,9 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.random.Random
@@ -44,27 +48,28 @@ class BoredActivity : AppCompatActivity() {
             .build()
         val dao = db.activityDao()
 
+        // Start coroutine for Retrofit
         CoroutineScope(Dispatchers.IO).launch {
             val activityText = findViewById<TextView>(R.id.boredApiResponseText)
-            val errorMessage = "Loading from saved activities..."
-            val coroutineExceptionHandler = CoroutineExceptionHandler{ _, _ ->
-                run {
-                    activityText.text = errorMessage
-                }
-            }
-            withContext(Dispatchers.Main + coroutineExceptionHandler) {
+            withContext(Dispatchers.Main) {
                 try {
+                    // Successful response
                     val response = boredApi.getActivity()
                     if (response.isSuccessful) {
                         val responseActivityText = response.body()?.activity
                         activityText.text = responseActivityText
+                        // Construct and insert DB Entity from the response data
                         val responseEntity = EntityActivity(Random.nextInt(), responseActivityText)
                         dao.addActivities(responseEntity)
                     }
                 } catch (e: Throwable) {
-                    println(dao.getAll().toString())
+                    // Response failed, go offline for results
                     activityText.text = dao.getAll().random().activity.toString()
-
+                    // Show toast message to inform user we use offline results cached
+                    val text = "Connection error: using previously cached results"
+                    val duration = Toast.LENGTH_SHORT
+                    val toast = Toast.makeText(applicationContext, text, duration)
+                    toast.show()
                 }
             }
         }
