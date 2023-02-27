@@ -9,10 +9,4 @@ interface ActivityDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addActivities(entityActivity: EntityActivity): Long
-
-    // @Update
-    // suspend fun updateActivity(entityActivity: EntityActivity)
-
-    // @Delete
-    // suspend fun delete(entityActivity: EntityActivity)
 }
