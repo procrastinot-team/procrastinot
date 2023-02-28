@@ -9,6 +9,10 @@ import androidx.test.espresso.contrib.DrawerActions
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.mateo762.myapplication.fragments.CalendarFragment
+import com.github.mateo762.myapplication.fragments.PicturesFragment
+import com.github.mateo762.myapplication.fragments.ProfileFragment
+import com.github.mateo762.myapplication.fragments.SettingsFragment
 import junit.framework.TestCase.assertTrue
 import org.hamcrest.Matchers.*
 import org.junit.After
