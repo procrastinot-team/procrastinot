@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import com.github.mateo762.myapplication.fragments.CalendarFragment
 import com.github.mateo762.myapplication.fragments.PicturesFragment
 import com.github.mateo762.myapplication.fragments.ProfileFragment
@@ -55,37 +56,35 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_calendar -> {
-                supportFragmentManager.beginTransaction().replace(
-                    R.id.fragment_container,
-                    CalendarFragment()
-                ).commit()
+                openFragmentSelected(CalendarFragment())
             }
             R.id.nav_pictures -> {
-                supportFragmentManager.beginTransaction().replace(
-                    R.id.fragment_container,
-                    PicturesFragment()
-                ).commit()
+                openFragmentSelected(PicturesFragment())
             }
             R.id.nav_profile -> {
-                supportFragmentManager.beginTransaction().replace(
-                    R.id.fragment_container,
-                    ProfileFragment()
-                ).commit()
+                openFragmentSelected(ProfileFragment())
             }
             R.id.nav_settings -> {
-                supportFragmentManager.beginTransaction().replace(
-                    R.id.fragment_container,
-                    SettingsFragment()
-                ).commit()
+                openFragmentSelected(SettingsFragment())
             }
             R.id.nav_share -> {
-                Toast.makeText(this, "Clicked share!", Toast.LENGTH_SHORT).show()
+                showShortToastMessage("Clicked share!")
             }
             R.id.nav_label -> {
-                Toast.makeText(this, "Clicked label!", Toast.LENGTH_SHORT).show()
+                showShortToastMessage("Clicked label!")
             }
         }
         drawer.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    private fun openFragmentSelected(fragment: Fragment): Int {
+        return supportFragmentManager.beginTransaction().replace(
+            R.id.fragment_container, fragment
+        ).commit()
+    }
+
+    private fun showShortToastMessage(message: String) {
+        return Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
