@@ -1,5 +1,6 @@
 package com.github.mateo762.myapplication
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -9,15 +10,12 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.fragments.CalendarFragment
-import com.github.mateo762.myapplication.fragments.PicturesFragment
-import com.github.mateo762.myapplication.fragments.ProfileFragment
-import com.github.mateo762.myapplication.fragments.SettingsFragment
+import com.github.mateo762.myapplication.fragments.*
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
-    lateinit var drawer: DrawerLayout
+    private lateinit var drawer: DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,9 +37,9 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container,
-                CalendarFragment()
+                GreetFragment()
             ).commit()
-            navigationView.setCheckedItem(R.id.nav_calendar)
+            navigationView.setCheckedItem(R.id.nav_greet)
         }
     }
 
@@ -55,6 +53,9 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.nav_greet -> {
+                openFragmentSelected(GreetFragment())
+            }
             R.id.nav_calendar -> {
                 openFragmentSelected(CalendarFragment())
             }
