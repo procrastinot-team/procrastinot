@@ -9,10 +9,7 @@ import androidx.test.espresso.contrib.DrawerActions
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.mateo762.myapplication.fragments.CalendarFragment
-import com.github.mateo762.myapplication.fragments.PicturesFragment
-import com.github.mateo762.myapplication.fragments.ProfileFragment
-import com.github.mateo762.myapplication.fragments.SettingsFragment
+import com.github.mateo762.myapplication.fragments.*
 import junit.framework.TestCase.assertTrue
 import org.hamcrest.Matchers.*
 import org.junit.After
@@ -34,6 +31,19 @@ class NavigationMenuTest {
     @After
     fun tearDown() {
         activityScenario.close()
+    }
+
+    @Test
+    fun navigateToGreetFragment() {
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open())
+        onView(withId(R.id.nav_greet)).check(matches(isDisplayed()))
+        onView(withId(R.id.nav_greet)).perform(click())
+
+        // Get a reference to the current fragment
+        val fragment = getCurrentFragment()
+
+        // Check if the current fragment is a CalendarFragment
+        assertTrue(fragment is GreetFragment)
     }
 
     @Test
