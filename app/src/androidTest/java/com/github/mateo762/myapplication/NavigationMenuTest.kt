@@ -80,7 +80,7 @@ class NavigationMenuTest {
         val fragment = getCurrentFragment()
 
         // Check if the current fragment is a CalendarFragment
-        assertTrue(fragment is PicturesFragment)
+        assertTrue(fragment is MapsFragment)
     }
 
     @Test

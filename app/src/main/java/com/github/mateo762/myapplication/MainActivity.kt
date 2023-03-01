@@ -1,6 +1,5 @@
 package com.github.mateo762.myapplication
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -59,8 +58,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             R.id.nav_calendar -> {
                 openFragmentSelected(CalendarFragment())
             }
-            R.id.nav_pictures -> {
-                openFragmentSelected(PicturesFragment())
+            R.id.nav_maps -> {
+                openFragmentSelected(MapsFragment())
             }
             R.id.nav_profile -> {
                 openFragmentSelected(ProfileFragment())
