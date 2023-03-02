@@ -68,6 +68,9 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             R.id.nav_settings -> {
                 openFragmentSelected(SettingsFragment())
             }
+            R.id.nav_firebase -> {
+                openFragmentSelected(FirebaseFragment())
+            }
             R.id.nav_share -> {
                 showShortToastMessage("Clicked share!")
             }

@@ -9,6 +9,10 @@
             android:icon="@drawable/ic_greet"
             android:title="Greet"/>
         <item
+            android:id="@+id/nav_firebase"
+            android:icon="@drawable/ic_firebase"
+            android:title="Firebase"/>
+        <item
             android:id="@+id/nav_calendar"
             android:icon="@drawable/ic_calendar"
             android:title="Calendar" />
