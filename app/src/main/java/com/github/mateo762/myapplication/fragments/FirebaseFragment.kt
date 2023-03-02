@@ -38,6 +38,8 @@ class FirebaseFragment : Fragment() {
             Log.d("TAG", "Clicked Set $emailText $phoneText")
             val db: DatabaseReference = Firebase.database.reference
             db.child(phoneText).setValue(emailText)
+            email.getText().clear()
+            phone.getText().clear()
 
         }
         get.setOnClickListener{
@@ -49,11 +51,23 @@ class FirebaseFragment : Fragment() {
 
             val future = CompletableFuture<String>()
 
-            db.child(phoneText).get().addOnSuccessListener {
-                if (it.value == null) future.completeExceptionally(NoSuchFieldException())
-                else future.complete(it.value as String)
+            db.child(phoneText).get()
+            .addOnSuccessListener {
+                if (it.value == null) {
+                    future.complete("No Email found")
+                    email.getText().clear()
+                    phone.getText().clear()
+                }
+                else {
+                    future.complete("Email found: " + it.value as String)
+                    email.getText().clear()
+                    phone.getText().clear()
+                }
+
             }.addOnFailureListener {
                 future.completeExceptionally(it)
+                email.getText().clear()
+                phone.getText().clear()
             }
 
             future.thenAccept {
