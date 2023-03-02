@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "298790624795",
+    "firebase_url": "https://procrastinot-backend-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "procrastinot-backend",
     "storage_bucket": "procrastinot-backend.appspot.com"
   },
@@ -14,7 +15,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "298790624795-7ttj3ihunbtpfln6cjnu7arg7ebo6gkc.apps.googleusercontent.com",
+          "client_id": "298790624795-07gs01oab37f6l2nrttrsvua4d3k80vs.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +28,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "298790624795-7ttj3ihunbtpfln6cjnu7arg7ebo6gkc.apps.googleusercontent.com",
+              "client_id": "298790624795-07gs01oab37f6l2nrttrsvua4d3k80vs.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
