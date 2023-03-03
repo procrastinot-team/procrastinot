@@ -2,9 +2,17 @@ package com.github.mateo762.myapplication
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
+import android.view.MenuItem
+import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import com.github.mateo762.myapplication.fragments.*
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
@@ -12,8 +20,9 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.FirebaseAuth
 
-class MainActivity : AppCompatActivity() {
-
+class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
+    
+    private lateinit var drawer: DrawerLayout
     private val signInLauncher = registerForActivityResult(
         FirebaseAuthUIActivityResultContract()
     ) { res ->
@@ -21,17 +30,38 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var oneTapClient: SignInClient
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val button = findViewById<Button>(R.id.mainGreetButton)
-        button.setOnClickListener {
-            val name = findViewById<TextView>(R.id.mainName)
-            val greetIntent = Intent(this@MainActivity, GreetingActivity::class.java)
-            greetIntent.putExtra("name", name.text.toString())
-            this@MainActivity.startActivity(greetIntent)
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        drawer = findViewById(R.id.drawer_layout)
+        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        navigationView.setNavigationItemSelectedListener(this)
+
+        val toggle = ActionBarDrawerToggle(
+            this, drawer, toolbar,
+            R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
+        drawer.addDrawerListener(toggle)
+        toggle.syncState()
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction().replace(
+                R.id.fragment_container,
+                GreetFragment()
+            ).commit()
+            navigationView.setCheckedItem(R.id.nav_greet)
+        }
+    }
+
+    override fun onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START)
+        } else {
+            super.onBackPressed()
         }
 
         oneTapClient = Identity.getSignInClient(this)
@@ -92,5 +122,43 @@ class MainActivity : AppCompatActivity() {
                 // ...
             }
         // [END auth_fui_delete]
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_greet -> {
+                openFragmentSelected(GreetFragment())
+            }
+            R.id.nav_calendar -> {
+                openFragmentSelected(CalendarFragment())
+            }
+            R.id.nav_pictures -> {
+                openFragmentSelected(PicturesFragment())
+            }
+            R.id.nav_profile -> {
+                openFragmentSelected(ProfileFragment())
+            }
+            R.id.nav_settings -> {
+                openFragmentSelected(SettingsFragment())
+            }
+            R.id.nav_share -> {
+                showShortToastMessage("Clicked share!")
+            }
+            R.id.nav_label -> {
+                showShortToastMessage("Clicked label!")
+            }
+        }
+        drawer.closeDrawer(GravityCompat.START)
+        return true
+    }
+
+    private fun openFragmentSelected(fragment: Fragment): Int {
+        return supportFragmentManager.beginTransaction().replace(
+            R.id.fragment_container, fragment
+        ).commit()
+    }
+
+    private fun showShortToastMessage(message: String) {
+        return Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
