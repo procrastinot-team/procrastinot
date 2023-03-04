@@ -41,6 +41,9 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             ).commit()
             navigationView.setCheckedItem(R.id.nav_greet)
         }
+
+        val intent = Intent(this, CreateHabitActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onBackPressed() {
