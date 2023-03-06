@@ -70,7 +70,7 @@ class CreateHabitActivityTest {
         // Verify that the intent was sent correctly
         Intents.intended(
             allOf(
-                hasComponent(DisplayParametersActivity::class.java.name),
+                hasComponent(CreateHabitActivity::class.java.name),
                 hasExtra("habitName", "Drink Water"),
                 hasExtra("habitDays", listOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)),
                 hasExtra("habitStartTime", "07:30"),

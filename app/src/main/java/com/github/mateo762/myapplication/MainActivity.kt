@@ -1,6 +1,5 @@
 package com.github.mateo762.myapplication
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -37,13 +36,13 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container,
-                GreetFragment()
+                HabitsFragment()
             ).commit()
             navigationView.setCheckedItem(R.id.nav_greet)
         }
 
-        val intent = Intent(this, CreateHabitActivity::class.java)
-        startActivity(intent)
+       // val intent = Intent(this, CreateHabitActivity::class.java)
+       // startActivity(intent)
     }
 
     override fun onBackPressed() {
@@ -57,7 +56,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_greet -> {
-                openFragmentSelected(GreetFragment())
+                openFragmentSelected(HabitsFragment())
             }
             R.id.nav_calendar -> {
                 openFragmentSelected(CalendarFragment())

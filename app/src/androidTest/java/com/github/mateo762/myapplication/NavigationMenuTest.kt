@@ -1,19 +1,27 @@
 package com.github.mateo762.myapplication
 
+import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import androidx.fragment.app.Fragment
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.fragments.*
 import junit.framework.TestCase.assertTrue
 import org.hamcrest.Matchers.*
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -23,18 +31,23 @@ class NavigationMenuTest {
 
     private lateinit var activityScenario: ActivityScenario<MainActivity>
 
+    @get:Rule
+    val composeTestRule = createComposeRule()
+
     @Before
     fun setUp() {
+        Intents.init()
         activityScenario = ActivityScenario.launch(MainActivity::class.java)
     }
 
     @After
     fun tearDown() {
+        Intents.release()
         activityScenario.close()
     }
 
     @Test
-    fun navigateToGreetFragment() {
+    fun navigateToHabitsFragment() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open())
         onView(withId(R.id.nav_greet)).check(matches(isDisplayed()))
         onView(withId(R.id.nav_greet)).perform(click())
@@ -43,7 +56,16 @@ class NavigationMenuTest {
         val fragment = getCurrentFragment()
 
         // Check if the current fragment is a CalendarFragment
-        assertTrue(fragment is GreetFragment)
+        assertTrue(fragment is HabitsFragment)
+    }
+
+    @Test
+    fun navigateToCreateHabitActivity() {
+        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open())
+        onView(withId(R.id.nav_greet)).check(matches(isDisplayed()))
+        onView(withId(R.id.nav_greet)).perform(click())
+        composeTestRule.onNodeWithTag("btn_new").performClick()
+        intended(toPackage("com.github.mateo762.myapplication"))
     }
 
     @Test

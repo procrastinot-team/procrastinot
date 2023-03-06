@@ -18,7 +18,7 @@ class DisplayParametersActivity : AppCompatActivity() {
         val habitStartTime = intent.getStringExtra("habitStartTime")
         val habitEndTime = intent.getStringExtra("habitEndTime")
 
-        val parametersText = "Name: $habitName\nDays: ${habitDaysStringArray?.joinToString()}\nStart Time: $habitStartTime\nEnd Time: $habitEndTime"
+        val parametersText = "Name: $habitName\nDays: ${habitDaysStringArray.joinToString()}\nStart Time: $habitStartTime\nEnd Time: $habitEndTime"
 
         val parametersTextView = findViewById<TextView>(R.id.parametersTextView)
         parametersTextView.text = parametersText
