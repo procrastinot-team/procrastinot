@@ -1,6 +1,5 @@
 package com.github.mateo762.myapplication
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -55,6 +54,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             ).commit()
             navigationView.setCheckedItem(R.id.nav_greet)
         }
+
+        oneTapClient = Identity.getSignInClient(this)
     }
 
     override fun onBackPressed() {
@@ -63,19 +64,13 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         } else {
             super.onBackPressed()
         }
-
-        oneTapClient = Identity.getSignInClient(this)
-
-        findViewById<Button>(R.id.mainGreetButton).setOnClickListener { createSignInIntent() }
-
     }
 
     private fun createSignInIntent() {
-        // [START auth_fui_create_intent]
         // Choose authentication providers
         val providers = arrayListOf(
-//            AuthUI.IdpConfig.EmailBuilder().build(),
-//            AuthUI.IdpConfig.PhoneBuilder().build(),
+            AuthUI.IdpConfig.EmailBuilder().build(),
+            AuthUI.IdpConfig.PhoneBuilder().build(),
             AuthUI.IdpConfig.GoogleBuilder().build()
         )
 
@@ -85,7 +80,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             .setAvailableProviders(providers)
             .build()
         signInLauncher.launch(signInIntent)
-        // [END auth_fui_create_intent]
     }
 
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
@@ -93,58 +87,60 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         if (result.resultCode == RESULT_OK) {
             // Successfully signed in
             val user = FirebaseAuth.getInstance().currentUser
-            // ...
             println("Sign in SUCCESSFULLY COMPLETED, user = $user")
         } else {
             // Sign in failed. If response is null the user canceled the
             // sign-in flow using the back button. Otherwise check
-            // response.getError().getErrorCode() and handle the error.
-            // ...
-            println("Sign in FAILED, response = $response")
+            // and handle the error.
+            val code = response!!.error!!.errorCode
+            println("Code = $code")
         }
     }
 
     private fun signOut() {
-        // [START auth_fui_signout]
         AuthUI.getInstance()
             .signOut(this)
             .addOnCompleteListener {
                 // ...
             }
-        // [END auth_fui_signout]
     }
 
     private fun delete() {
-        // [START auth_fui_delete]
         AuthUI.getInstance()
             .delete(this)
             .addOnCompleteListener {
                 // ...
             }
-        // [END auth_fui_delete]
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_greet -> {
+                createSignInIntent()
                 openFragmentSelected(GreetFragment())
             }
             R.id.nav_calendar -> {
+                createSignInIntent()
                 openFragmentSelected(CalendarFragment())
             }
             R.id.nav_pictures -> {
+                createSignInIntent()
                 openFragmentSelected(PicturesFragment())
             }
             R.id.nav_profile -> {
+                createSignInIntent()
                 openFragmentSelected(ProfileFragment())
             }
             R.id.nav_settings -> {
+                createSignInIntent()
                 openFragmentSelected(SettingsFragment())
             }
             R.id.nav_share -> {
+                createSignInIntent()
                 showShortToastMessage("Clicked share!")
             }
             R.id.nav_label -> {
+                createSignInIntent()
                 showShortToastMessage("Clicked label!")
             }
         }
