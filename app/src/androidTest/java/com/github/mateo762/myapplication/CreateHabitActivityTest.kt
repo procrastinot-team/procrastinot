@@ -2,6 +2,7 @@ package com.github.mateo762.myapplication
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
@@ -47,27 +48,34 @@ class CreateHabitActivityTest {
     }
 
     private fun createHabit() {
+
         // Enter habit name
         composeTestRule.onNodeWithTag("txt_name")
+            .performScrollTo()
             .performTextInput(habitName)
 
         // Check checkboxes for habit days
         habitDays.forEach { day ->
             composeTestRule.onNodeWithTag("checkbox_${day.name}")
+                .performScrollTo()
                 .performClick()
         }
         // Clear start and end time
         composeTestRule.onNodeWithTag("txt_time_start")
+            .performScrollTo()
             .performClick()
             .performTextClearance()
         composeTestRule.onNodeWithTag("txt_time_end")
+            .performScrollTo()
             .performClick()
             .performTextClearance()
 
         // Enter start and end time
         composeTestRule.onNodeWithTag("txt_time_start")
+            .performScrollTo()
             .performTextInput(habitStartTime)
         composeTestRule.onNodeWithTag("txt_time_end")
+            .performScrollTo()
             .performTextInput(habitEndTime)
 
         // Click save button
