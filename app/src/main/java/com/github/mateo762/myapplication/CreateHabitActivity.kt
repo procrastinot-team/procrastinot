@@ -138,11 +138,20 @@ fun HabitInputScreen() {
                 Button(
                     onClick = {
                         if (habitName.isBlank()) {
-                            Toast.makeText(context, "Please enter a habit name", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Please enter a habit name", Toast.LENGTH_LONG)
+                                .show()
                         } else if (habitDays.isEmpty()) {
-                            Toast.makeText(context, "Please select at least one day", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Please select at least one day",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         } else if (!isValidTime(habitStartTime.text) || !isValidTime(habitEndTime.text)) {
-                            Toast.makeText(context, "Please enter a valid time (HH:MM)", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Please enter a valid time (HH:MM)",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         } else {
                             val intent = Intent(context, DisplayParametersActivity::class.java)
                             intent.putExtra("habitName", habitName)
@@ -157,6 +166,17 @@ fun HabitInputScreen() {
                         .testTag("btn_save")
                 ) {
                     Text("Save Habit")
+                }
+                Button(
+                    onClick = {
+                        val intent = Intent(context, MainActivity::class.java)
+                        context.startActivity(intent)
+                    },
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .testTag("btn_cancel")
+                ) {
+                    Text("Cancel")
                 }
             }
         }

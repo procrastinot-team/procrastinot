@@ -93,34 +93,61 @@ class CreateHabitActivityTest {
     fun clickSaveButton_noNameInput_noIntentSent() {
         habitName = ""
         createHabit()
-        composeTestRule.onNodeWithTag("btn_save").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("btn_save")
+            .performScrollTo()
+            .assertIsDisplayed()
     }
 
     @Test
     fun clickSaveButton_noDaysSelected_noIntentSent() {
         habitDays = listOf()
         createHabit()
-        composeTestRule.onNodeWithTag("btn_save").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("btn_save")
+            .performScrollTo()
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun clickSaveButton_noStartTime_noIntentSent() {
+        habitStartTime = ""
+        createHabit()
+        composeTestRule.onNodeWithTag("btn_save")
+            .performScrollTo()
+            .assertIsDisplayed()
     }
 
     @Test
     fun clickSaveButton_startTimeInvalid_noIntentSent() {
         habitStartTime = "25:00"
         createHabit()
-        composeTestRule.onNodeWithTag("btn_save").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("btn_save")
+            .performScrollTo()
+            .assertIsDisplayed()
     }
 
     @Test
     fun clickSaveButton_noEndTime_noIntentSent() {
         habitEndTime = ""
         createHabit()
-        composeTestRule.onNodeWithTag("btn_save").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("btn_save")
+            .performScrollTo()
+            .assertIsDisplayed()
     }
 
     @Test
     fun clickSaveButton_endTimeInvalid_noIntentSent() {
         habitEndTime = "08:69"
         createHabit()
-        composeTestRule.onNodeWithTag("btn_save").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("btn_save")
+            .performScrollTo()
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun clickGoBackButton_IntentToMainActivity() {
+        composeTestRule.onNodeWithTag("btn_cancel")
+            .performScrollTo()
+            .performClick()
+        intended(hasComponent(MainActivity::class.java.name))
     }
 }
