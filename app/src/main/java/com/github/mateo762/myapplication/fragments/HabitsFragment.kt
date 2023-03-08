@@ -50,7 +50,7 @@ fun AddButton() {
                 )
             }
         },
-    modifier = Modifier.testTag("btn_new")
+        modifier = Modifier.testTag("btn_new")
     ) {
         // Empty content
     }

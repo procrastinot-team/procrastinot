@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -69,7 +70,9 @@ fun HabitInputScreen() {
                 value = habitName,
                 onValueChange = { habitName = it },
                 label = { Text("Name of the habit") },
-                modifier = Modifier.fillMaxWidth().testTag("txt_name")
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("txt_name")
             )
 
             Column {
@@ -85,7 +88,9 @@ fun HabitInputScreen() {
                                     habitDays - day
                                 }
                             },
-                            modifier = Modifier.padding(8.dp).testTag("checkbox_$day")
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .testTag("checkbox_$day")
                         )
                         Text(day.toString(), modifier = Modifier.padding(start = 8.dp))
                     }
@@ -105,7 +110,9 @@ fun HabitInputScreen() {
                         }
                     },
                     label = { Text("What time does the habit start? (HH:MM)") },
-                    modifier = Modifier.fillMaxWidth().testTag("txt_time_start")
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("txt_time_start")
                 )
 
                 TextField(
@@ -122,26 +129,31 @@ fun HabitInputScreen() {
                         }
                     },
                     label = { Text("What time does the habit start? (HH:MM)") },
-                    modifier = Modifier.fillMaxWidth().testTag("txt_time_end")
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("txt_time_end")
                 )
 
 
                 Button(
                     onClick = {
-                        val days = ArrayList<String>()
-                        for (day in habitDays) {
-                            days.add(day.toString())
-                            Log.d("mateo", day.toString())
+                        if (habitName.isBlank()) {
+                            Toast.makeText(context, "Please enter a habit name", Toast.LENGTH_LONG).show()
+                        } else if (habitDays.isEmpty()) {
+                            Toast.makeText(context, "Please select at least one day", Toast.LENGTH_SHORT).show()
+                        } else if (!isValidTime(habitStartTime.text) || !isValidTime(habitEndTime.text)) {
+                            Toast.makeText(context, "Please enter a valid time (HH:MM)", Toast.LENGTH_SHORT).show()
+                        } else {
+                            val intent = Intent(context, DisplayParametersActivity::class.java)
+                            intent.putExtra("habitName", habitName)
+                            intent.putExtra("habitDays", ArrayList(habitDays))
+                            intent.putExtra("habitStartTime", habitStartTime.text)
+                            intent.putExtra("habitEndTime", habitEndTime.text)
+                            context.startActivity(intent)
                         }
-
-                        val intent = Intent(context, DisplayParametersActivity::class.java)
-                        intent.putExtra("habitName", habitName)
-                        intent.putExtra("habitDays", ArrayList(habitDays))
-                        intent.putExtra("habitStartTime", habitStartTime.text)
-                        intent.putExtra("habitEndTime", habitEndTime.text)
-                        context.startActivity(intent)
                     },
-                    modifier = Modifier.padding(top = 16.dp)
+                    modifier = Modifier
+                        .padding(top = 16.dp)
                         .testTag("btn_save")
                 ) {
                     Text("Save Habit")
@@ -150,3 +162,12 @@ fun HabitInputScreen() {
         }
     }
 }
+
+private fun isValidTime(time: String): Boolean {
+    val pattern = Regex(pattern = "^([0-1][0-9]|[2][0-3]):([0-5][0-9])$")
+    return pattern.matches(time)
+}
+
+
+
+
