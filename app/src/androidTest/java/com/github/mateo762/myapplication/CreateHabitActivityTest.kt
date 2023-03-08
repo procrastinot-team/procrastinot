@@ -71,7 +71,9 @@ class CreateHabitActivityTest {
             .performTextInput(habitEndTime)
 
         // Click save button
-        composeTestRule.onNodeWithTag("btn_save").performClick()
+        composeTestRule.onNodeWithTag("btn_save")
+            .performScrollTo()
+            .performClick()
     }
 
     @Test
