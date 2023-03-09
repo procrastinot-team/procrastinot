@@ -135,6 +135,10 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 createSignInIntent()
                 openFragmentSelected(SettingsFragment())
             }
+            R.id.nav_habits -> {
+                createSignInIntent()
+                openFragmentSelected(HabitFragment())
+            }
             R.id.nav_share -> {
                 createSignInIntent()
                 showShortToastMessage("Clicked share!")
