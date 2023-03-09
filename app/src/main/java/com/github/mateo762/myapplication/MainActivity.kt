@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
                 R.id.fragment_container,
                 HabitsFragment()
             ).commit()
-            navigationView.setCheckedItem(R.id.nav_greet)
+            navigationView.setCheckedItem(R.id.nav_habits)
         }
     }
 
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_greet -> {
+            R.id.nav_habits -> {
                 openFragmentSelected(HabitsFragment())
             }
             R.id.nav_calendar -> {
