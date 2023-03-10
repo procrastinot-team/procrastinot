@@ -2,4 +2,10 @@
     <string name="app_name">My Application</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="already_have_logged_in">Already have an account? Login</string>
+    <string name="still_not_have_an_account">Still don\'t have an account? Register now</string>
 </resources>

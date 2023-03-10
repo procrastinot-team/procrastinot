@@ -94,17 +94,11 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     }
 
     private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
-        val response = result.idpResponse
         if (result.resultCode == RESULT_OK) {
-            // Successfully signed in
-            val user = FirebaseAuth.getInstance().currentUser
-            println("Sign in SUCCESSFULLY COMPLETED, user = $user")
+            Toast.makeText(this,"Successfully Logged in!",
+                Toast.LENGTH_SHORT).show()
         } else {
-            // Sign in failed. If response is null the user canceled the
-            // sign-in flow using the back button. Otherwise check
-            // and handle the error.
-            val code = response!!.error!!.errorCode
-            println("Code = $code")
+            Toast.makeText(this,result.toString(),Toast.LENGTH_SHORT).show()
         }
     }
 
