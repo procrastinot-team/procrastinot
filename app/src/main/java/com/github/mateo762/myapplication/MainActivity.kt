@@ -9,14 +9,14 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.fragments.*
-import com.google.android.material.navigation.NavigationView
-import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.github.mateo762.myapplication.fragments.*
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
@@ -56,6 +56,17 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         }
 
         oneTapClient = Identity.getSignInClient(this)
+
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            println("Already logged in")
+            println(user.email)
+            println(user.uid)
+            println(FirebaseAuth.getInstance().uid)
+        } else {
+            println("Not logged in at all")
+            createSignInIntent()
+        }
     }
 
     override fun onBackPressed() {
@@ -97,14 +108,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         }
     }
 
-    private fun signOut() {
-        AuthUI.getInstance()
-            .signOut(this)
-            .addOnCompleteListener {
-                // ...
-            }
-    }
-
     private fun delete() {
         AuthUI.getInstance()
             .delete(this)
@@ -116,31 +119,24 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_greet -> {
-                createSignInIntent()
                 openFragmentSelected(GreetFragment())
             }
             R.id.nav_calendar -> {
-                createSignInIntent()
                 openFragmentSelected(CalendarFragment())
             }
             R.id.nav_pictures -> {
-                createSignInIntent()
                 openFragmentSelected(PicturesFragment())
             }
             R.id.nav_profile -> {
-                createSignInIntent()
                 openFragmentSelected(ProfileFragment())
             }
             R.id.nav_settings -> {
-                createSignInIntent()
                 openFragmentSelected(SettingsFragment())
             }
             R.id.nav_share -> {
-                createSignInIntent()
                 showShortToastMessage("Clicked share!")
             }
             R.id.nav_label -> {
-                createSignInIntent()
                 showShortToastMessage("Clicked label!")
             }
         }

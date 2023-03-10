@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.github.mateo762.myapplication.GreetingActivity
+import com.google.firebase.auth.FirebaseAuth
 
 class GreetFragment : Fragment() {
     override fun onCreateView(
@@ -64,6 +65,8 @@ class GreetFragment : Fragment() {
                 onClick = {
                     val intent = Intent(requireContext(), GreetingActivity::class.java)
                     intent.putExtra("name", nameState.value)
+
+                    FirebaseAuth.getInstance().signOut()
                     startActivity(intent)
                 },
                 modifier = Modifier

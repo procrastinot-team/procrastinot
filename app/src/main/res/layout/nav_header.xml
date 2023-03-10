@@ -9,20 +9,23 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
+        android:id="@+id/user_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher_round"/>
+        android:src="@mipmap/ic_launcher_round" />
 
     <TextView
+        android:id="@+id/user_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:text="\@Cool_usernameXD"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
-    
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
     <TextView
+        android:id="@+id/user_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="username@gmail.com"/>
+        android:text="username@gmail.com" />
 
 </LinearLayout>
