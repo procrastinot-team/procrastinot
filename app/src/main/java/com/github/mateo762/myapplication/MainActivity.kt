@@ -10,25 +10,14 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.firebase.ui.auth.AuthUI
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
-import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.github.mateo762.myapplication.fragments.*
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
-import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     
     private lateinit var drawer: DrawerLayout
-    private val signInLauncher = registerForActivityResult(
-        FirebaseAuthUIActivityResultContract()
-    ) { res ->
-        this.onSignInResult(res)
-    }
 
-    private lateinit var oneTapClient: SignInClient
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,19 +43,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             ).commit()
             navigationView.setCheckedItem(R.id.nav_greet)
         }
-
-        oneTapClient = Identity.getSignInClient(this)
-
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            println("Already logged in")
-            println(user.email)
-            println(user.uid)
-            println(FirebaseAuth.getInstance().uid)
-        } else {
-            println("Not logged in at all")
-            createSignInIntent()
-        }
     }
 
     override fun onBackPressed() {
@@ -74,31 +50,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             drawer.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
-        }
-    }
-
-    private fun createSignInIntent() {
-        // Choose authentication providers
-        val providers = arrayListOf(
-            AuthUI.IdpConfig.EmailBuilder().build(),
-            AuthUI.IdpConfig.PhoneBuilder().build(),
-            AuthUI.IdpConfig.GoogleBuilder().build()
-        )
-
-        // Create and launch sign-in intent
-        val signInIntent = AuthUI.getInstance()
-            .createSignInIntentBuilder()
-            .setAvailableProviders(providers)
-            .build()
-        signInLauncher.launch(signInIntent)
-    }
-
-    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
-        if (result.resultCode == RESULT_OK) {
-            Toast.makeText(this,"Successfully Logged in!",
-                Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this,result.toString(),Toast.LENGTH_SHORT).show()
         }
     }
 

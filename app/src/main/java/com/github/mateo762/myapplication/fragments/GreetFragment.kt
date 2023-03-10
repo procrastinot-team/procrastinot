@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.github.mateo762.myapplication.GreetingActivity
+import com.github.mateo762.myapplication.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class GreetFragment : Fragment() {
@@ -66,7 +67,6 @@ class GreetFragment : Fragment() {
                     val intent = Intent(requireContext(), GreetingActivity::class.java)
                     intent.putExtra("name", nameState.value)
 
-                    FirebaseAuth.getInstance().signOut()
                     startActivity(intent)
                 },
                 modifier = Modifier
@@ -74,6 +74,35 @@ class GreetFragment : Fragment() {
                     .testTag("btn_greet")
             ) {
                 Text(text = "Greet")
+            }
+            Button(
+                onClick = {
+                    val intent = Intent(requireContext(), LoginActivity::class.java)
+                    FirebaseAuth.getInstance().signOut()
+                    startActivity(intent)
+                },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .testTag("btn_sign_out")
+            ) {
+                Text(text = "Sign Out")
+            }
+            Button(
+                onClick = {
+                    val user = FirebaseAuth.getInstance().currentUser
+                    if (user != null) {
+                        println("Already logged in")
+                        println(user.email)
+                        println(user.uid)
+                    } else {
+                        println("Error: User not logged in")
+                    }
+                },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .testTag("btn_check")
+            ) {
+                Text(text = "Check user logged in")
             }
         }
     }
