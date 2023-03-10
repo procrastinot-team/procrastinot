@@ -5,6 +5,7 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+    <string name="google_sign_in">Sign In with Google</string>
     <string name="register">Register</string>
     <string name="already_have_logged_in">Already have an account? Login</string>
     <string name="still_not_have_an_account">Still don\'t have an account? Register now</string>
