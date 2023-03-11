@@ -61,6 +61,19 @@
         app:layout_constraintVertical_bias="0.47" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/check_user"
+        android:layout_width="229dp"
+        android:layout_height="42dp"
+        android:backgroundTint="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/register_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_button"
+        app:layout_constraintVertical_bias="2"
+        />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/login_google"
         android:layout_width="229dp"
         android:layout_height="42dp"

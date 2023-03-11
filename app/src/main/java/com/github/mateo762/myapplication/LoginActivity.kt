@@ -66,6 +66,23 @@ class LoginActivity : AppCompatActivity() {
         googleButton.setOnClickListener {
             googleSignIn()
         }
+
+        val check = findViewById<Button>(R.id.check_user)
+        check.setOnClickListener {
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user != null) {
+                println("Already logged in")
+                println(user.email)
+                println(user.uid)
+            } else {
+                println("Error: User not logged in")
+            }
+        }
+
+        val from = intent.getStringExtra("from")
+        if (from == "RegisterWithGoogle") {
+            googleSignIn()
+        }
     }
 
     private fun signInUser() {
@@ -77,21 +94,25 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(baseContext, "No values inserted. Please fill in the email and " +
                     "password to sign in",
                 Toast.LENGTH_SHORT).show()
-        }
+        } else {
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
 
-        auth.signInWithEmailAndPassword(email,password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-
-                    Toast.makeText(baseContext, "Successfully logged in!",
-                        Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(baseContext, task.exception!!.message,
-                        Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            baseContext, "Successfully logged in!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(
+                            baseContext, task.exception!!.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
-            }
+        }
     }
 
     private fun handleResults(task:Task<GoogleSignInAccount>) {
@@ -119,6 +140,5 @@ class LoginActivity : AppCompatActivity() {
     private fun googleSignIn() {
         val signInIntent = googleSignInClient.signInIntent
         signInLauncher.launch(signInIntent)
-
     }
 }

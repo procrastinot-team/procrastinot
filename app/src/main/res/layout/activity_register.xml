@@ -26,6 +26,20 @@
         app:layout_constraintStart_toStartOf="@+id/register_password"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/google_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/register_with_google"
+        android:backgroundTint="@color/black"
+        app:icon="@drawable/googlelogo"
+        app:iconSize="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/register_password"
+        app:layout_constraintStart_toStartOf="@+id/register_password"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8" />
+
     <EditText
         android:id="@+id/register_email"
         android:layout_width="220dp"
