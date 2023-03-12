@@ -1,4 +1,4 @@
-package com.github.mateo762.myapplication.fragments
+package com.github.procrastinotteam.procrastinot.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -22,7 +22,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.GreetingActivity
+import com.github.procrastinotteam.procrastinot.GreetingActivity
 
 class GreetFragment : Fragment() {
     override fun onCreateView(

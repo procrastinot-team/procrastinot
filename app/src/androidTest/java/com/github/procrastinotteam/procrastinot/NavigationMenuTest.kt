@@ -1,4 +1,4 @@
-package com.github.mateo762.myapplication
+package com.github.procrastinotteam.procrastinot
 
 import androidx.fragment.app.Fragment
 import androidx.test.core.app.ActivityScenario
@@ -9,7 +9,7 @@ import androidx.test.espresso.contrib.DrawerActions
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.mateo762.myapplication.fragments.*
+import com.github.procrastinotteam.procrastinot.fragments.*
 import junit.framework.TestCase.assertTrue
 import org.hamcrest.Matchers.*
 import org.junit.After

@@ -1,4 +1,4 @@
-package com.github.mateo762.myapplication
+package com.github.procrastinotteam.procrastinot
 
 import android.os.Bundle
 import androidx.activity.compose.setContent

@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace 'com.github.mateo762.myapplication'
+    namespace 'com.github.procrastinotteam.procrastinot'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.github.mateo762.myapplication"
+        applicationId "com.github.procrastinotteam.procrastinot"
         minSdk 24
         targetSdk 33
         versionCode 1

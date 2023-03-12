@@ -1,4 +1,4 @@
-package com.github.mateo762.myapplication
+package com.github.procrastinotteam.procrastinot
 
 import android.content.Intent
 import androidx.compose.ui.test.assertTextEquals
