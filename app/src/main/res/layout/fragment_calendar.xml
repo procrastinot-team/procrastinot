@@ -5,10 +5,27 @@
     android:background="@android:color/holo_red_light">
 
     <TextView
+        android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Calendar Fragment"
         android:textSize="30sp"
         android:layout_centerInParent="true"/>
+
+    <Button
+        android:id="@+id/notificationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text"
+        android:layout_centerHorizontal="true"
+        android:text="@string/show_notification_button_text" />
+
+    <Button
+        android:id="@+id/permissionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/notificationButton"
+        android:layout_centerHorizontal="true"
+        android:text="@string/grant_notification_permission_button_text" />
 
 </RelativeLayout>
