@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "298790624795",
+    "project_id": "procrastinot-backend",
+    "storage_bucket": "procrastinot-backend.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:298790624795:android:285d2d987f33ec2b5322be",
+        "android_client_info": {
+          "package_name": "com.github.mateo762.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "298790624795-7ttj3ihunbtpfln6cjnu7arg7ebo6gkc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9kPUns5Z1hANeAYbzrfqXyPW51nUvmzI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "298790624795-7ttj3ihunbtpfln6cjnu7arg7ebo6gkc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
