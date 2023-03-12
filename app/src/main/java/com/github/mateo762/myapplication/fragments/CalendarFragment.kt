@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.notifications.HabitNotificationService
+import com.github.mateo762.myapplication.util.showToast
 
 class CalendarFragment : Fragment() {
 
@@ -46,21 +47,14 @@ class CalendarFragment : Fragment() {
                 if (activity?.checkSelfPermission(POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                     notificationService.displayNotification()
                 } else {
-                    Toast.makeText(
-                        context,
-                        getString(R.string.notification_permission_not_granted),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    context.showToast(R.string.notification_permission_not_granted)
                 }
             }
 
             permissionButton.setOnClickListener {
                 if (activity?.checkSelfPermission(POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(
-                        context,
-                        getString(R.string.notification_permission_granted),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    context.showToast(R.string.notification_permission_granted)
+
                 } else {
                     activity?.requestPermissions(
                         arrayOf(POST_NOTIFICATIONS),
