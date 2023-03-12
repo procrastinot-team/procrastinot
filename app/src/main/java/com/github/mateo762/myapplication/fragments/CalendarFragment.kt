@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.notifications.HabitNotificationService
@@ -44,23 +43,11 @@ class CalendarFragment : Fragment() {
             val permissionButton = view.findViewById<Button>(R.id.permissionButton)
 
             notificationButton.setOnClickListener {
-                if (activity?.checkSelfPermission(POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                    notificationService.displayNotification()
-                } else {
-                    context.showToast(R.string.notification_permission_not_granted)
-                }
+                onNotificationButtonClicked(context)
             }
 
             permissionButton.setOnClickListener {
-                if (activity?.checkSelfPermission(POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                    context.showToast(R.string.notification_permission_granted)
-
-                } else {
-                    activity?.requestPermissions(
-                        arrayOf(POST_NOTIFICATIONS),
-                        NOTIFICATION_PERMISSION_REQUEST_CODE
-                    )
-                }
+                onPermissionButtonClicked(context)
             }
         }
     }
@@ -84,6 +71,25 @@ class CalendarFragment : Fragment() {
             else -> {
                 // Ignore all other requests.
             }
+        }
+    }
+
+    private fun onNotificationButtonClicked(context: Context) {
+        if (activity?.checkSelfPermission(POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            notificationService.displayNotification()
+        } else {
+            context.showToast(R.string.notification_permission_not_granted)
+        }
+    }
+
+    private fun onPermissionButtonClicked(context: Context) {
+        if (activity?.checkSelfPermission(POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            context.showToast(R.string.notification_permission_granted)
+        } else {
+            activity?.requestPermissions(
+                arrayOf(POST_NOTIFICATIONS),
+                NOTIFICATION_PERMISSION_REQUEST_CODE
+            )
         }
     }
 }

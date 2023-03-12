@@ -34,7 +34,7 @@ class HabitNotificationService(
             PendingIntent.FLAG_IMMUTABLE
         )
         val notification = NotificationCompat.Builder(context, HABIT_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_calendar) //todo add app icon
+            .setSmallIcon(R.mipmap.ic_launcher_round)
             .setContentTitle(context.getString(R.string.notification_content_title))
             .setContentText(context.getString(R.string.notification_content_text))
             .setContentIntent(pendingActivityIntent)
