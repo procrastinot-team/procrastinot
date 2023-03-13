@@ -88,6 +88,7 @@ fun HabitListItem(habit: Habit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
+            .testTag(habit.name)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -98,7 +99,7 @@ fun HabitListItem(habit: Habit) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "${habit.daysOfWeek.joinToString()}",
+                text = habit.daysOfWeek.joinToString(),
                 style = MaterialTheme.typography.body1
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -115,32 +116,6 @@ fun HabitListItem(habit: Habit) {
     }
 }
 
-@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-@Composable
-fun AddButton() {
-    val context = LocalContext.current
-    Scaffold(
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    val intent = Intent(context, CreateHabitActivity::class.java)
-                    context.startActivity(intent)
-                },
-                backgroundColor = Color.White,
-                contentColor = Color.Black
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_new),
-                    contentDescription = "Add"
-                )
-            }
-        },
-        modifier = Modifier.testTag("btn_new")
-    ) {
-        // Empty content
-    }
-}
-
 @RequiresApi(Build.VERSION_CODES.O)
 private fun getHardCodedHabits(): List<Habit> {
     return listOf(
@@ -148,7 +123,7 @@ private fun getHardCodedHabits(): List<Habit> {
             name = "Morning Walk",
             daysOfWeek = listOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY),
             startTime = LocalTime.of(6, 30),
-            endTime = LocalTime.of(7, 30)
+            endTime = LocalTime.of(7, 30),
         ),
         Habit(
             name = "Reading",
@@ -163,19 +138,19 @@ private fun getHardCodedHabits(): List<Habit> {
             endTime = LocalTime.of(8, 0)
         ),
         Habit(
-            name = "Morning Walk",
+            name = "Walking",
             daysOfWeek = listOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY),
             startTime = LocalTime.of(6, 30),
             endTime = LocalTime.of(7, 30)
         ),
         Habit(
-            name = "Reading",
+            name = "Gym",
             daysOfWeek = listOf(DayOfWeek.TUESDAY, DayOfWeek.THURSDAY, DayOfWeek.SATURDAY),
             startTime = LocalTime.of(20, 0),
             endTime = LocalTime.of(21, 0)
         ),
         Habit(
-            name = "Meditation",
+            name = "Swimming",
             daysOfWeek = listOf(DayOfWeek.SUNDAY),
             startTime = LocalTime.of(7, 0),
             endTime = LocalTime.of(8, 0)
