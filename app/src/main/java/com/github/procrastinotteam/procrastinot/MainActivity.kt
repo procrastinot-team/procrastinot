@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container,
-                GreetFragment()
+                HabitsFragment()
             ).commit()
             navigationView.setCheckedItem(R.id.nav_greet)
         }
@@ -116,8 +116,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_greet -> {
-                createSignInIntent()
-                openFragmentSelected(GreetFragment())
+                //createSignInIntent()
+                openFragmentSelected(HabitsFragment())
             }
             R.id.nav_calendar -> {
                 createSignInIntent()
