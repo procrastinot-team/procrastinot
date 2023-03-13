@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_greet -> {
-                createSignInIntent()
+                //createSignInIntent()
                 openFragmentSelected(HabitsFragment())
             }
             R.id.nav_calendar -> {
