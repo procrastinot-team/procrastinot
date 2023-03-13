@@ -1,4 +1,4 @@
-package com.github.mateo762.myapplication.fragments
+package com.github.procrastinotteam.procrastinot.fragments
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -15,8 +15,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.CreateHabitActivity
-import com.github.mateo762.myapplication.R
+import com.github.procrastinotteam.procrastinot.CreateHabitActivity
+import com.github.procrastinotteam.procrastinot.R
 
 class HabitsFragment : Fragment() {
     override fun onCreateView(
