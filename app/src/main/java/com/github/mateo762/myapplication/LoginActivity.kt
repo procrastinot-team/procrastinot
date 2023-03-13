@@ -4,11 +4,25 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.dp
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -38,7 +52,9 @@ class LoginActivity : AppCompatActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContent {
+            LoginUI()
+        }
 
         // Initialize Firebase auth instance
         auth = Firebase.auth
@@ -50,44 +66,84 @@ class LoginActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-
-        val logIn = findViewById<TextView>(R.id.register_text)
-        logIn.setOnClickListener {
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
-        }
-
-        val button = findViewById<Button>(R.id.login_button)
-        button.setOnClickListener {
-            signInUser()
-        }
-
-        val googleButton = findViewById<Button>(R.id.login_google)
-        googleButton.setOnClickListener {
-            googleSignIn()
-        }
-
-        val check = findViewById<Button>(R.id.check_user)
-        check.setOnClickListener {
-            val user = FirebaseAuth.getInstance().currentUser
-            if (user != null) {
-                println("Already logged in")
-                println(user.email)
-                println(user.uid)
-            } else {
-                println("Error: User not logged in")
-            }
-        }
-
         val from = intent.getStringExtra("from")
         if (from == "RegisterWithGoogle") {
             googleSignIn()
         }
     }
 
-    private fun signInUser() {
-        val email = findViewById<EditText>(R.id.login_email).text.toString()
-        val password = findViewById<EditText>(R.id.login_password).text.toString()
+    @Composable
+    private fun LoginUI() {
+        val email = remember { mutableStateOf("") }
+        val emailFiller by remember { mutableStateOf("") }
+        val password = remember { mutableStateOf("") }
+        val passwordFiller by remember { mutableStateOf("") }
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = emailFiller,
+                style = MaterialTheme.typography.h5,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            TextField(
+                value = email.value,
+                onValueChange = { email.value = it },
+                label = { Text(text = "Email") },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .testTag("text_email")
+            )
+            Text(
+                text = passwordFiller,
+                style = MaterialTheme.typography.h5,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            TextField(
+                value = password.value,
+                onValueChange = { password.value = it },
+                label = { Text(text = "Password") },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .testTag("text_password")
+            )
+            Button(
+                onClick = {
+                    signInUser(email.value,password.value)
+                },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .testTag("btn_login")
+            ) {
+                Text(text = "Login")
+            }
+            Button(
+                onClick = {
+                    val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
+                    startActivity(intent)
+                },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .testTag("btn_not_registered")
+            ) {
+                Text(text = "Still don't have an account? Register now")
+            }
+            Button(
+                onClick = {
+                    googleSignIn()
+                },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .testTag("btn_login_google")
+            ) {
+                Text(text = "Sign in with Google")
+            }
+        }
+    }
+    
+    private fun signInUser(email:String, password:String) {
 
         // add null check on text values
         if (email.isEmpty() || password.isEmpty()) {

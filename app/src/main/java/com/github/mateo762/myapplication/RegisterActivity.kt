@@ -3,10 +3,21 @@ package com.github.mateo762.myapplication
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -16,52 +27,111 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register)
+        setContent {
+            RegisterUI()
+        }
 
         // Initialize Firebase auth instance
         auth = Firebase.auth
+    }
 
-        val logIn = findViewById<TextView>(R.id.login_text)
-        logIn.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-        }
-
-        val button = findViewById<Button>(R.id.register_button)
-        button.setOnClickListener {
-            registerUser()
-        }
-
-        val googleBtn = findViewById<Button>(R.id.google_register)
-        googleBtn.setOnClickListener{
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.putExtra("from","RegisterWithGoogle")
-            startActivity(intent)
+    @Composable
+    private fun RegisterUI() {
+        val email = remember { mutableStateOf("") }
+        val emailFiller by remember { mutableStateOf("") }
+        val password = remember { mutableStateOf("") }
+        val passwordFiller by remember { mutableStateOf("") }
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = emailFiller,
+                style = MaterialTheme.typography.h5,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            TextField(
+                value = email.value,
+                onValueChange = { email.value = it },
+                label = { Text(text = "Email") },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .testTag("text_email")
+            )
+            Text(
+                text = passwordFiller,
+                style = MaterialTheme.typography.h5,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            TextField(
+                value = password.value,
+                onValueChange = { password.value = it },
+                label = { Text(text = "Password") },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .testTag("text_password")
+            )
+            Button(
+                onClick = {
+                      registerUser(email.value,password.value)
+                },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .testTag("btn_register")
+            ) {
+                Text(text = "Register")
+            }
+            Button(
+                onClick = {
+                    val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                    startActivity(intent)
+                },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .testTag("btn_already_login")
+            ) {
+                Text(text = "Already have an account? Login")
+            }
+            Button(
+                onClick = {
+                    val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                    intent.putExtra("from","RegisterWithGoogle")
+                    startActivity(intent)
+                },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .testTag("btn_register_google")
+            ) {
+                Text(text = "Register with Google")
+            }
         }
     }
 
-    private fun registerUser() {
-        val email = findViewById<EditText>(R.id.register_email).text.toString()
-        val password = findViewById<EditText>(R.id.register_password).text.toString()
+    private fun registerUser(email: String, password: String) {
+//        val email = findViewById<EditText>(R.id.register_email).text.toString()
+//        val password = findViewById<EditText>(R.id.register_password).text.toString()
 
+        println("1st stage: $email")
         // add null check on text values
         if (email.isEmpty() || password.isEmpty()) {
+            println("2nd stage: $email")
             Toast.makeText(baseContext, "No values inserted. Please fill in the email and " +
                     "password to sign up",
                 Toast.LENGTH_SHORT).show()
-        }
-
-        auth.createUserWithEmailAndPassword(email,password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(baseContext, "Successfully registered!",
-                    Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(baseContext, task.exception!!.message,
+        } else {
+            auth.createUserWithEmailAndPassword(email,password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(baseContext, "Successfully registered!",
                         Toast.LENGTH_SHORT).show()
-                }
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(baseContext, task.exception!!.message,
+                            Toast.LENGTH_SHORT).show()
+                    }
+            }
         }
     }
 }
