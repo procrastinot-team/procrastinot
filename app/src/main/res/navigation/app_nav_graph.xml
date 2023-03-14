@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_nav_graph"
+    app:startDestination="@id/homeActivity">
+
+    <activity
+        android:id="@+id/homeActivity"
+        android:name="com.github.mateo762.myapplication.home.HomeActivity"
+        android:label="activity_home"
+        tools:layout="@layout/activity_home" />
+    <activity
+        android:id="@+id/habitsActivity"
+        android:name="com.github.mateo762.myapplication.habits.HabitsActivity"
+        android:label="activity_habits"
+        tools:layout="@layout/activity_habits" />
+    <activity
+        android:id="@+id/searchActivity"
+        android:name="com.github.mateo762.myapplication.search.SearchActivity"
+        android:label="activity_search"
+        tools:layout="@layout/activity_search" />
+    <activity
+        android:id="@+id/profileActivity"
+        android:name="com.github.mateo762.myapplication.profile.ProfileActivity"
+        android:label="activity_profile"
+        tools:layout="@layout/activity_profile" />
+    <activity
+        android:id="@+id/settingsActivity"
+        android:name="com.github.mateo762.myapplication.settings.SettingsActivity"
+        android:label="activity_settings"
+        tools:layout="@layout/activity_settings" />
+</navigation>
