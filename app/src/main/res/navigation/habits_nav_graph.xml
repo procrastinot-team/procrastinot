@@ -18,6 +18,5 @@
     <fragment
         android:id="@+id/listFragment"
         android:name="com.github.mateo762.myapplication.habits.fragments.ListFragment"
-        android:label="fragment_list"
-        tools:layout="@layout/fragment_list" />
+        android:label="fragment_list"/>
 </navigation>
