@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 
 // @RunWith(AndroidJUnit4::class)
 class HomeActivityFragmentNavigationTest {
-   /* private lateinit var activityScenario: ActivityScenario<HomeActivity>
+   private lateinit var activityScenario: ActivityScenario<HomeActivity>
 
     @Before
     fun setUp() {
@@ -39,7 +39,7 @@ class HomeActivityFragmentNavigationTest {
         TestCase.assertTrue(fragment is FeedFragment)
     }
 
-    @Test
+    /*@Test
     fun switchToSummaryFragment() {
         Espresso.onView(withId(R.id.summaryFragment)).perform(ViewActions.click())
         // Get a reference to the current fragment
@@ -58,7 +58,7 @@ class HomeActivityFragmentNavigationTest {
         // Check if the current fragment is a TodayFragment
         TestCase.assertTrue(fragment is TodayFragment)
     }
-
+*/
     private fun getCurrentFragment(): Fragment? {
         // Get the current fragment from the ActivityScenario
         var fragment: Fragment? = null
@@ -68,5 +68,4 @@ class HomeActivityFragmentNavigationTest {
         }
         return fragment
     }
-    */
 }
