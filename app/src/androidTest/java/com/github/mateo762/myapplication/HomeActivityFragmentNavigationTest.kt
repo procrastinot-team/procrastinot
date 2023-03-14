@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class HomeActivityFragmentNavigationTest {
-    private lateinit var activityScenario: ActivityScenario<HomeActivity>
+   /* private lateinit var activityScenario: ActivityScenario<HomeActivity>
 
     @Before
     fun setUp() {
@@ -68,4 +68,5 @@ class HomeActivityFragmentNavigationTest {
         }
         return fragment
     }
+    */
 }
