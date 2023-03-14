@@ -26,9 +26,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.DisplayParametersActivity
 import com.github.mateo762.myapplication.habits.HabitsActivity
-import com.github.mateo762.myapplication.home.HomeActivity
 import java.time.DayOfWeek
 
 
@@ -46,152 +44,159 @@ class DevelopFragment : Fragment() {
         }
     }
 
-        @Composable
-        fun HabitInputScreen() {
-            val context = LocalContext.current
-            var habitName by remember { mutableStateOf("") }
-            var habitDays by remember { mutableStateOf(emptyList<DayOfWeek>()) }
-            var habitStartTime by remember { mutableStateOf(TextFieldValue("00:00")) }
-            var habitEndTime by remember { mutableStateOf(TextFieldValue("23:59")) }
+    @Composable
+    fun HabitInputScreen() {
+        val context = LocalContext.current
+        var habitName by remember { mutableStateOf("") }
+        var habitDays by remember { mutableStateOf(emptyList<DayOfWeek>()) }
+        var habitStartTime by remember { mutableStateOf(TextFieldValue("00:00")) }
+        var habitEndTime by remember { mutableStateOf(TextFieldValue("23:59")) }
 
-            Box(
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
                     .padding(16.dp)
             ) {
-                Column(
+                Text(
+                    text = "Create new habit",
                     modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(16.dp)
-                ) {
-                    Text(
-                        text = "Create new habit",
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.h5
+                )
+
+                TextField(
+                    value = habitName,
+                    onValueChange = { habitName = it },
+                    label = { Text("Name of the habit") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("txt_name")
+                )
+
+                Column {
+
+                    DayOfWeek.values().forEach { day ->
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(
+                                checked = day in habitDays,
+                                onCheckedChange = {
+                                    habitDays = if (it) {
+                                        habitDays + day
+                                    } else {
+                                        habitDays - day
+                                    }
+                                },
+                                modifier = Modifier
+                                    .padding(8.dp)
+                                    .testTag("checkbox_$day")
+                            )
+                            Text(day.toString(), modifier = Modifier.padding(start = 8.dp))
+                        }
+                    }
+
+                    TextField(
+                        value = habitStartTime.text,
+                        onValueChange = {
+                            habitStartTime = if (it.length <= 5) {
+                                if (it.length >= 3 && it[2] != ':') {
+                                    TextFieldValue(text = habitStartTime.text)
+                                } else {
+                                    TextFieldValue(text = it)
+                                }
+                            } else {
+                                habitStartTime
+                            }
+                        },
+                        label = { Text("What time does the habit start? (HH:MM)") },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 16.dp),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.h5
+                            .testTag("txt_time_start")
                     )
 
                     TextField(
-                        value = habitName,
-                        onValueChange = { habitName = it },
-                        label = { Text("Name of the habit") },
+                        value = habitEndTime.text,
+                        onValueChange = {
+                            habitEndTime = if (it.length <= 5) {
+                                if (it.length >= 3 && it[2] != ':') {
+                                    TextFieldValue(text = habitEndTime.text)
+                                } else {
+                                    TextFieldValue(text = it)
+                                }
+                            } else {
+                                habitEndTime
+                            }
+                        },
+                        label = { Text("What time does the habit start? (HH:MM)") },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .testTag("txt_name")
+                            .testTag("txt_time_end")
                     )
 
-                    Column {
 
-                        DayOfWeek.values().forEach { day ->
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Checkbox(
-                                    checked = day in habitDays,
-                                    onCheckedChange = {
-                                        habitDays = if (it) {
-                                            habitDays + day
-                                        } else {
-                                            habitDays - day
-                                        }
-                                    },
-                                    modifier = Modifier
-                                        .padding(8.dp)
-                                        .testTag("checkbox_$day")
+                    Button(
+                        onClick = {
+                            if (habitName.isBlank()) {
+                                Toast.makeText(
+                                    context,
+                                    "Please enter a habit name",
+                                    Toast.LENGTH_LONG
                                 )
-                                Text(day.toString(), modifier = Modifier.padding(start = 8.dp))
+                                    .show()
+                            } else if (habitDays.isEmpty()) {
+                                Toast.makeText(
+                                    context,
+                                    "Please select at least one day",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else if (!isValidTime(habitStartTime.text) || !isValidTime(
+                                    habitEndTime.text
+                                )
+                            ) {
+                                Toast.makeText(
+                                    context,
+                                    "Please enter a valid time (HH:MM)",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                // This intent would now save into a DB / Firebase
+                                // For now, it returns to the calling activity
+                                val intent =
+                                    Intent(context, HabitsActivity::class.java)
+                                intent.putExtra("habitName", habitName)
+                                intent.putExtra("habitDays", ArrayList(habitDays))
+                                intent.putExtra("habitStartTime", habitStartTime.text)
+                                intent.putExtra("habitEndTime", habitEndTime.text)
+                                context.startActivity(intent)
+                                Toast.makeText(
+                                    context,
+                                    "Habit successfully created",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-                        }
-
-                        TextField(
-                            value = habitStartTime.text,
-                            onValueChange = {
-                                habitStartTime = if (it.length <= 5) {
-                                    if (it.length >= 3 && it[2] != ':') {
-                                        TextFieldValue(text = habitStartTime.text)
-                                    } else {
-                                        TextFieldValue(text = it)
-                                    }
-                                } else {
-                                    habitStartTime
-                                }
-                            },
-                            label = { Text("What time does the habit start? (HH:MM)") },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .testTag("txt_time_start")
-                        )
-
-                        TextField(
-                            value = habitEndTime.text,
-                            onValueChange = {
-                                habitEndTime = if (it.length <= 5) {
-                                    if (it.length >= 3 && it[2] != ':') {
-                                        TextFieldValue(text = habitEndTime.text)
-                                    } else {
-                                        TextFieldValue(text = it)
-                                    }
-                                } else {
-                                    habitEndTime
-                                }
-                            },
-                            label = { Text("What time does the habit start? (HH:MM)") },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .testTag("txt_time_end")
-                        )
-
-
-                        Button(
-                            onClick = {
-                                if (habitName.isBlank()) {
-                                    Toast.makeText(
-                                        context,
-                                        "Please enter a habit name",
-                                        Toast.LENGTH_LONG
-                                    )
-                                        .show()
-                                } else if (habitDays.isEmpty()) {
-                                    Toast.makeText(
-                                        context,
-                                        "Please select at least one day",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else if (!isValidTime(habitStartTime.text) || !isValidTime(
-                                        habitEndTime.text
-                                    )
-                                ) {
-                                    Toast.makeText(
-                                        context,
-                                        "Please enter a valid time (HH:MM)",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else {
-                                    val intent =
-                                        Intent(context, DisplayParametersActivity::class.java)
-                                    intent.putExtra("habitName", habitName)
-                                    intent.putExtra("habitDays", ArrayList(habitDays))
-                                    intent.putExtra("habitStartTime", habitStartTime.text)
-                                    intent.putExtra("habitEndTime", habitEndTime.text)
-                                    context.startActivity(intent)
-                                }
-                            },
-                            modifier = Modifier
-                                .padding(top = 16.dp)
-                                .testTag("btn_save")
-                        ) {
-                            Text("Save Habit")
-                        }
+                        },
+                        modifier = Modifier
+                            .padding(top = 16.dp)
+                            .testTag("btn_save")
+                    ) {
+                        Text("Save Habit")
                     }
                 }
             }
         }
-
-        private fun isValidTime(time: String): Boolean {
-            val pattern = Regex(pattern = "^([0-1][0-9]|[2][0-3]):([0-5][0-9])$")
-            return pattern.matches(time)
-        }
-
-
     }
+
+    private fun isValidTime(time: String): Boolean {
+        val pattern = Regex(pattern = "^([0-1]\\d|[22-3]):([0-5][0-9])$")
+        return pattern.matches(time)
+    }
+
+
+}

@@ -2,10 +2,6 @@ package com.github.mateo762.myapplication
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.fragment.app.testing.FragmentScenario
-import androidx.fragment.app.testing.launchFragment
-import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
@@ -13,8 +9,6 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.habits.HabitsActivity
-import com.github.mateo762.myapplication.home.HomeActivity
-import com.github.mateo762.myapplication.home.fragments.SummaryFragment
 import org.hamcrest.Matchers.*
 import org.junit.After
 import org.junit.Before
@@ -26,12 +20,9 @@ import java.util.*
 
 
 @RunWith(AndroidJUnit4::class)
-class CreateHabitActivityTest {
-    /*
+class CreateHabitTest {
     @get:Rule
-    val activityRule = ActivityScenarioRule(HomeActivity::class.java)
-    val s = ActivityScenario(HomeActivity(), SummaryFragment())
-    val fs = FragmentScenario<SummaryFragment>(SummaryFragment(), HomeActivity())
+    val activityRule = ActivityScenarioRule(HabitsActivity::class.java)
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -98,7 +89,7 @@ class CreateHabitActivityTest {
         // Verify that the intent was sent correctly
         intended(
             allOf(
-                hasComponent(DisplayParametersActivity::class.java.name),
+                hasComponent(HabitsActivity::class.java.name),
                 hasExtra("habitName", habitName),
                 hasExtra("habitDays", habitDays),
                 hasExtra("habitStartTime", habitStartTime),
@@ -161,12 +152,4 @@ class CreateHabitActivityTest {
             .assertIsDisplayed()
     }
 
-    @Test
-    fun clickGoBackButton_IntentToMainActivity() {
-        composeTestRule.onNodeWithTag("btn_cancel")
-            .performScrollTo()
-            .performClick()
-        intended(hasComponent(HabitsActivity::class.java.name))
-    }
-*/
 }

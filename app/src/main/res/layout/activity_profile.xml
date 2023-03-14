@@ -22,15 +22,13 @@
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
         <TextView
-            android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Profile Activity"
+            android:text="@string/profile_activity"
             android:textSize="20dp"/>
     </LinearLayout>
 
-    <!-- gives navDrawer material look-->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navView"
         android:layout_width="wrap_content"

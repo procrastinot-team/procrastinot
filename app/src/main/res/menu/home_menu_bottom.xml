@@ -4,16 +4,16 @@
     <item
         android:id="@+id/todayFragment"
         android:icon="@drawable/blur_icon"
-        android:title="Today"/>
+        android:title="@string/today" />
 
     <item
         android:id="@+id/feedFragment"
         android:icon="@drawable/blur_icon"
-        android:title="Feed"/>
+        android:title="@string/feed" />
 
     <item
         android:id="@+id/summaryFragment"
         android:icon="@drawable/blur_icon"
-        android:title="Summary"/>
+        android:title="@string/summary" />
 
 </menu>

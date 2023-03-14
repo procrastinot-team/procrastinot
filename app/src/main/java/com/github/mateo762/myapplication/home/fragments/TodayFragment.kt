@@ -1,10 +1,10 @@
 package com.github.mateo762.myapplication.home.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.github.mateo762.myapplication.R
 
 // TODO: Rename parameter arguments, choose names that match

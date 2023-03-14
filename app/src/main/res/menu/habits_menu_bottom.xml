@@ -4,16 +4,16 @@
     <item
         android:id="@+id/developFragment"
         android:icon="@drawable/blur_icon"
-        android:title="Develop"/>
+        android:title="@string/develop" />
 
     <item
         android:id="@+id/weekFragment"
         android:icon="@drawable/blur_icon"
-        android:title="Week"/>
+        android:title="@string/week" />
 
     <item
         android:id="@+id/listFragment"
         android:icon="@drawable/blur_icon"
-        android:title="List"/>
+        android:title="@string/list" />
 
 </menu>
