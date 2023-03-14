@@ -1,9 +1,11 @@
 package com.github.mateo762.myapplication.home.fragments
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,10 +34,15 @@ class SummaryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                HabitListScreen(habits = getHardCodedHabits())
+        try {
+            return ComposeView(requireContext()).apply {
+                setContent {
+                    HabitListScreen(habits = getHardCodedHabits())
+                }
             }
+        } catch (e: Exception) {
+            Log.e(TAG, "onCreateView in SummaryFragment", e)
+            throw e
         }
     }
 
