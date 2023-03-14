@@ -39,7 +39,7 @@ class HomeActivityFragmentNavigationTest {
         TestCase.assertTrue(fragment is FeedFragment)
     }
 
-    /*@Test
+    @Test
     fun switchToSummaryFragment() {
         Espresso.onView(withId(R.id.summaryFragment)).perform(ViewActions.click())
         // Get a reference to the current fragment
@@ -47,7 +47,6 @@ class HomeActivityFragmentNavigationTest {
         // Check if the current fragment is a SummaryFragment
         TestCase.assertTrue(fragment is SummaryFragment)
     }
-    */
 
     @Test
     fun switchToHomeFragment() {
