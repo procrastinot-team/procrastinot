@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.github.mateo762.myapplication.DisplayParametersActivity
 import com.github.mateo762.myapplication.habits.HabitsActivity
+import com.github.mateo762.myapplication.home.HomeActivity
 import java.time.DayOfWeek
 
 
@@ -181,17 +182,6 @@ class DevelopFragment : Fragment() {
                                 .testTag("btn_save")
                         ) {
                             Text("Save Habit")
-                        }
-                        Button(
-                            onClick = {
-                                val intent = Intent(context, HabitsActivity::class.java)
-                                context.startActivity(intent)
-                            },
-                            modifier = Modifier
-                                .padding(top = 16.dp)
-                                .testTag("btn_cancel")
-                        ) {
-                            Text("Cancel")
                         }
                     }
                 }
