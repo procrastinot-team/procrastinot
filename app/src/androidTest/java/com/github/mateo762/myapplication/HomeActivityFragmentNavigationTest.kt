@@ -47,6 +47,7 @@ class HomeActivityFragmentNavigationTest {
         // Check if the current fragment is a SummaryFragment
         TestCase.assertTrue(fragment is SummaryFragment)
     }
+    */
 
     @Test
     fun switchToHomeFragment() {
@@ -58,7 +59,7 @@ class HomeActivityFragmentNavigationTest {
         // Check if the current fragment is a TodayFragment
         TestCase.assertTrue(fragment is TodayFragment)
     }
-*/
+
     private fun getCurrentFragment(): Fragment? {
         // Get the current fragment from the ActivityScenario
         var fragment: Fragment? = null
