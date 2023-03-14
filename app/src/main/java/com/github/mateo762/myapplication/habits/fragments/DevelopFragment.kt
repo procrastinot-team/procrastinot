@@ -175,11 +175,6 @@ class DevelopFragment : Fragment() {
                                 intent.putExtra("habitStartTime", habitStartTime.text)
                                 intent.putExtra("habitEndTime", habitEndTime.text)
                                 context.startActivity(intent)
-                                Toast.makeText(
-                                    context,
-                                    "Habit successfully created",
-                                    Toast.LENGTH_SHORT
-                                ).show()
                             }
                         },
                         modifier = Modifier
