@@ -1,5 +1,6 @@
 package com.github.mateo762.myapplication
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -15,6 +16,7 @@ import com.google.android.material.navigation.NavigationView.OnNavigationItemSel
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
+import com.github.mateo762.myapplication.profile.ProfileActivity
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.FirebaseAuth
@@ -129,7 +131,8 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
             }
             R.id.nav_profile -> {
                 createSignInIntent()
-                openFragmentSelected(ProfileFragment())
+                val intent = Intent(this@MainActivity, ProfileActivity::class.java)
+                startActivity(intent)
             }
             R.id.nav_settings -> {
                 createSignInIntent()

@@ -18,6 +18,9 @@
             android:name=".CreateHabitActivity"
             android:exported="false" />
         <activity
+            android:name=".profile.ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication.NoActionBar">
