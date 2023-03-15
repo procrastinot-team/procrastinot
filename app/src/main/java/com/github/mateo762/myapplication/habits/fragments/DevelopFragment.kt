@@ -26,7 +26,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import com.github.mateo762.myapplication.Habit
 import com.github.mateo762.myapplication.habits.HabitsActivity
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import java.time.DayOfWeek
 
 
@@ -37,6 +42,7 @@ class DevelopFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         return ComposeView(requireContext()).apply {
             setContent {
                 HabitInputScreen()
@@ -168,13 +174,35 @@ class DevelopFragment : Fragment() {
                             } else {
                                 // This intent would now save into a DB / Firebase
                                 // For now, it returns to the calling activity
-                                val intent =
-                                    Intent(context, HabitsActivity::class.java)
-                                intent.putExtra("habitName", habitName)
-                                intent.putExtra("habitDays", ArrayList(habitDays))
-                                intent.putExtra("habitStartTime", habitStartTime.text)
-                                intent.putExtra("habitEndTime", habitEndTime.text)
-                                context.startActivity(intent)
+                                val myHabit = Habit(
+                                    habitName,
+                                    ArrayList(habitDays),
+                                    habitStartTime.text,
+                                    habitEndTime.text
+                                )
+                                val db: DatabaseReference = Firebase.database.reference
+                                // makfazlic should be replaced with the userId retrieved from the auth
+                                val userRef = db.child("users").child("makfazlic")
+                                val key = userRef.push().key
+                                if (key != null) {
+                                    db.child("users").child("makfazlic").child(key).setValue(myHabit).addOnSuccessListener {
+                                        println("Success")
+                                        val intent =
+                                            Intent(context, HabitsActivity::class.java)
+                                        intent.putExtra("habitName", habitName)
+                                        intent.putExtra("habitDays", ArrayList(habitDays))
+                                        intent.putExtra("habitStartTime", habitStartTime.text)
+                                        intent.putExtra("habitEndTime", habitEndTime.text)
+                                        context.startActivity(intent)
+                                    }.addOnFailureListener {
+                                        Toast.makeText(
+                                            context,
+                                            "Try again",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+
                             }
                         },
                         modifier = Modifier
