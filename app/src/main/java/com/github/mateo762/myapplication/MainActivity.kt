@@ -9,7 +9,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import com.firebase.ui.auth.AuthUI
 import com.github.mateo762.myapplication.fragments.*
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
@@ -51,14 +50,6 @@ class MainActivity : AppCompatActivity(), OnNavigationItemSelectedListener {
         } else {
             super.onBackPressed()
         }
-    }
-
-    private fun delete() {
-        AuthUI.getInstance()
-            .delete(this)
-            .addOnCompleteListener {
-                // ...
-            }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

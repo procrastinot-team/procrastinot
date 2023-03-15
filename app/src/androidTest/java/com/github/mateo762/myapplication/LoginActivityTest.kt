@@ -26,7 +26,7 @@ class LoginActivityTest {
     val composeTestRule = createComposeRule()
 
     @get:Rule
-    val activityRule = ActivityScenarioRule(RegisterActivity::class.java)
+    val activityRule = ActivityScenarioRule(LoginActivity::class.java)
 
     @Before
     fun setUp() {

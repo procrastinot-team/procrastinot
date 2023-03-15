@@ -87,23 +87,6 @@ class GreetFragment : Fragment() {
             ) {
                 Text(text = "Sign Out")
             }
-            Button(
-                onClick = {
-                    val user = FirebaseAuth.getInstance().currentUser
-                    if (user != null) {
-                        println("Already logged in")
-                        println(user.email)
-                        println(user.uid)
-                    } else {
-                        println("Error: User not logged in")
-                    }
-                },
-                modifier = Modifier
-                    .padding(16.dp)
-                    .testTag("btn_check")
-            ) {
-                Text(text = "Check user logged in")
-            }
         }
     }
 }

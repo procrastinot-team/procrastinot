@@ -109,8 +109,6 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun registerUser(email: String, password: String) {
-//        val email = findViewById<EditText>(R.id.register_email).text.toString()
-//        val password = findViewById<EditText>(R.id.register_password).text.toString()
 
         println("1st stage: $email")
         // add null check on text values
