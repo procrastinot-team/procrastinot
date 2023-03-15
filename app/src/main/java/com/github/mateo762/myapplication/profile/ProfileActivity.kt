@@ -30,6 +30,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun setupToolbar() {
+        setSupportActionBar(binding.toolbar)
         title = getString(R.string.profile_toolbar_title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
