@@ -47,8 +47,8 @@ class NavigationMenuTest {
     @Test
     fun navigateToHabitsFragment() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open())
-        onView(withId(R.id.nav_greet)).check(matches(isDisplayed()))
-        onView(withId(R.id.nav_greet)).perform(click())
+        onView(withId(R.id.nav_habits)).check(matches(isDisplayed()))
+        onView(withId(R.id.nav_habits)).perform(click())
 
         // Get a reference to the current fragment
         val fragment = getCurrentFragment()
@@ -60,8 +60,8 @@ class NavigationMenuTest {
     @Test
     fun navigateToCreateHabitActivity() {
         onView(withId(R.id.drawer_layout)).perform(DrawerActions.open())
-        onView(withId(R.id.nav_greet)).check(matches(isDisplayed()))
-        onView(withId(R.id.nav_greet)).perform(click())
+        onView(withId(R.id.nav_habits)).check(matches(isDisplayed()))
+        onView(withId(R.id.nav_habits)).perform(click())
         composeTestRule.onNodeWithTag("btn_new").performClick()
         intended(toPackage("com.github.mateo762.myapplication"))
     }
