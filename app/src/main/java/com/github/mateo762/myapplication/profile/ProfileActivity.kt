@@ -47,12 +47,12 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun generateTextGalleryItems(): ArrayList<ProfileGalleryItem> {
         return arrayListOf(
-            ProfileGalleryItem(R.drawable.ic_profile),
-            ProfileGalleryItem(R.drawable.ic_calendar),
-            ProfileGalleryItem(R.drawable.ic_share),
-            ProfileGalleryItem(R.drawable.ic_friends),
-            ProfileGalleryItem(R.drawable.ic_label),
-            ProfileGalleryItem(R.drawable.ic_settings),
+            ProfileGalleryItem(R.drawable.ic_new),
+            ProfileGalleryItem(R.drawable.ic_new),
+            ProfileGalleryItem(R.drawable.ic_new),
+            ProfileGalleryItem(R.drawable.ic_new),
+            ProfileGalleryItem(R.drawable.ic_new),
+            ProfileGalleryItem(R.drawable.ic_new),
             ProfileGalleryItem(R.drawable.ic_new),
             ProfileGalleryItem(R.drawable.ic_new),
             ProfileGalleryItem(R.drawable.ic_new),
