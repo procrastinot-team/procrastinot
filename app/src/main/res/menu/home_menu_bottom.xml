@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/todayFragment"
+        android:icon="@drawable/lens_blur_24"
+        android:title="@string/today" />
+
+    <item
+        android:id="@+id/feedFragment"
+        android:icon="@drawable/lens_blur_24"
+        android:title="@string/feed" />
+
+    <item
+        android:id="@+id/summaryFragment"
+        android:icon="@drawable/lens_blur_24"
+        android:title="@string/summary" />
+
+</menu>
