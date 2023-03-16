@@ -19,10 +19,10 @@ class ProcrastinotApplication : Application() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 HabitNotificationService.HABIT_CHANNEL_ID,
-                getString(R.string.habit_notificaiton_channel_name),
+                getString(R.string.habit_notification_channel_name),
                 NotificationManager.IMPORTANCE_HIGH
             )
-            channel.description = getString(R.string.habit_notification_channel_name)
+            channel.description = getString(R.string.habit_notification_channel_description)
 
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)

@@ -62,14 +62,14 @@ class SettingsActivityTest {
             uiDevice.findObject(UiSelector().text(("Allow"))).click()
         }
 
-        val expectedTitle = "Habit reminder"
-        val expectedContent = "Please finish your habit"
+        val expectedTitle = context.getString(R.string.notification_content_title)
+        val expectedContent = context.getString(R.string.notification_content_text)
 
         onView(withId(R.id.notificationButton)).perform(ViewActions.click())
 
         uiDevice.openNotification()
         uiDevice.wait(Until.hasObject(By.textStartsWith(expectedTitle)), timeout)
-        val title: UiObject2 = uiDevice.findObject(By.text(expectedTitle))
+        val title: UiObject2 = uiDevice.findObject(By.textStartsWith(expectedTitle))
         val text: UiObject2 = uiDevice.findObject(By.textStartsWith(expectedContent))
         assertEquals(expectedTitle, title.text)
         assertTrue(text.text.startsWith(expectedContent))
