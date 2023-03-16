@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/profile_activity"
-            android:textSize="20dp"/>
+            android:textSize="20sp"/>
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView

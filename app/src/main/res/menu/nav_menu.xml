@@ -28,6 +28,7 @@
                 android:icon="@drawable/lens_blur_24"
                 android:title="@string/settings" />
             <item
+                android:id="@+id/nav_log_out"
                 android:icon="@drawable/lens_blur_24"
                 android:title="@string/log_out" />
         </menu>
