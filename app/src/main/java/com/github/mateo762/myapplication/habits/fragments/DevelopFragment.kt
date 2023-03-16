@@ -174,6 +174,15 @@ class DevelopFragment : Fragment() {
                             } else {
                                 // This intent would now save into a DB / Firebase
                                 // For now, it returns to the calling activity
+                                val intent =
+                                    Intent(context, HabitsActivity::class.java)
+                                intent.putExtra("habitName", habitName)
+                                intent.putExtra("habitDays", ArrayList(habitDays))
+                                intent.putExtra("habitStartTime", habitStartTime.text)
+                                intent.putExtra("habitEndTime", habitEndTime.text)
+                                context.startActivity(intent)
+
+                                //
                                 val myHabit = Habit(
                                     habitName,
                                     ArrayList(habitDays),
@@ -187,13 +196,7 @@ class DevelopFragment : Fragment() {
                                 if (key != null) {
                                     db.child("users").child("makfazlic").child(key).setValue(myHabit).addOnSuccessListener {
                                         println("Success")
-                                        val intent =
-                                            Intent(context, HabitsActivity::class.java)
-                                        intent.putExtra("habitName", habitName)
-                                        intent.putExtra("habitDays", ArrayList(habitDays))
-                                        intent.putExtra("habitStartTime", habitStartTime.text)
-                                        intent.putExtra("habitEndTime", habitEndTime.text)
-                                        context.startActivity(intent)
+
                                     }.addOnFailureListener {
                                         Toast.makeText(
                                             context,
