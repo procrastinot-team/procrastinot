@@ -1,5 +1,6 @@
 package com.github.mateo762.myapplication
 
+import android.util.Log
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.espresso.intent.Intents
@@ -9,6 +10,11 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.habits.HabitsActivity
+import com.github.mateo762.myapplication.home.HomeActivity
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import org.hamcrest.Matchers.*
 import org.junit.After
 import org.junit.Before
@@ -17,6 +23,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.time.DayOfWeek
 import java.util.*
+import java.util.concurrent.CompletableFuture
+import kotlin.collections.HashMap
+import kotlin.concurrent.schedule
+import kotlin.math.log
 
 
 @RunWith(AndroidJUnit4::class)
@@ -31,6 +41,8 @@ class CreateHabitTest {
     private lateinit var habitDays: List<DayOfWeek>
     private lateinit var habitStartTime: String
     private lateinit var habitEndTime: String
+    private lateinit var db: FirebaseDatabase
+    private lateinit var dbRef: DatabaseReference
 
     @Before
     fun setUp() {
@@ -38,6 +50,12 @@ class CreateHabitTest {
         habitDays = listOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)
         habitStartTime = "07:30"
         habitEndTime = "08:00"
+
+        // DB setup
+        db = Firebase.database
+        db.useEmulator("10.0.2.2", 9000)
+        dbRef = db.reference
+
         Intents.init()
     }
 
@@ -84,18 +102,93 @@ class CreateHabitTest {
     }
 
     @Test
-    fun testCreateHabit() {
+    fun testCreateHabitSwitchActivity() {
         createHabit()
         // Verify that the intent was sent correctly
         intended(
             allOf(
-                hasComponent(HabitsActivity::class.java.name),
-                hasExtra("habitName", habitName),
-                hasExtra("habitDays", habitDays),
-                hasExtra("habitStartTime", habitStartTime),
-                hasExtra("habitEndTime", habitEndTime)
+                hasComponent(HomeActivity::class.java.name),
             )
         )
+    }
+
+    @Test
+    fun testCreateHabitSaveToFirebase() {
+        // count references in the db
+        var countbefore: Int = 0
+        var countafter: Int = 0
+
+        // fetch for the count of habits before the creation of habit
+        val userRefBefore = dbRef.child("users").child("makfazlic")
+        userRefBefore.get().addOnSuccessListener {
+            val resp: HashMap<String, Any> = it.value as HashMap<String, Any>
+            countbefore = resp.size
+            Log.i("firebase", "Got value ${countbefore}")
+        }.addOnFailureListener{
+            Log.e("firebase", "Error getting data", it)
+        }
+
+        // run the create habit and save to firebase
+        createHabit()
+
+        // Wait for the write to the firebase and check the count of habits after the creation
+        Timer().schedule(500){
+            val userRefAfter = dbRef.child("users").child("makfazlic")
+            userRefAfter.get().addOnSuccessListener {
+                val resp: HashMap<String, Any> = it.value as HashMap<String, Any>
+                countafter = resp.size
+                Log.i("firebase", "Got value ${countafter}")
+            }.addOnFailureListener{
+                Log.e("firebase", "Error getting data", it)
+            }
+        }
+
+        // Wait for the data of after creation and assert if there is a one more after
+        Timer().schedule(1000) {
+            Log.i("firebase assert", "${countbefore}, ${countafter}")
+            assert((countbefore + 1) == countafter)
+        }
+
+    }
+
+    @Test
+    fun testCreateHabitDontSaveToFirebase() {
+        // count references in the db
+        var countbefore: Int = 0
+        var countafter: Int = 0
+        habitName = ""
+
+        // fetch for the count of habits before the creation of habit
+        val userRefBefore = dbRef.child("users").child("makfazlic")
+        userRefBefore.get().addOnSuccessListener {
+            val resp: HashMap<String, Any> = it.value as HashMap<String, Any>
+            countbefore = resp.size
+            Log.i("firebase", "Got value ${countbefore}")
+        }.addOnFailureListener{
+            Log.e("firebase", "Error getting data", it)
+        }
+
+        // run the create habit and save to firebase
+        createHabit()
+
+        // Wait for the write to the firebase and check the count of habits after the creation
+        Timer().schedule(500){
+            val userRefAfter = dbRef.child("users").child("makfazlic")
+            userRefAfter.get().addOnSuccessListener {
+                val resp: HashMap<String, Any> = it.value as HashMap<String, Any>
+                countafter = resp.size
+                Log.i("firebase", "Got value ${countafter}")
+            }.addOnFailureListener{
+                Log.e("firebase", "Error getting data", it)
+            }
+        }
+
+        // Wait for the data of after creation and assert if there is the same count
+        Timer().schedule(1000) {
+            Log.i("firebase assert", "${countbefore}, ${countafter}")
+            assert(countbefore == countafter)
+        }
+
     }
 
     @Test

@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.github.mateo762.myapplication.Habit
 import com.github.mateo762.myapplication.habits.HabitsActivity
+import com.github.mateo762.myapplication.home.HomeActivity
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
@@ -174,13 +175,7 @@ class DevelopFragment : Fragment() {
                             } else {
                                 // This intent would now save into a DB / Firebase
                                 // For now, it returns to the calling activity
-                                val intent =
-                                    Intent(context, HabitsActivity::class.java)
-                                intent.putExtra("habitName", habitName)
-                                intent.putExtra("habitDays", ArrayList(habitDays))
-                                intent.putExtra("habitStartTime", habitStartTime.text)
-                                intent.putExtra("habitEndTime", habitEndTime.text)
-                                context.startActivity(intent)
+
 
                                 //
                                 val myHabit = Habit(
@@ -189,14 +184,20 @@ class DevelopFragment : Fragment() {
                                     habitStartTime.text,
                                     habitEndTime.text
                                 )
-                                val db: DatabaseReference = Firebase.database.reference
+                                val db = Firebase.database
+                                println("Created db")
+                                db.useEmulator("10.0.2.2", 9000)
+                                println("Updated to emulator")
+                                val dbRef: DatabaseReference = db.reference
                                 // makfazlic should be replaced with the userId retrieved from the auth
-                                val userRef = db.child("users").child("makfazlic")
+                                val userRef = dbRef.child("users").child("makfazlic")
                                 val key = userRef.push().key
                                 if (key != null) {
-                                    db.child("users").child("makfazlic").child(key).setValue(myHabit).addOnSuccessListener {
+                                    dbRef.child("users").child("makfazlic").child(key).setValue(myHabit).addOnSuccessListener {
                                         println("Success")
-
+                                        val intent =
+                                            Intent(context, HomeActivity::class.java)
+                                        context.startActivity(intent)
                                     }.addOnFailureListener {
                                         Toast.makeText(
                                             context,
