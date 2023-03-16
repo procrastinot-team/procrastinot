@@ -8,10 +8,12 @@ import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.github.mateo762.myapplication.home.HomeActivity
+import com.github.mateo762.myapplication.login.LoginActivity
 import com.github.mateo762.myapplication.profile.ProfileActivity
 import com.github.mateo762.myapplication.search.SearchActivity
 import com.github.mateo762.myapplication.settings.SettingsActivity
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 
 
 open class BaseActivity : AppCompatActivity() {
@@ -58,6 +60,11 @@ open class BaseActivity : AppCompatActivity() {
             }
             R.id.nav_settings -> {
                 openActivitySelected(SettingsActivity())
+            }
+            R.id.nav_log_out -> {
+                val intent = Intent(this@BaseActivity, LoginActivity::class.java)
+                FirebaseAuth.getInstance().signOut()
+                startActivity(intent)
             }
         }
         true
