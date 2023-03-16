@@ -130,6 +130,8 @@ class RegisterActivity : AppCompatActivity() {
                     } else {
                         Toast.makeText(baseContext, task.exception!!.message,
                             Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, HomeActivity::class.java)
+                        startActivity(intent)
                     }
             }
         }

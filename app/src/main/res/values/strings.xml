@@ -35,4 +35,6 @@
     <string name="today_fragment">Today Fragment</string>
     <string name="list_fragment">List Fragment</string>
     <string name="feed_fragment">Feed Fragment</string>
+    <string name="upload_picture">Upload Picture</string>
+    <string name="select_picture">Select Picture</string>
 </resources>

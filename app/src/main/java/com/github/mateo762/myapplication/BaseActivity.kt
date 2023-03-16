@@ -12,6 +12,7 @@ import com.github.mateo762.myapplication.login.LoginActivity
 import com.github.mateo762.myapplication.profile.ProfileActivity
 import com.github.mateo762.myapplication.search.SearchActivity
 import com.github.mateo762.myapplication.settings.SettingsActivity
+import com.github.mateo762.myapplication.upload_gallery.UploadPictureActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 
@@ -57,6 +58,9 @@ open class BaseActivity : AppCompatActivity() {
             }
             R.id.nav_profile -> {
                 openActivitySelected(ProfileActivity())
+            }
+            R.id.nav_upload_picture -> {
+                openActivitySelected(UploadPictureActivity())
             }
             R.id.nav_settings -> {
                 openActivitySelected(SettingsActivity())
