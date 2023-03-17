@@ -50,6 +50,7 @@ class SettingsActivityTest {
 
     @Test
     fun testNotificationShown() {
+        Thread.sleep(200)
         onView(withId(R.id.permissionButton)).perform(ViewActions.click())
 
         val permissionStatus =
@@ -58,7 +59,7 @@ class SettingsActivityTest {
             )
 
         if (PackageManager.PERMISSION_DENIED == permissionStatus) {
-            uiDevice.wait(Until.hasObject(By.textStartsWith("Allow")), timeout)
+            uiDevice.wait(Until.hasObject(By.textContains("Allow")), timeout)
             uiDevice.findObject(UiSelector().text(("Allow"))).click()
         }
 
