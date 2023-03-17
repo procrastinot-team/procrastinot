@@ -3,28 +3,28 @@ package com.github.mateo762.myapplication.upload_gallery
 import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mateo762.myapplication.databinding.UploadPictureBinding
-import com.github.mateo762.myapplication.profile.ProfileGalleryAdapter
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class UploadPictureActivity : AppCompatActivity() {
 
     private lateinit var binding: UploadPictureBinding
-    private lateinit var imageUri : Uri
+    private lateinit var imageUri: Uri
 
-    private var default_user_string: String = "testUser"
-    private var currentUser: String = default_user_string
+    private var defaultUserString: String = "testUser"
+    private var currentUser: String = defaultUserString
 
     lateinit var imagesList: ArrayList<UserImage>
 
@@ -44,36 +44,38 @@ class UploadPictureActivity : AppCompatActivity() {
         binding.imageRecycler.layoutManager = LinearLayoutManager(this)
         imagesList = arrayListOf()
 
-        //Populate the recycler view with the downloaded images from the Firebase references
+        //Populate the recycler view with the downloaded images from the current user firebase database
         var currentUser = Firebase.auth.currentUser?.displayName
 
-        if (currentUser == null){
-            currentUser = default_user_string
+        if (currentUser == null) {
+            currentUser = defaultUserString
         }
 
-
         val db = Firebase.database.reference.child("users").child(currentUser)
-        db.addValueEventListener(object: ValueEventListener {
+        db.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 imagesList = arrayListOf()
-                if (snapshot.exists()){
+                if (snapshot.exists()) {
                     for (dataSnapshot in snapshot.children) {
                         val image = dataSnapshot.getValue(UserImage::class.java)
                         imagesList.add(image!!)
                     }
 
-                    binding.imageRecycler.adapter = ImageAdapter(imagesList, this@UploadPictureActivity)
+                    binding.imageRecycler.adapter =
+                        ImageAdapter(imagesList, this@UploadPictureActivity)
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@UploadPictureActivity, error.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@UploadPictureActivity, error.toString(), Toast.LENGTH_SHORT)
+                    .show()
             }
         })
 
 
     }
 
+    //Select an image from the gallery
     private fun selectImage() {
         val intent = Intent()
         intent.type = "image/*"
@@ -85,12 +87,13 @@ class UploadPictureActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 100 && resultCode == RESULT_OK){
+        if (requestCode == 100 && resultCode == RESULT_OK) {
             imageUri = data?.data!!
             binding.selectedImagePreview.setImageURI(imageUri)
         }
     }
 
+    //Upload an image to the Firebase Storage and then save under the current user database
     private fun uploadImage() {
 
         val progressDialog = ProgressDialog(this)
@@ -107,6 +110,7 @@ class UploadPictureActivity : AppCompatActivity() {
         val storageReference = FirebaseStorage.getInstance().getReference("images/$fileName")
         var uploadTask = storageReference.putFile(imageUri)
 
+        //Retrieve the download url of the file once the task has uploaded
         val urlTask = uploadTask.continueWithTask { task ->
             if (!task.isSuccessful) {
                 task.exception?.let {
@@ -126,6 +130,7 @@ class UploadPictureActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
 
+                //Store the download url of the uploaded image under the user
                 val userRef = Firebase.database.reference.child("users").child("$currentUser")
                 val key = userRef.push().key
 
