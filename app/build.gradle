@@ -114,6 +114,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.5.1'
     debugImplementation "androidx.fragment:fragment-testing:1.5.5"
     debugImplementation "androidx.test:monitor:1.6.1"
+    implementation 'com.github.bumptech.glide:glide:4.15.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'
 }
 
 tasks.withType(Test) {

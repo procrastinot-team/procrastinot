@@ -37,6 +37,9 @@
         android:id="@+id/imageRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_profile_gallery"/>
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="3"
+        tools:listitem="@layout/item_profile_gallery" />
 
 </LinearLayout>

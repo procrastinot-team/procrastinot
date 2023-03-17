@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.mateo762.myapplication.UserImage
 import com.github.mateo762.myapplication.databinding.UploadPictureBinding
 import com.github.mateo762.myapplication.profile.ProfileGalleryAdapter
 import com.google.firebase.auth.ktx.auth
@@ -23,6 +22,9 @@ class UploadPictureActivity : AppCompatActivity() {
 
     private lateinit var binding: UploadPictureBinding
     private lateinit var imageUri : Uri
+
+    private var default_user_string: String = "testUser"
+    private var currentUser: String = default_user_string
 
     lateinit var imagesList: ArrayList<UserImage>
 
@@ -43,17 +45,24 @@ class UploadPictureActivity : AppCompatActivity() {
         imagesList = arrayListOf()
 
         //Populate the recycler view with the downloaded images from the Firebase references
+        var currentUser = Firebase.auth.currentUser?.displayName
 
-        val db = FirebaseDatabase.getInstance().getReference("images")
+        if (currentUser == null){
+            currentUser = default_user_string
+        }
+
+
+        val db = Firebase.database.reference.child("users").child(currentUser)
         db.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                imagesList = arrayListOf()
                 if (snapshot.exists()){
                     for (dataSnapshot in snapshot.children) {
                         val image = dataSnapshot.getValue(UserImage::class.java)
                         imagesList.add(image!!)
                     }
 
-                    binding.imageRecycler.adapter = ProfileGalleryAdapter()
+                    binding.imageRecycler.adapter = ImageAdapter(imagesList, this@UploadPictureActivity)
                 }
             }
 
@@ -90,47 +99,57 @@ class UploadPictureActivity : AppCompatActivity() {
         progressDialog.setCancelable(false)
         progressDialog.show()
 
+        //Generate a file name based on the upload time
         val formatter = SimpleDateFormat("yyy_MM_dd_HH_mm_ss", Locale.getDefault())
         val now = Date()
         val fileName = formatter.format(now)
 
-        var currentUser = Firebase.auth.currentUser?.displayName
-
-        if (currentUser == null){
-            currentUser = "testUser"
-        }
-
         val storageReference = FirebaseStorage.getInstance().getReference("images/$fileName")
+        var uploadTask = storageReference.putFile(imageUri)
 
-        storageReference.putFile(imageUri)
-            .addOnSuccessListener {
+        val urlTask = uploadTask.continueWithTask { task ->
+            if (!task.isSuccessful) {
+                task.exception?.let {
+                    throw it
+                }
+            }
+            storageReference.downloadUrl
+        }.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                //Handle successful upload
                 binding.selectedImagePreview.setImageURI(null)
 
-                //Store the downloadUri under the user images
-                val downloadUri = storageReference.downloadUrl
-                Toast.makeText(this@UploadPictureActivity, "Successfully uploaded to $downloadUri", Toast.LENGTH_SHORT).show()
+                val downloadUrl = task.result
+                Toast.makeText(
+                    this@UploadPictureActivity,
+                    "Successfully uploaded to $downloadUrl",
+                    Toast.LENGTH_SHORT
+                ).show()
 
                 val userRef = Firebase.database.reference.child("users").child("$currentUser")
                 val key = userRef.push().key
 
                 if (key != null) {
                     val imageKey = userRef.child("images").push().key
-                    val imageRef = userRef.child(key).child("image").setValue("$downloadUri")
+                    val imageRef = userRef.child(key).child("userImage").setValue("$downloadUrl")
                         .addOnSuccessListener {
                             println("Successfully added new image reference")
                         }
                         .addOnFailureListener {
-                            Toast.makeText(this@UploadPictureActivity, "Try again", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@UploadPictureActivity,
+                                "Try again",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                 }
 
                 if (progressDialog.isShowing) progressDialog.dismiss()
-            }
-
-            .addOnFailureListener {
+            } else {
+                //Handle failure
                 if (progressDialog.isShowing) progressDialog.dismiss()
                 Toast.makeText(this@UploadPictureActivity, "Failed", Toast.LENGTH_SHORT).show()
             }
-
+        }
     }
 }
