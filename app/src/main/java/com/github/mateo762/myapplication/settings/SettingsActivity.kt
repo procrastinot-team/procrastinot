@@ -21,6 +21,7 @@ class SettingsActivity : BaseActivity() {
     }
 
     private lateinit var notificationService: HabitNotificationService
+    private lateinit var notificationManager: NotificationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +29,7 @@ class SettingsActivity : BaseActivity() {
 
         setupToolbar()
 
-        val notificationManager =
+        notificationManager =
             this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationService =
             HabitNotificationService(this.applicationContext, notificationManager)
@@ -70,7 +71,7 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun onNotificationButtonClicked(context: Context) {
-        if (this.checkSelfPermission(POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+        if (notificationManager.areNotificationsEnabled()) {
             notificationService.displayNotification()
         } else {
             context.showToast(R.string.notification_permission_not_granted)
