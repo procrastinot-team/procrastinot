@@ -33,7 +33,6 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.time.DayOfWeek
 
-
 class DevelopFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)

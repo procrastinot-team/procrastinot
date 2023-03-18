@@ -16,7 +16,6 @@ import com.github.procrastinotteam.procrastinot.habits.HabitsActivity
 import com.github.procrastinotteam.procrastinot.home.HomeActivity
 import com.github.procrastinotteam.procrastinot.profile.ProfileActivity
 import com.github.procrastinotteam.procrastinot.search.SearchActivity
-import com.github.procrastinotteam.procrastinot.settings.SettingsActivity
 import junit.framework.TestCase.assertTrue
 import org.junit.After
 import org.junit.Before

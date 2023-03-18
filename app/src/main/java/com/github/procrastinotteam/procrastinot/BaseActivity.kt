@@ -11,7 +11,6 @@ import com.github.procrastinotteam.procrastinot.home.HomeActivity
 import com.github.procrastinotteam.procrastinot.login.LoginActivity
 import com.github.procrastinotteam.procrastinot.profile.ProfileActivity
 import com.github.procrastinotteam.procrastinot.search.SearchActivity
-import com.github.procrastinotteam.procrastinot.settings.SettingsActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 
