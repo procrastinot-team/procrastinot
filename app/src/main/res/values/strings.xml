@@ -35,4 +35,12 @@
     <string name="today_fragment">Today Fragment</string>
     <string name="list_fragment">List Fragment</string>
     <string name="feed_fragment">Feed Fragment</string>
+    <string name="notification_content_title">Habit reminder</string>
+    <string name="notification_content_text">Please finish your habit</string>
+    <string name="notification_permission_not_granted">Notification permission not granted</string>
+    <string name="notification_permission_granted">Notification permission granted</string>
+    <string name="show_notification_button_text">Show notification</string>
+    <string name="grant_notification_permission_button_text">Grant notification permission</string>
+    <string name="habit_notification_channel_name">Habit reminder</string>
+    <string name="habit_notification_channel_description">Used for receiving habit reminders</string>
 </resources>

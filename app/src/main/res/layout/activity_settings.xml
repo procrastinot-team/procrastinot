@@ -21,12 +21,36 @@
             android:background="?attr/colorPrimary"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:text="@string/settings_activity"
-            android:textSize="20sp" />
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/holo_red_light">
+
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings activity"
+                android:textSize="30sp"
+                android:layout_centerInParent="true"/>
+
+            <Button
+                android:id="@+id/notificationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text"
+                android:layout_centerHorizontal="true"
+                android:text="@string/show_notification_button_text" />
+
+            <Button
+                android:id="@+id/permissionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/notificationButton"
+                android:layout_centerHorizontal="true"
+                android:text="@string/grant_notification_permission_button_text" />
+
+        </RelativeLayout>
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
