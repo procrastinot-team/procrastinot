@@ -57,6 +57,13 @@ dependencies {
     implementation composeBom
     androidTestImplementation composeBom
 
+    // Local database dependencies
+    def room_version = "2.5.0"
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation("androidx.room:room-ktx:$room_version")
+
     // Choose one of the following:
     // Material Design 3
     implementation 'androidx.compose.material3:material3'
