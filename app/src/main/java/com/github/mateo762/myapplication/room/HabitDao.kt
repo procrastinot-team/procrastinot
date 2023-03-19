@@ -1,17 +1,17 @@
 package com.github.mateo762.myapplication.room
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface HabitDao {
-    @Query("SELECT * FROM habit")
+    @Query("SELECT * FROM habitEntity")
     fun getAll(): List<HabitEntity>
 
-    @Insert
-    fun insertAll(vararg habits: HabitEntity)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertAll(habits: List<HabitEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertOne(habit: HabitEntity)
 
     @Delete
     fun delete(habit: HabitEntity)

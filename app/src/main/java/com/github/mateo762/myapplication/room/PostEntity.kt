@@ -2,9 +2,10 @@ package com.github.mateo762.myapplication.room
 
 import androidx.room.ColumnInfo
 import androidx.room.ColumnInfo.Companion.BLOB
+import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-
+@Entity
 data class PostEntity(
     @PrimaryKey val uid: Int,
     @ColumnInfo(name = "caption") val caption: String?,

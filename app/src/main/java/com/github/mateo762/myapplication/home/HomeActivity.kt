@@ -2,11 +2,13 @@ package com.github.mateo762.myapplication.home
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.test.core.app.ApplicationProvider
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.home.fragments.FeedFragment
 import com.github.mateo762.myapplication.home.fragments.SummaryFragment
 import com.github.mateo762.myapplication.home.fragments.TodayFragment
+import com.github.mateo762.myapplication.room.ApplicationDatabase
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeActivity : BaseActivity() {
@@ -19,7 +21,6 @@ class HomeActivity : BaseActivity() {
         super.onCreateDrawer()
         bottomNavView = findViewById(R.id.bottomNav)
         bottomNavView.setOnItemSelectedListener(bottomNavListener)
-
     }
 
     private val bottomNavListener = BottomNavigationView.OnNavigationItemSelectedListener {

@@ -1,18 +1,15 @@
 package com.github.mateo762.myapplication.room
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM user")
-    fun getAll(): List<UserEntity>
+    @Query("SELECT * FROM userEntity WHERE userEntity.username LIKE :queryUsername")
+    fun getByUsername(queryUsername: String): UserEntity
 
-    @Insert
-    fun insertAll(vararg users: UserEntity)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(vararg users: UserEntity)
 
-    @Delete
-    fun delete(user: UserEntity)
+    @Update
+    fun update(users: UserEntity)
 }
