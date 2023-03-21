@@ -22,7 +22,7 @@ class ProfileActivity : AppCompatActivity() {
 
         setupToolbar()
         adapter = ProfileGalleryAdapter()
-        adapter.galleryItems = generateTextGalleryItems()
+        adapter.galleryItems = generateTextGalleryItems(R.drawable.ic_new, 13)
         binding.recyclerView.adapter = adapter
 
         binding.name.text = "John Doe" //todo remove, used for demo and testing
@@ -46,21 +46,11 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun generateTextGalleryItems(): ArrayList<ProfileGalleryItem> {
-        return arrayListOf(
-            ProfileGalleryItem(R.drawable.ic_new),
-            ProfileGalleryItem(R.drawable.ic_new),
-            ProfileGalleryItem(R.drawable.ic_new),
-            ProfileGalleryItem(R.drawable.ic_new),
-            ProfileGalleryItem(R.drawable.ic_new),
-            ProfileGalleryItem(R.drawable.ic_new),
-            ProfileGalleryItem(R.drawable.ic_new),
-            ProfileGalleryItem(R.drawable.ic_new),
-            ProfileGalleryItem(R.drawable.ic_new),
-            ProfileGalleryItem(R.drawable.ic_new),
-            ProfileGalleryItem(R.drawable.ic_new),
-            ProfileGalleryItem(R.drawable.ic_new),
-            ProfileGalleryItem(R.drawable.ic_new),
-        )
+    private fun generateTextGalleryItems(drawable: Int, size: Int): ArrayList<ProfileGalleryItem> {
+        val items = ArrayList<ProfileGalleryItem>()
+        repeat(size) {
+            items.add(ProfileGalleryItem(drawable))
+        }
+        return items
     }
 }

@@ -9,8 +9,8 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.mateo762.myapplication.login.LoginActivity
-import com.github.mateo762.myapplication.register.RegisterActivity
+import com.github.mateo762.myapplication.authentication.LoginActivity
+import com.github.mateo762.myapplication.authentication.RegisterActivity
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before

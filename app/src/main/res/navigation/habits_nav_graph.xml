@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/developFragment"
-        android:name="com.github.mateo762.myapplication.habits.fragments.DevelopFragment"
+        android:name="com.github.mateo762.myapplication.habits.fragments.CreateHabitFragment"
         android:label="fragment_develop"
         tools:layout="@layout/fragment_develop" />
     <fragment
