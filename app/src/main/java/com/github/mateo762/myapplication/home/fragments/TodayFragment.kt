@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.github.mateo762.myapplication.getHardCodedHabits
 import com.github.mateo762.myapplication.getHardCodedImages
 import com.github.mateo762.myapplication.ui.home.TodayScreen
+import java.time.LocalDateTime
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -46,11 +47,14 @@ class TodayFragment : Fragment() {
         // Inflate the layout for this fragment
         return ComposeView(requireContext()).apply {
             setContent {
-                TodayScreen(habits = getHardCodedHabits(), images = getHardCodedImages())
+                TodayScreen(
+                    time = LocalDateTime.now(),
+                    habits = getHardCodedHabits(),
+                    images = getHardCodedImages()
+                )
             }
         }
     }
-
 
     companion object {
         /**

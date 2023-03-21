@@ -20,7 +20,7 @@ import java.util.*
 
 
 @RunWith(AndroidJUnit4::class)
-class CreateHabitTest {
+class CreateHabitActivityTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(HabitsActivity::class.java)
 
