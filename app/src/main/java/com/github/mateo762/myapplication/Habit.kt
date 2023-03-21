@@ -3,8 +3,8 @@ package com.github.mateo762.myapplication
 import java.time.DayOfWeek
 
 data class Habit(
-    var habitName: String,
-    var habitDays: ArrayList<DayOfWeek>,
-    var habitStartTime: String,
-    var habitEndTime: String
+    var name: String,
+    var days: ArrayList<DayOfWeek>,
+    var startTime: String,
+    var endTime: String
 )

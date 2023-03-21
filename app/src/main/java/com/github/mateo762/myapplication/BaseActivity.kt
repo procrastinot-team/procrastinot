@@ -8,7 +8,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.github.mateo762.myapplication.home.HomeActivity
-import com.github.mateo762.myapplication.login.LoginActivity
+import com.github.mateo762.myapplication.authentication.LoginActivity
 import com.github.mateo762.myapplication.profile.ProfileActivity
 import com.github.mateo762.myapplication.search.SearchActivity
 import com.github.mateo762.myapplication.settings.SettingsActivity
