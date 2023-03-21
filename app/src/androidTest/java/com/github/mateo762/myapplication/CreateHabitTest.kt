@@ -9,6 +9,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.habits.HabitsActivity
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.Matchers.*
 import org.junit.After
 import org.junit.Before
@@ -19,6 +20,7 @@ import java.time.DayOfWeek
 import java.util.*
 
 
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class CreateHabitTest {
     @get:Rule
