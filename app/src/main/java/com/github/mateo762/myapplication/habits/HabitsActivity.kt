@@ -8,7 +8,10 @@ import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.fragments.DevelopFragment
 import com.github.mateo762.myapplication.habits.fragments.WeekFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
+@AndroidEntryPoint
 class HabitsActivity : BaseActivity() {
 
     private lateinit var bottomNavView: BottomNavigationView

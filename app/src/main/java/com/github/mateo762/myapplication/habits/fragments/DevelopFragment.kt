@@ -32,9 +32,11 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
 
 
+@AndroidEntryPoint
 class DevelopFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -9,6 +9,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.habits.HabitsActivity
+import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.Matchers.*
 import org.junit.After
@@ -25,6 +26,7 @@ import java.util.*
 class CreateHabitTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(HabitsActivity::class.java)
+    var hiltRule = HiltAndroidRule(this)
 
     @get:Rule
     val composeTestRule = createComposeRule()
