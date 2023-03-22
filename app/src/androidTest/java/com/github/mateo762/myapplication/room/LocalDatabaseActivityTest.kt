@@ -46,7 +46,7 @@ class LocalDatabaseActivityTest {
     fun testAddAndRetrieveUser() {
         val testUser: UserEntity = createTestUser("test_username")
         userDao.insert(testUser)
-        // The main use of the User part of the database is to store the user's information
+        // The main use of the User part of the database is to store the user's own information
         val myself = userDao.getByUsername("test_username")
         // When added to the DB, the uid is increased to preserve uniqueness,
         // so we cannot compare them by uid
