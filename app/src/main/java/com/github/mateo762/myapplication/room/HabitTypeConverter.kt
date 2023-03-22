@@ -5,7 +5,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 import java.time.DayOfWeek
-import java.util.*
 
 class HabitTypeConverter {
     private var gson = Gson()
@@ -15,7 +14,7 @@ class HabitTypeConverter {
 /*        if (data == null) {
             return Collections.emptyList()
         }*/
-        val listType: Type = object : TypeToken<List<HabitEntity?>?>(){}.type
+        val listType: Type = object : TypeToken<List<HabitEntity?>?>() {}.type
         return gson.fromJson(data, listType)
     }
 
@@ -34,7 +33,7 @@ class HabitTypeConverter {
         /*if (data == null) {
             return Collections.emptyList()
         }*/
-        val listType: Type = object : TypeToken<List<DayOfWeek?>?>(){}.type
+        val listType: Type = object : TypeToken<List<DayOfWeek?>?>() {}.type
         return gson.fromJson(data, listType)
     }
 

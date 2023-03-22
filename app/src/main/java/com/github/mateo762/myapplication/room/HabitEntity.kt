@@ -15,4 +15,4 @@ data class HabitEntity(
     @ColumnInfo(name = "habit_end_time") val habitEndTime: String?
     // Could additionally add new feature such as labels, but the entity is kept same as Firebase
     // NOTE: Room is not compatible with ArrayLists apparently, so only List<Object> can be used
-    )
+)

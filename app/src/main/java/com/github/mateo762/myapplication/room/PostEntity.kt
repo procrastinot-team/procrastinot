@@ -12,10 +12,10 @@ data class PostEntity(
     @ColumnInfo(name = "description") val description: String?,
     @ColumnInfo(name = "date_posted") val datePosted: String?,
     // This could also be java.sql.Date
-    @ColumnInfo(typeAffinity = BLOB) val image : ByteArray?
+    @ColumnInfo(typeAffinity = BLOB) val image: ByteArray?
 )
 
-    // ByteArray requires hashcode and equals methods
+// ByteArray requires hashcode and equals methods
 
 {
     override fun equals(other: Any?): Boolean {
