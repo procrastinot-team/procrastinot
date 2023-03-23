@@ -3,6 +3,7 @@ package com.github.mateo762.myapplication.room
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import io.reactivex.annotations.NonNull
 
 @Entity
 data class UserEntity(
