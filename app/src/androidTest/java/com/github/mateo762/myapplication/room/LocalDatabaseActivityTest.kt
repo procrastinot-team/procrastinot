@@ -3,9 +3,9 @@ package com.github.mateo762.myapplication.room
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.CoreMatchers.not
+import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.junit.After
 import org.junit.Before
@@ -75,6 +75,15 @@ class LocalDatabaseActivityTest {
     }
 
     @Test
+    fun testAddAndRetrievePosts() {
+        val testPosts = generatePosts(5)
+        postDao.insertAll(*testPosts.toTypedArray()) // Process list as variable arguments
+        val retrievedPosts = postDao.getAll()
+        assertThat(retrievedPosts, `is`(testPosts))
+    }
+
+
+    @Test
     fun testDeleteHabit() {
         val testHabit = generateHabits(1).first()
         habitDao.insertOne(testHabit)
@@ -82,6 +91,16 @@ class LocalDatabaseActivityTest {
         habitDao.delete(testHabit)
         val retrievedHabits = habitDao.getAll()
         assertThat(retrievedHabits, not(containsInAnyOrder(testHabit)))
+    }
+
+    @Test
+    fun testDeletePost() {
+        val testPost = generatePosts(1).first()
+        postDao.insertAll(testPost)
+        // Delete by checking primary key of the given entity
+        postDao.delete(testPost)
+        val retrievedPosts = habitDao.getAll()
+        assertThat(retrievedPosts, not(containsInAnyOrder(testPost)))
     }
 
     @Test
@@ -115,6 +134,20 @@ class LocalDatabaseActivityTest {
             testHabitList.add(HabitEntity(i, habitName, habitDays, startTime, endTime))
         }
         return testHabitList
+    }
+
+    private fun generatePosts(number: Int): List<PostEntity> {
+        val testPostList = mutableListOf<PostEntity>()
+        for (i in 1..number) {
+            val postCaption = "caption of post_$i"
+            val postDescription = "more detailed description of post_$i"
+            val day = Random.nextInt(28) + 1
+            val month = Random.nextInt(11) + 1
+            val datePosted = "$day - $month - 2023"
+            val contents = Random.nextBytes(5)
+            testPostList.add(PostEntity(i, postCaption, postDescription, datePosted, contents))
+        }
+        return testPostList
     }
 
 
