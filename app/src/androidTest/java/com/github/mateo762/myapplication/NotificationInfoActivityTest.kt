@@ -66,10 +66,17 @@ class NotificationInfoActivityTest {
     fun onIAmInButtonClicked() {
         onView(ViewMatchers.withId(R.id.positiveButton)).perform(click())
 
-        uiDevice.wait(Until.hasObject(By.textContains("Allow")), timeout)
-        uiDevice.findObject(UiSelector().text(("Allow"))).click()
+        val permissionStatus =
+            ContextCompat.checkSelfPermission(context,
+                android.Manifest.permission.POST_NOTIFICATIONS
+            )
 
-        intended(hasComponent(HomeActivity::class.java.name))
+        if (PackageManager.PERMISSION_DENIED == permissionStatus) {
+            uiDevice.wait(Until.hasObject(By.textContains("Allow")), timeout)
+            uiDevice.findObject(UiSelector().text(("Allow"))).click()
+
+            intended(hasComponent(HomeActivity::class.java.name))
+        }
     }
 
     @Test
