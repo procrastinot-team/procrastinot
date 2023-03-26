@@ -26,10 +26,8 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun registerUser(email: String, password: String) {
 
-        println("1st stage: $email")
         // add null check on text values
         if (email.isEmpty() || password.isEmpty()) {
-            println("2nd stage: $email")
             Toast.makeText(baseContext, com.github.mateo762.myapplication.R.string.error_empty_register,
                 Toast.LENGTH_SHORT).show()
         } else {

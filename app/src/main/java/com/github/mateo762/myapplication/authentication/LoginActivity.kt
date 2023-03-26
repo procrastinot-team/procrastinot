@@ -69,7 +69,6 @@ class LoginActivity : AppCompatActivity() {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-
                         Toast.makeText(
                             baseContext, R.string.success_login,
                             Toast.LENGTH_SHORT
@@ -93,7 +92,7 @@ class LoginActivity : AppCompatActivity() {
                 val credential = GoogleAuthProvider.getCredential(account.idToken,null)
                 auth.signInWithCredential(credential).addOnCompleteListener {
                     if (it.isSuccessful) {
-                        Toast.makeText(baseContext, "Successfully logged in!",
+                        Toast.makeText(baseContext, R.string.success_login,
                             Toast.LENGTH_SHORT).show()
                         val intent = Intent(this, HomeActivity::class.java)
                         startActivity(intent)
