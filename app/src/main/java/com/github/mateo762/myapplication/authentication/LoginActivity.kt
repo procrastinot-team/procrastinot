@@ -63,8 +63,7 @@ class LoginActivity : AppCompatActivity() {
 
         // add null check on text values
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(baseContext, "No values inserted. Please fill in the email and " +
-                    "password to sign in",
+            Toast.makeText(baseContext, R.string.error_empty_login,
                 Toast.LENGTH_SHORT).show()
         } else {
             auth.signInWithEmailAndPassword(email, password)
@@ -72,7 +71,7 @@ class LoginActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
 
                         Toast.makeText(
-                            baseContext, "Successfully logged in!",
+                            baseContext, R.string.success_login,
                             Toast.LENGTH_SHORT
                         ).show()
                         val intent = Intent(this, HomeActivity::class.java)
