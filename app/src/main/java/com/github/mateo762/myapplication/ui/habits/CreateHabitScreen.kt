@@ -180,7 +180,7 @@ fun CreateHabitScreen() {
                                 if (key == null) {
                                     key = ""
                                 }
-                                val path = uid.plus("/").plus(key)
+                                val path = uid.plus("/habit_list/").plus(key)
                                 users[path]=myHabit
                                 db.child("users").updateChildren(users as Map<String, Any>)
                                     .addOnSuccessListener {

@@ -5,26 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.dp
+import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.home.HomeActivity
+import com.github.mateo762.myapplication.room.HabitEntity
+import com.github.mateo762.myapplication.room.UserEntity
 import com.github.mateo762.myapplication.ui.authentication.RegisterScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class RegisterActivity : AppCompatActivity() {
@@ -55,6 +44,30 @@ class RegisterActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         Toast.makeText(baseContext, "Successfully registered!",
                         Toast.LENGTH_SHORT).show()
+
+                        val db: DatabaseReference = Firebase.database.reference
+
+                        val user = FirebaseAuth.getInstance().currentUser
+                        val uid = user?.uid
+                        if (uid == null) {
+                            Toast.makeText(
+                                this@RegisterActivity, R.string.email_error,Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            val users: MutableMap<String, UserEntity> = HashMap()
+                            val u = UserEntity(uid,email,ArrayList<HabitEntity>())
+                            users[uid] = u
+                            db.child("users").updateChildren(users as Map<String, Any>)
+                                .addOnSuccessListener {
+                                    Toast.makeText(
+                                        this@RegisterActivity, R.string.success_habit, Toast.LENGTH_SHORT
+                                    ).show()
+                                }.addOnFailureListener {
+                                    Toast.makeText(
+                                        this@RegisterActivity, R.string.try_again_error, Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                        }
                         val intent = Intent(this, HomeActivity::class.java)
                         startActivity(intent)
                     } else {
