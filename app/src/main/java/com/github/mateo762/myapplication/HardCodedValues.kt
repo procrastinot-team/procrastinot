@@ -6,15 +6,10 @@ import java.time.DayOfWeek
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun getHardCodedHabits(): List<Habit> {
+
     return listOf(
         Habit(
-            name = "Read",
-            days = arrayListOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY),
-            startTime = "08:00",
-            endTime = "08:30"
-        ),
-        Habit(
-            name = "Drink water",
+            name = "Stretch",
             days = arrayListOf(
                 DayOfWeek.MONDAY,
                 DayOfWeek.TUESDAY,
@@ -24,8 +19,14 @@ fun getHardCodedHabits(): List<Habit> {
                 DayOfWeek.SATURDAY,
                 DayOfWeek.SUNDAY
             ),
-            startTime = "09:00",
-            endTime = "17:00"
+            startTime = "06:00",
+            endTime = "06:30"
+        ),
+        Habit(
+            name = "Read",
+            days = arrayListOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY),
+            startTime = "08:00",
+            endTime = "09:00"
         ),
         Habit(
             name = "Exercise",
@@ -41,8 +42,8 @@ fun getHardCodedHabits(): List<Habit> {
                 DayOfWeek.FRIDAY,
                 DayOfWeek.SUNDAY
             ),
-            startTime = "07:00",
-            endTime = "07:15"
+            startTime = "06:30",
+            endTime = "07:00"
         ),
         Habit(
             name = "Walk dog",
@@ -53,7 +54,7 @@ fun getHardCodedHabits(): List<Habit> {
                 DayOfWeek.SUNDAY
             ),
             startTime = "20:00",
-            endTime = "20:10"
+            endTime = "20:30"
         ),
         Habit(
             name = "Ride bike",
@@ -61,10 +62,9 @@ fun getHardCodedHabits(): List<Habit> {
                 DayOfWeek.TUESDAY,
                 DayOfWeek.THURSDAY,
                 DayOfWeek.SATURDAY,
-                DayOfWeek.SUNDAY
             ),
-            startTime = "07:00",
-            endTime = "09:10"
+            startTime = "14:25",
+            endTime = "16:00"
         )
     )
 }
@@ -75,4 +75,22 @@ fun getHardCodedImages(): Array<Int> {
         R.drawable.ic_new,
         R.drawable.ic_new
     )
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun getOneHabit(): List<Habit>{
+    return listOf(Habit(
+        name = "Stretch",
+        days = arrayListOf(
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY,
+            DayOfWeek.FRIDAY,
+            DayOfWeek.SATURDAY,
+            DayOfWeek.SUNDAY
+        ),
+        startTime = "14:00",
+        endTime = "15:30"
+    ))
 }

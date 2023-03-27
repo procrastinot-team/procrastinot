@@ -8,4 +8,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#D3D3D3</color>
+    <color name="accent">#2789e4</color>
+    <color name="header_background">#FFC107</color>
+    <color name="day_background">#FFFFFF</color>
+    <color name="today_background">#3F51B5</color>
+    <color name="hour_separator">#BDBDBD</color>
+    <color name="today_header_text">#FFFFFF</color>
 </resources>
