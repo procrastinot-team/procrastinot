@@ -19,7 +19,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.mateo762.myapplication.Habit
+import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.HabitsActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -142,9 +144,7 @@ fun CreateHabitScreen() {
                             )
                         ) {
                             Toast.makeText(
-                                context,
-                                "Please enter a valid time (HH:MM)",
-                                Toast.LENGTH_SHORT
+                                context,R.string.invalid_time_error,Toast.LENGTH_SHORT
                             ).show()
                         } else {
                             // This intent would now save into a DB / Firebase
@@ -164,24 +164,35 @@ fun CreateHabitScreen() {
                                 habitStartTime.text,
                                 habitEndTime.text
                             )
+                            val user = FirebaseAuth.getInstance().currentUser
+
                             val db: DatabaseReference = Firebase.database.reference
-                            // makfazlic should be replaced with the userId retrieved from the auth
-                            val userRef = db.child("users").child("makfazlic")
-                            val key = userRef.push().key
-                            if (key != null) {
-                                db.child("users").child("makfazlic").child(key).setValue(myHabit)
-                                    .addOnSuccessListener {
-                                        println("Success")
 
-                                    }.addOnFailureListener {
-                                    Toast.makeText(
-                                        context,
-                                        "Try again",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                            val uid = user?.uid
+                            if (uid == null) {
+                                Toast.makeText(
+                                    context,R.string.email_error,Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                val userRef = db.child("users")
+                                var key = userRef.push().key
+                                val users : MutableMap<String,Habit> = HashMap()
+                                if (key == null) {
+                                    key = ""
                                 }
+                                val path = uid.plus("/").plus(key)
+                                users[path]=myHabit
+                                db.child("users").updateChildren(users as Map<String, Any>)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(
+                                            context,R.string.success_habit,Toast.LENGTH_SHORT
+                                        ).show()
+                                    }.addOnFailureListener {
+                                        Toast.makeText(
+                                            context,R.string.try_again_error,Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                             }
-
                         }
                     },
                     modifier = Modifier
