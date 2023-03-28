@@ -13,14 +13,19 @@ import com.alamkanak.weekview.WeekView
 import com.alamkanak.weekview.WeekViewEvent
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.getHardCodedHabits
-import java.util.Calendar
+import java.util.*
 
-class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.EventLongPressListener, WeekView.EmptyViewLongPressListener, MonthLoader.MonthChangeListener {
+class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.EventLongPressListener,
+    WeekView.EmptyViewLongPressListener, MonthLoader.MonthChangeListener {
 
     private lateinit var weekView: WeekView
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_week, container, false)
         weekView = view.findViewById(R.id.weekView)
         setupWeekView()
@@ -36,7 +41,7 @@ class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.EventLong
         var eventId = 1L
         var habitsList = getHardCodedHabits()
         habitsList.forEach { habit ->
-            val weekViewEvents = habitToWeekViewEvents(habit, eventId)
+            val weekViewEvents = habitToWeekViewEvent(habit, eventId)
             eventsList.addAll(weekViewEvents)
             eventId += weekViewEvents.size
         }

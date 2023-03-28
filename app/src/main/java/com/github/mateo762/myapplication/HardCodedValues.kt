@@ -19,8 +19,8 @@ fun getHardCodedHabits(): List<Habit> {
                 DayOfWeek.SATURDAY,
                 DayOfWeek.SUNDAY
             ),
-            startTime = "06:00",
-            endTime = "06:30"
+            startTime = "07:00",
+            endTime = "08:00"
         ),
         Habit(
             name = "Read",
@@ -35,18 +35,18 @@ fun getHardCodedHabits(): List<Habit> {
             endTime = "19:00"
         ),
         Habit(
-            name = "Meditate",
+            name = "Walk",
             days = arrayListOf(
                 DayOfWeek.MONDAY,
                 DayOfWeek.WEDNESDAY,
                 DayOfWeek.FRIDAY,
                 DayOfWeek.SUNDAY
             ),
-            startTime = "06:30",
+            startTime = "06:00",
             endTime = "07:00"
         ),
         Habit(
-            name = "Walk dog",
+            name = "Study",
             days = arrayListOf(
                 DayOfWeek.TUESDAY,
                 DayOfWeek.THURSDAY,
@@ -54,7 +54,7 @@ fun getHardCodedHabits(): List<Habit> {
                 DayOfWeek.SUNDAY
             ),
             startTime = "20:00",
-            endTime = "20:30"
+            endTime = "22:00"
         ),
         Habit(
             name = "Ride bike",
