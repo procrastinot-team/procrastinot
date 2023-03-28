@@ -14,6 +14,7 @@
     <string name="register">Register</string>
     <string name="already_have_logged_in">Already have an account? Login</string>
     <string name="still_not_have_an_account">Still don\'t have an account? Register now</string>
+    <string name="missing_name">Missing name</string>
     <string name="home">Home</string>
     <string name="habits">Habits</string>
     <string name="search">Search</string>
