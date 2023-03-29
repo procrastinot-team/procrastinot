@@ -3,24 +3,27 @@ package com.github.mateo762.myapplication.profile
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 
 /**
  * Activity for displaying the profile information.
  */
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity : BaseActivity() {
 
     private lateinit var binding: ActivityProfileBinding
     private lateinit var adapter: ProfileGalleryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityProfileBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_profile)
+        super.onCreateDrawer()
+        // setContentView(binding.root)
 
-        setupToolbar()
+        // setupToolbar() // Remove to use inherited toolbar configuration, activity now changed
+        // to BaseActivity, it includes this in its super onCreate()
         adapter = ProfileGalleryAdapter()
         adapter.galleryItems = generateTextGalleryItems(R.drawable.ic_new, 13)
         binding.recyclerView.adapter = adapter
@@ -29,12 +32,12 @@ class ProfileActivity : AppCompatActivity() {
         binding.username.text = "johndoe12345" //todo remove, used for demo and testing
     }
 
-    private fun setupToolbar() {
+/*    private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         title = getString(R.string.profile_toolbar_title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-    }
+    }*/
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {

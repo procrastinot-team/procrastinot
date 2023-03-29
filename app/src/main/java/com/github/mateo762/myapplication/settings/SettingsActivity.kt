@@ -26,8 +26,9 @@ class SettingsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+        super.onCreateDrawer()
 
-        setupToolbar()
+        // setupToolbar()
 
         notificationManager =
             this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

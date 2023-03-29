@@ -2,6 +2,7 @@ package com.github.mateo762.myapplication.ui.home
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -59,6 +60,7 @@ fun HabitListItem(habit: Habit) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .testTag(habit.name)
+            .background(Color(0xFFFCF2F9))
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
