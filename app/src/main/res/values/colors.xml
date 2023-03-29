@@ -23,6 +23,7 @@
     <color name="drawer_background">#F7F2F9</color>
     <color name="card_background_dark">#E7E0EC</color>
     <color name="card_background_light">#FCF2F9</color>
-    <color name="element_highlight">#E8DEF8</color>
+    <color name="element_highlight">#C7B1E9</color>
+    <color name="bottom_highlight">#7B4FC3</color>
     <color name="dark_text">#1C1B1F</color>
 </resources>
