@@ -27,7 +27,7 @@ open class BaseActivity : AppCompatActivity() {
         navigationView = findViewById(R.id.navView)
         toolbar = findViewById(R.id.toolbar)
         // The title will be set statically per activity on their individual style
-        toolbar.title = "";
+        toolbar.title = ""
         setSupportActionBar(toolbar)
         val toggle =
             ActionBarDrawerToggle(

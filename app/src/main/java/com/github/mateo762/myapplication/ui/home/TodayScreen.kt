@@ -143,7 +143,7 @@ fun TodayScreen(time: LocalDateTime, habits: List<Habit>, images: Array<Int>) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                    // No easy way to call colors defined in theme, so must be input directly
+                // No easy way to call colors defined in theme, so must be input directly
                 .background(Color(0xFFFCF2F9), RoundedCornerShape(8.dp))
                 .padding(vertical = 16.dp, horizontal = 16.dp)
         ) {

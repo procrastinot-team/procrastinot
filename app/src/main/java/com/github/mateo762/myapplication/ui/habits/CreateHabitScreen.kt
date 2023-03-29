@@ -174,12 +174,12 @@ fun CreateHabitScreen() {
                                         println("Success")
 
                                     }.addOnFailureListener {
-                                    Toast.makeText(
-                                        context,
-                                        "Try again",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                                        Toast.makeText(
+                                            context,
+                                            "Try again",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                             }
 
                         }

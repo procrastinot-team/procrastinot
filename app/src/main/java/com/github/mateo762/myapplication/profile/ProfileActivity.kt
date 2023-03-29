@@ -2,7 +2,6 @@ package com.github.mateo762.myapplication.profile
 
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
