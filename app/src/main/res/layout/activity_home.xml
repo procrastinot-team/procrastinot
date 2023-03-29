@@ -70,6 +70,7 @@
         android:backgroundTint="@color/drawer_background"
         app:headerLayout="@layout/nav_header"
         app:itemIconTint="@color/dark_text"
+        app:drawerLayoutCornerSize="20dp"
         android:drawablePadding="50dp"
         app:menu="@menu/nav_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>

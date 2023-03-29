@@ -84,5 +84,6 @@
         android:backgroundTint="@color/drawer_background"
         app:itemIconTint="@color/dark_text"
         android:drawablePadding="50dp"
+        app:drawerLayoutCornerSize="20dp"
         app:menu="@menu/nav_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>

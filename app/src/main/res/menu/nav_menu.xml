@@ -27,6 +27,8 @@
             android:iconTint="@color/dark_text"
             android:textColor="@color/dark_text"
             android:title="@string/profile" />
+<!--    Phantom lines to layout the menu items, saw this solution,
+        not very elegant, but gets the job done-->
         <item android:title="" />
         <item android:title="" />
         <item android:title="" />

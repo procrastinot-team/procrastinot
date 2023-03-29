@@ -18,11 +18,10 @@ class ProfileActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
-        setContentView(R.layout.activity_profile)
-        super.onCreateDrawer()
-        // setContentView(binding.root)
+        setContentView(binding.root)
+        //super.onCreateDrawer()
 
-        // setupToolbar() // Remove to use inherited toolbar configuration, activity now changed
+        setupToolbar() // Remove to use inherited toolbar configuration, activity now changed
         // to BaseActivity, it includes this in its super onCreate()
         adapter = ProfileGalleryAdapter()
         adapter.galleryItems = generateTextGalleryItems(R.drawable.ic_new, 13)
@@ -32,12 +31,12 @@ class ProfileActivity : BaseActivity() {
         binding.username.text = "johndoe12345" //todo remove, used for demo and testing
     }
 
-/*    private fun setupToolbar() {
+    private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
-        title = getString(R.string.profile_toolbar_title)
+        title = ""
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-    }*/
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
