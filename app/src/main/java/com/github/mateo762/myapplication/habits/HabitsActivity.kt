@@ -6,7 +6,7 @@ import androidx.fragment.app.ListFragment
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.fragments.CreateHabitFragment
-import com.github.mateo762.myapplication.habits.fragments.WeekFragment
+import com.github.mateo762.myapplication.habits.fragments.week.WeekFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HabitsActivity : BaseActivity() {

@@ -38,6 +38,8 @@
             android:background="@color/white"
             app:menu="@menu/home_menu_bottom" />
 
+
+
     </LinearLayout>
 
     <com.google.android.material.navigation.NavigationView
