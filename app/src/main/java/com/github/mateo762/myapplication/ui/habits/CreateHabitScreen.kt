@@ -1,37 +1,55 @@
 package com.github.mateo762.myapplication.ui.habits
 
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.mateo762.myapplication.Habit
+import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.time.DayOfWeek
+import java.util.*
 
 @Composable
 fun CreateHabitScreen() {
     val context = LocalContext.current
     var habitName by remember { mutableStateOf("") }
     var habitDays by remember { mutableStateOf(emptyList<DayOfWeek>()) }
-    var habitStartTime by remember { mutableStateOf(TextFieldValue("00:00")) }
-    var habitEndTime by remember { mutableStateOf(TextFieldValue("23:59")) }
+    val mCalendar = Calendar.getInstance()
+    val mHour = mCalendar[Calendar.HOUR_OF_DAY]
+    val mMinute = mCalendar[Calendar.MINUTE]
+    var habitStartTime = remember { mutableStateOf("00:00") }
+    var habitEndTime = remember { mutableStateOf("23:59") }
+    var isChoosingStartTime = true
+
+    val mTimePickerDialog = TimePickerDialog(
+        context,
+        { _, mHour: Int, mMinute: Int ->
+            if (isChoosingStartTime) {
+                habitStartTime.value = "$mHour:$mMinute"
+            } else {
+                habitEndTime.value = "$mHour:$mMinute"
+            }
+        }, mHour, mMinute, true
+    )
 
     Box(
         modifier = Modifier
@@ -59,7 +77,10 @@ fun CreateHabitScreen() {
                 label = { Text("Name of the habit") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .testTag("txt_name")
+                    .testTag("txt_name"),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = colorResource(R.color.card_background_light)
+                )
             )
 
             Column {
@@ -83,44 +104,48 @@ fun CreateHabitScreen() {
                     }
                 }
 
-                TextField(
-                    value = habitStartTime.text,
-                    onValueChange = {
-                        habitStartTime = if (it.length <= 5) {
-                            if (it.length >= 3 && it[2] != ':') {
-                                TextFieldValue(text = habitStartTime.text)
-                            } else {
-                                TextFieldValue(text = it)
-                            }
-                        } else {
-                            habitStartTime
-                        }
-                    },
-                    label = { Text("What time does the habit start? (HH:MM)") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag("txt_time_start")
-                )
-
-                TextField(
-                    value = habitEndTime.text,
-                    onValueChange = {
-                        habitEndTime = if (it.length <= 5) {
-                            if (it.length >= 3 && it[2] != ':') {
-                                TextFieldValue(text = habitEndTime.text)
-                            } else {
-                                TextFieldValue(text = it)
-                            }
-                        } else {
-                            habitEndTime
-                        }
-                    },
-                    label = { Text("What time does the habit start? (HH:MM)") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .testTag("txt_time_end")
-                )
-
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Button(
+                        onClick = {
+                            isChoosingStartTime = true
+                            mTimePickerDialog.show()
+                        }, modifier = Modifier
+                            .padding(top = 16.dp)
+                            .testTag("btn_start_time")
+                    )
+                    {
+                        Text(text = stringResource(R.string.create_habit_start_time_button_text))
+                    }
+                    Text(
+                        text = stringResource(
+                            R.string.create_habit_start_time_text,
+                            habitStartTime.value
+                        ), modifier = Modifier
+                            .padding(16.dp)
+                            .testTag("txt_start_time_text")
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Button(
+                        onClick = {
+                            isChoosingStartTime = false
+                            mTimePickerDialog.show()
+                        }, modifier = Modifier
+                            .padding(top = 16.dp)
+                            .testTag("btn_end_time")
+                    )
+                    {
+                        Text(text = stringResource(R.string.create_habit_end_time_button_text))
+                    }
+                    Text(
+                        text = stringResource(
+                            R.string.create_habit_end_time_text,
+                            habitEndTime.value
+                        ), modifier = Modifier
+                            .padding(16.dp)
+                            .testTag("txt_end_time_text")
+                    )
+                }
 
                 Button(
                     onClick = {
@@ -137,15 +162,6 @@ fun CreateHabitScreen() {
                                 "Please select at least one day",
                                 Toast.LENGTH_SHORT
                             ).show()
-                        } else if (!isValidTime(habitStartTime.text) || !isValidTime(
-                                habitEndTime.text
-                            )
-                        ) {
-                            Toast.makeText(
-                                context,
-                                "Please enter a valid time (HH:MM)",
-                                Toast.LENGTH_SHORT
-                            ).show()
                         } else {
                             // This intent would now save into a DB / Firebase
                             // For now, it returns to the calling activity
@@ -153,19 +169,19 @@ fun CreateHabitScreen() {
                                 Intent(context, HabitsActivity::class.java)
                             intent.putExtra("habitName", habitName)
                             intent.putExtra("habitDays", ArrayList(habitDays))
-                            intent.putExtra("habitStartTime", habitStartTime.text)
-                            intent.putExtra("habitEndTime", habitEndTime.text)
+                            intent.putExtra("habitStartTime", habitStartTime.value)
+                            intent.putExtra("habitEndTime", habitEndTime.value)
                             context.startActivity(intent)
 
                             //
                             val myHabit = Habit(
                                 habitName,
                                 ArrayList(habitDays),
-                                habitStartTime.text,
-                                habitEndTime.text
+                                habitStartTime.value,
+                                habitEndTime.value
                             )
                             val db: DatabaseReference = Firebase.database.reference
-                            // makfazlic should be replaced with the userId retrieved from the auth
+                            //todo makfazlic should be replaced with the userId retrieved from the auth
                             val userRef = db.child("users").child("makfazlic")
                             val key = userRef.push().key
                             if (key != null) {
@@ -174,12 +190,12 @@ fun CreateHabitScreen() {
                                         println("Success")
 
                                     }.addOnFailureListener {
-                                    Toast.makeText(
-                                        context,
-                                        "Try again",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                                        Toast.makeText(
+                                            context,
+                                            "Try again",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                             }
 
                         }
@@ -193,9 +209,4 @@ fun CreateHabitScreen() {
             }
         }
     }
-}
-
-private fun isValidTime(time: String): Boolean {
-    val pattern = Regex(pattern = "^([0-1]\\d|[22-3]):([0-5][0-9])$")
-    return pattern.matches(time)
 }

@@ -3,11 +3,11 @@ package com.github.mateo762.myapplication.authentication
 import LoginScreen
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.home.HomeActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -33,10 +33,13 @@ class LoginActivity : AppCompatActivity() {
             handleResults(task)
         } else {
             // Error in registering
-            Toast.makeText(this, "Encountered error while registering with google",
-                Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this, "Encountered error while registering with google",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -58,14 +61,16 @@ class LoginActivity : AppCompatActivity() {
             googleSignIn()
         }
     }
-    
-    private fun signInUser(email:String, password:String) {
+
+    private fun signInUser(email: String, password: String) {
 
         // add null check on text values
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(baseContext, "No values inserted. Please fill in the email and " +
-                    "password to sign in",
-                Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                baseContext, "No values inserted. Please fill in the email and " +
+                        "password to sign in",
+                Toast.LENGTH_SHORT
+            ).show()
         } else {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
@@ -87,28 +92,35 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleResults(task:Task<GoogleSignInAccount>) {
+    private fun handleResults(task: Task<GoogleSignInAccount>) {
         if (task.isSuccessful) {
-            val account : GoogleSignInAccount? = task.result
+            val account: GoogleSignInAccount? = task.result
             if (account != null) {
-                val credential = GoogleAuthProvider.getCredential(account.idToken,null)
+                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
                 auth.signInWithCredential(credential).addOnCompleteListener {
                     if (it.isSuccessful) {
-                        Toast.makeText(baseContext, "Successfully logged in!",
-                            Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            baseContext, "Successfully logged in!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         val intent = Intent(this, HomeActivity::class.java)
                         startActivity(intent)
                     } else {
-                        Toast.makeText(baseContext, task.exception!!.message,
-                            Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            baseContext, task.exception!!.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
         } else {
-            Toast.makeText(baseContext, task.exception!!.message,
-                Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                baseContext, task.exception!!.message,
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
+
     private fun googleSignIn() {
         val signInIntent = googleSignInClient.signInIntent
         signInLauncher.launch(signInIntent)

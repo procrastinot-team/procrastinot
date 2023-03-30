@@ -7,6 +7,7 @@ import android.provider.MediaStore
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.github.mateo762.myapplication.Habit
+import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.google.android.material.imageview.ShapeableImageView
@@ -21,7 +22,7 @@ import java.util.Objects
 /**
  * Activity for displaying the profile information.
  */
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity : BaseActivity() {
 
     private val user = FirebaseAuth.getInstance().currentUser
     private lateinit var profileImage:ShapeableImageView
@@ -30,7 +31,6 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -56,7 +56,6 @@ class ProfileActivity : AppCompatActivity() {
 //            val u = gson.fromJson(it.value.toString(),Habit::class.java)
 //            println(u.toString())
         }
-
 
         setupToolbar()
         adapter = ProfileGalleryAdapter()
@@ -86,7 +85,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
-        title = getString(R.string.profile_toolbar_title)
+        title = "" // the title is not set directly on the xml, avoid having two titles per screen
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
     }
