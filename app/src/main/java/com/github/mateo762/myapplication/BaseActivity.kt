@@ -14,8 +14,10 @@ import com.github.mateo762.myapplication.search.SearchActivity
 import com.github.mateo762.myapplication.settings.SettingsActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
     private lateinit var drawer: DrawerLayout
     private lateinit var navigationView: NavigationView

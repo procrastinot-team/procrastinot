@@ -3,6 +3,7 @@ package com.github.mateo762.myapplication.habits.fragments
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,17 +28,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.github.mateo762.myapplication.Habit
+import com.github.mateo762.myapplication.habits.HabitService
+import com.github.mateo762.myapplication.habits.HabitServiceCallback
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class DevelopFragment : Fragment() {
+
+    @Inject
+    lateinit var habitService: HabitService
+
+    private val TAG = DevelopFragment::class.java.simpleName
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -59,6 +67,7 @@ class DevelopFragment : Fragment() {
         var habitDays by remember { mutableStateOf(emptyList<DayOfWeek>()) }
         var habitStartTime by remember { mutableStateOf(TextFieldValue("00:00")) }
         var habitEndTime by remember { mutableStateOf(TextFieldValue("23:59")) }
+
 
         Box(
             modifier = Modifier
@@ -191,15 +200,12 @@ class DevelopFragment : Fragment() {
                                     habitStartTime.text,
                                     habitEndTime.text
                                 )
-                                val db: DatabaseReference = Firebase.database.reference
-                                // makfazlic should be replaced with the userId retrieved from the auth
-                                val userRef = db.child("users").child("makfazlic")
-                                val key = userRef.push().key
-                                if (key != null) {
-                                    db.child("users").child("makfazlic").child(key).setValue(myHabit).addOnSuccessListener {
-                                        println("Success")
+                                val callback = object:HabitServiceCallback{
+                                    override fun onSuccess() {
+                                        Log.d(TAG, "Success")
+                                    }
 
-                                    }.addOnFailureListener {
+                                    override fun onFailure() {
                                         Toast.makeText(
                                             context,
                                             "Try again",
@@ -207,6 +213,8 @@ class DevelopFragment : Fragment() {
                                         ).show()
                                     }
                                 }
+                                habitService.addHabit("makfazlic", myHabit, callback)
+
 
                             }
                         },

@@ -21,12 +21,10 @@ import java.time.DayOfWeek
 import java.util.*
 
 
-@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class CreateHabitTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(HabitsActivity::class.java)
-    var hiltRule = HiltAndroidRule(this)
 
     @get:Rule
     val composeTestRule = createComposeRule()

@@ -8,6 +8,7 @@ import android.os.Build
 import com.github.mateo762.myapplication.notifications.HabitNotificationService
 import dagger.hilt.android.HiltAndroidApp
 
+const val TAG = "Procrastinot"
 @HiltAndroidApp
 class ProcrastinotApplication : Application() {
 

@@ -8,8 +8,10 @@ import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.fragments.DevelopFragment
 import com.github.mateo762.myapplication.habits.fragments.WeekFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HabitsActivity : BaseActivity() {
