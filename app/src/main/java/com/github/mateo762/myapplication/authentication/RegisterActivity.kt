@@ -72,13 +72,13 @@ class RegisterActivity : AppCompatActivity() {
                                         this@RegisterActivity, R.string.success_habit, Toast.LENGTH_SHORT
                                     ).show()
                                     
-                                    var intent: Intent =
+                                    val intent: Intent =
                                         if (this.shouldShowRequestPermissionRationale(POST_NOTIFICATIONS) || !notificationManager.areNotificationsEnabled()) {
                                             Intent(this, NotificationInfoActivity::class.java)
                                         } else {
                                             Intent(this, HomeActivity::class.java)
                                         }
-                                        
+                                    startActivity(intent)
                                 }.addOnFailureListener {
                                     Toast.makeText(
                                         this@RegisterActivity, R.string.try_again_error, Toast.LENGTH_SHORT
