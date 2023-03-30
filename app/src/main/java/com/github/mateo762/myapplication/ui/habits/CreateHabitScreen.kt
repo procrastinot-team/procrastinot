@@ -116,6 +116,7 @@ fun CreateHabitScreen() {
                     Text(
                         text = "Chosen start time = ${habitStartTime.value}", modifier = Modifier
                             .padding(16.dp)
+                            .testTag("txt_start_time_text")
                     )
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -131,8 +132,9 @@ fun CreateHabitScreen() {
                         Text(text = stringResource(R.string.create_habit_end_time_button_text))
                     }
                     Text(
-                        text = "Chosen end time: ${habitEndTime.value}", modifier = Modifier
+                        text = "Chosen end time = ${habitEndTime.value}", modifier = Modifier
                             .padding(16.dp)
+                            .testTag("txt_end_time_text")
                     )
                 }
 
@@ -170,7 +172,7 @@ fun CreateHabitScreen() {
                                 habitEndTime.value
                             )
                             val db: DatabaseReference = Firebase.database.reference
-                            // makfazlic should be replaced with the userId retrieved from the auth
+                            //todo makfazlic should be replaced with the userId retrieved from the auth
                             val userRef = db.child("users").child("makfazlic")
                             val key = userRef.push().key
                             if (key != null) {
