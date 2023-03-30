@@ -58,6 +58,9 @@ dependencies {
     implementation composeBom
     androidTestImplementation composeBom
 
+    // CircleImageView (profile icon inside the toolbar)
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
     // Local database dependencies
     def room_version = "2.5.0"
     implementation "androidx.room:room-runtime:$room_version"
@@ -128,6 +131,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx:21.1.0'
     implementation 'com.google.firebase:firebase-auth:21.1.0'
     implementation 'com.firebaseui:firebase-ui-auth:8.0.2'
+    implementation 'com.github.quivr:android-week-view:2.3.3'
     implementation 'androidx.fragment:fragment-ktx:1.5.5'
     testImplementation 'junit:junit:4.13.2'
     implementation 'androidx.test.uiautomator:uiautomator:2.2.0'
