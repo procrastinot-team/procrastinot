@@ -13,13 +13,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.github.mateo762.myapplication.Habit
+import com.github.mateo762.myapplication.R
 import java.time.*
 
 
@@ -86,7 +87,7 @@ fun TodayScreen(time: LocalDateTime, habits: List<Habit>, images: Array<Int>) {
         // Today
         Box(
             modifier = Modifier
-                .background(Color(0xFFE7E0EC), RoundedCornerShape(8.dp))
+                .background(colorResource(R.color.card_background_dark), RoundedCornerShape(8.dp))
                 .fillMaxWidth()
                 .padding(vertical = 16.dp, horizontal = 16.dp)
         ) {
@@ -143,8 +144,7 @@ fun TodayScreen(time: LocalDateTime, habits: List<Habit>, images: Array<Int>) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                // No easy way to call colors defined in theme, so must be input directly
-                .background(Color(0xFFFCF2F9), RoundedCornerShape(8.dp))
+                .background(colorResource(R.color.card_background_light), RoundedCornerShape(8.dp))
                 .padding(vertical = 16.dp, horizontal = 16.dp)
         ) {
             Column {
@@ -208,7 +208,10 @@ fun ImageRow(images: Array<Int>, modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .weight(1f)
                         .aspectRatio(0.7f)
-                        .background(Color(0xFFFCF2F9), RoundedCornerShape(8.dp))
+                        .background(
+                            colorResource(R.color.card_background_light),
+                            RoundedCornerShape(8.dp)
+                        )
                 ) {
                     Image(
                         painter = painterResource(id = image),
