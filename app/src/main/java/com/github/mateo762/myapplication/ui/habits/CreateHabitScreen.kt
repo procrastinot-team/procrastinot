@@ -3,19 +3,19 @@ package com.github.mateo762.myapplication.ui.habits
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -77,7 +77,10 @@ fun CreateHabitScreen() {
                 label = { Text("Name of the habit") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .testTag("txt_name")
+                    .testTag("txt_name"),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = colorResource(R.color.card_background_light)
+                )
             )
 
             Column {

@@ -86,7 +86,7 @@ fun TodayScreen(time: LocalDateTime, habits: List<Habit>, images: Array<Int>) {
         // Today
         Box(
             modifier = Modifier
-                .background(Color(0xFFFED4D6), RoundedCornerShape(8.dp))
+                .background(Color(0xFFE7E0EC), RoundedCornerShape(8.dp))
                 .fillMaxWidth()
                 .padding(vertical = 16.dp, horizontal = 16.dp)
         ) {
@@ -143,7 +143,8 @@ fun TodayScreen(time: LocalDateTime, habits: List<Habit>, images: Array<Int>) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFFC4D4F4), RoundedCornerShape(8.dp))
+                // No easy way to call colors defined in theme, so must be input directly
+                .background(Color(0xFFFCF2F9), RoundedCornerShape(8.dp))
                 .padding(vertical = 16.dp, horizontal = 16.dp)
         ) {
             Column {
@@ -207,7 +208,7 @@ fun ImageRow(images: Array<Int>, modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .weight(1f)
                         .aspectRatio(0.7f)
-                        .background(Color.Gray, RoundedCornerShape(8.dp))
+                        .background(Color(0xFFFCF2F9), RoundedCornerShape(8.dp))
                 ) {
                     Image(
                         painter = painterResource(id = image),

@@ -58,6 +58,9 @@ dependencies {
     implementation composeBom
     androidTestImplementation composeBom
 
+    // CircleImageView (profile icon inside the toolbar)
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
     // Local database dependencies
     def room_version = "2.5.0"
     implementation "androidx.room:room-runtime:$room_version"
