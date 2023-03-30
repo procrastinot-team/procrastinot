@@ -1,7 +1,11 @@
 package com.github.mateo762.myapplication
 
+import android.widget.TimePicker
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.contrib.PickerActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
@@ -17,7 +21,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.time.DayOfWeek
 import java.util.*
-
 
 @RunWith(AndroidJUnit4::class)
 class CreateHabitActivityTest {
@@ -36,8 +39,8 @@ class CreateHabitActivityTest {
     fun setUp() {
         habitName = "Drink Water"
         habitDays = listOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)
-        habitStartTime = "07:30"
-        habitEndTime = "08:00"
+        habitStartTime = "00:00"
+        habitEndTime = "23:59"
         Intents.init()
     }
 
@@ -59,23 +62,6 @@ class CreateHabitActivityTest {
                 .performScrollTo()
                 .performClick()
         }
-        // Clear start and end time
-        composeTestRule.onNodeWithTag("txt_time_start")
-            .performScrollTo()
-            .performClick()
-            .performTextClearance()
-        composeTestRule.onNodeWithTag("txt_time_end")
-            .performScrollTo()
-            .performClick()
-            .performTextClearance()
-
-        // Enter start and end time
-        composeTestRule.onNodeWithTag("txt_time_start")
-            .performScrollTo()
-            .performTextInput(habitStartTime)
-        composeTestRule.onNodeWithTag("txt_time_end")
-            .performScrollTo()
-            .performTextInput(habitEndTime)
 
         // Click save button
         composeTestRule.onNodeWithTag("btn_save")
@@ -84,9 +70,51 @@ class CreateHabitActivityTest {
     }
 
     @Test
+    fun testOnTimePickerDialogClicked() {
+        composeTestRule.onNodeWithTag("btn_start_time")
+            .performScrollTo()
+            .performClick()
+
+        val calendar = Calendar.getInstance()
+        val startHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val startMinutes = calendar.get(Calendar.MINUTE) + 2
+
+        onView(isAssignableFrom(TimePicker::class.java)).perform(
+            PickerActions.setTime(
+                startHour,
+                startMinutes
+            )
+        )
+        onView(withText("OK")).perform(click())
+
+        composeTestRule.onNodeWithTag("txt_start_time_text")
+            .assert(hasText("Chosen start time = ${startHour}:${startMinutes}"))
+
+        composeTestRule.onNodeWithTag("btn_end_time")
+            .performScrollTo()
+            .performClick()
+
+        val endHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val endMinutes = calendar.get(Calendar.MINUTE) + 4
+
+        onView(isAssignableFrom(TimePicker::class.java)).perform(
+            PickerActions.setTime(
+                endHour,
+                endMinutes
+            )
+        )
+        onView(withText("OK")).perform(click())
+
+        composeTestRule.onNodeWithTag("txt_end_time_text")
+            .performScrollTo()
+            .assert(hasText("Chosen end time = ${endHour}:${endMinutes}"))
+    }
+
+    @Test
     fun testCreateHabit() {
         createHabit()
         // Verify that the intent was sent correctly
+
         intended(
             allOf(
                 hasComponent(HabitsActivity::class.java.name),
@@ -99,15 +127,6 @@ class CreateHabitActivityTest {
     }
 
     @Test
-    fun clickSaveButton_noNameInput_noIntentSent() {
-        habitName = ""
-        createHabit()
-        composeTestRule.onNodeWithTag("btn_save")
-            .performScrollTo()
-            .assertIsDisplayed()
-    }
-
-    @Test
     fun clickSaveButton_noDaysSelected_noIntentSent() {
         habitDays = listOf()
         createHabit()
@@ -117,39 +136,11 @@ class CreateHabitActivityTest {
     }
 
     @Test
-    fun clickSaveButton_noStartTime_noIntentSent() {
-        habitStartTime = ""
+    fun clickSaveButton_noNameInput_noIntentSent() {
+        habitName = ""
         createHabit()
         composeTestRule.onNodeWithTag("btn_save")
             .performScrollTo()
             .assertIsDisplayed()
     }
-
-    @Test
-    fun clickSaveButton_startTimeInvalid_noIntentSent() {
-        habitStartTime = "25:00"
-        createHabit()
-        composeTestRule.onNodeWithTag("btn_save")
-            .performScrollTo()
-            .assertIsDisplayed()
-    }
-
-    @Test
-    fun clickSaveButton_noEndTime_noIntentSent() {
-        habitEndTime = ""
-        createHabit()
-        composeTestRule.onNodeWithTag("btn_save")
-            .performScrollTo()
-            .assertIsDisplayed()
-    }
-
-    @Test
-    fun clickSaveButton_endTimeInvalid_noIntentSent() {
-        habitEndTime = "08:69"
-        createHabit()
-        composeTestRule.onNodeWithTag("btn_save")
-            .performScrollTo()
-            .assertIsDisplayed()
-    }
-
 }
