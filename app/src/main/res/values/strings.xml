@@ -37,4 +37,8 @@
     <string name="feed_fragment">Feed Fragment</string>
     <string name="upload_picture">Upload Picture</string>
     <string name="select_picture">Select Picture</string>
+    <string name="progress_indicator">Uploading File..</string>
+    <string name="file_name_date">yyy_MM_dd_HH_mm_ss</string>
+    <string name="try_again">Try again</string>
+    <string name="failed">Failed</string>
 </resources>

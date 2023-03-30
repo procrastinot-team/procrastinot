@@ -7,7 +7,8 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.mateo762.myapplication.databinding.UploadPictureBinding
+import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.databinding.ActivityUploadPictureBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -20,17 +21,19 @@ import java.util.*
 
 class UploadPictureActivity : AppCompatActivity() {
 
-    private lateinit var binding: UploadPictureBinding
+    private lateinit var binding: ActivityUploadPictureBinding
     private lateinit var imageUri: Uri
 
     private var defaultUserString: String = "testUser"
     private var currentUser: String = defaultUserString
 
+    private val SUCCESS = 100
+
     lateinit var imagesList: ArrayList<UserImage>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = UploadPictureBinding.inflate(layoutInflater)
+        binding = ActivityUploadPictureBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.selectPictureButton.setOnClickListener {
@@ -58,7 +61,7 @@ class UploadPictureActivity : AppCompatActivity() {
                 if (snapshot.exists()) {
                     for (dataSnapshot in snapshot.children) {
                         val image = dataSnapshot.getValue(UserImage::class.java)
-                        imagesList.add(image!!)
+                        image?.let {imagesList.add(image)}
                     }
 
                     binding.imageRecycler.adapter =
@@ -81,14 +84,17 @@ class UploadPictureActivity : AppCompatActivity() {
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
 
-        startActivityForResult(intent, 100)
+        startActivityForResult(intent, SUCCESS)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 100 && resultCode == RESULT_OK) {
-            imageUri = data?.data!!
+        if (requestCode == SUCCESS && resultCode == RESULT_OK) {
+            if (data?.data != null){
+                imageUri = data.data!!
+            }
+
             binding.selectedImagePreview.setImageURI(imageUri)
         }
     }
@@ -98,12 +104,12 @@ class UploadPictureActivity : AppCompatActivity() {
 
         val progressDialog = ProgressDialog(this)
 
-        progressDialog.setMessage("Uploading File..")
+        progressDialog.setMessage(getString(R.string.progress_indicator))
         progressDialog.setCancelable(false)
         progressDialog.show()
 
         //Generate a file name based on the upload time
-        val formatter = SimpleDateFormat("yyy_MM_dd_HH_mm_ss", Locale.getDefault())
+        val formatter = SimpleDateFormat(getString(R.string.file_name_date), Locale.getDefault())
         val now = Date()
         val fileName = formatter.format(now)
 
@@ -143,7 +149,7 @@ class UploadPictureActivity : AppCompatActivity() {
                         .addOnFailureListener {
                             Toast.makeText(
                                 this@UploadPictureActivity,
-                                "Try again",
+                                getString(R.string.try_again),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -153,7 +159,7 @@ class UploadPictureActivity : AppCompatActivity() {
             } else {
                 //Handle failure
                 if (progressDialog.isShowing) progressDialog.dismiss()
-                Toast.makeText(this@UploadPictureActivity, "Failed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@UploadPictureActivity, getString(R.string.failed), Toast.LENGTH_SHORT).show()
             }
         }
     }
