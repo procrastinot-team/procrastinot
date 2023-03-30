@@ -163,13 +163,6 @@ fun CreateHabitScreen() {
                                 "Please select at least one day",
                                 Toast.LENGTH_SHORT
                             ).show()
-                        } else if (!isValidTime(habitStartTime.text) || !isValidTime(
-                                habitEndTime.text
-                            )
-                        ) {
-                            Toast.makeText(
-                                context,R.string.invalid_time_error,Toast.LENGTH_SHORT
-                            ).show()
                         } else {
                             // This intent would now save into a DB / Firebase
                             // For now, it returns to the calling activity
