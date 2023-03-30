@@ -87,9 +87,57 @@ class NavigationActivityTest {
         // Get a reference to the current activity
         val currentActivity = getCurrentActivity()
 
-        // Check if the current activity is a SettingsActivity
+        // Check if the current activity is a ProfileActivity
         assertTrue(currentActivity is SettingsActivity)
     }
+
+
+    // User icon tests
+    @Test
+    fun clickUserIconFromHome() {
+        onView(withId(R.id.circle_imageView)).perform(click())
+        // Get a reference to the current activity
+        val currentActivity = getCurrentActivity()
+        // Check if the current activity is a SettingsActivity
+        assertTrue(currentActivity is ProfileActivity)
+    }
+
+    @Test
+    fun clickUserIconFromHabits() {
+        onView(withId(R.id.drawerLayout)).perform(DrawerActions.open())
+        onView(withId(R.id.navView)).check(matches(isDisplayed()))
+        onView(withId(R.id.nav_habits)).perform(click())
+        onView(withId(R.id.circle_imageView)).perform(click())
+        // Get a reference to the current activity
+        val currentActivity = getCurrentActivity()
+        // Check if the current activity is a ProfileActivity
+        assertTrue(currentActivity is ProfileActivity)
+    }
+
+    @Test
+    fun clickUserIconFromSearch() {
+        onView(withId(R.id.drawerLayout)).perform(DrawerActions.open())
+        onView(withId(R.id.navView)).check(matches(isDisplayed()))
+        onView(withId(R.id.nav_search)).perform(click())
+        onView(withId(R.id.circle_imageView)).perform(click())
+        // Get a reference to the current activity
+        val currentActivity = getCurrentActivity()
+        // Check if the current activity is a ProfileActivity
+        assertTrue(currentActivity is ProfileActivity)
+    }
+
+    @Test
+    fun clickUserIconFromSettings() {
+        onView(withId(R.id.drawerLayout)).perform(DrawerActions.open())
+        onView(withId(R.id.navView)).check(matches(isDisplayed()))
+        onView(withId(R.id.nav_settings)).perform(click())
+        onView(withId(R.id.circle_imageView)).perform(click())
+        // Get a reference to the current activity
+        val currentActivity = getCurrentActivity()
+        // Check if the current activity is a ProfileActivity
+        assertTrue(currentActivity is ProfileActivity)
+    }
+
 
     @Test
     fun navigateToHomeActivity() {
