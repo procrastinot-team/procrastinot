@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'jacoco'
     id 'com.google.gms.google-services'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -59,6 +60,34 @@ dependencies {
     implementation composeBom
     androidTestImplementation composeBom
 
+    // CircleImageView (profile icon inside the toolbar)
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    // Local database dependencies
+    def room_version = "2.5.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    implementation 'com.google.code.gson:gson:2.9.0'
+
+    // To use Kotlin annotation processing tool (kapt)
+    kapt "androidx.room:room-compiler:$room_version"
+
+    // optional - RxJava2 support for Room
+    implementation "androidx.room:room-rxjava2:$room_version"
+
+    // optional - RxJava3 support for Room
+    implementation "androidx.room:room-rxjava3:$room_version"
+
+    // optional - Guava support for Room, including Optional and ListenableFuture
+    implementation "androidx.room:room-guava:$room_version"
+
+    // optional - Test helpers
+    testImplementation "androidx.room:room-testing:$room_version"
+
+    // optional - Paging 3 Integration
+    implementation "androidx.room:room-paging:$room_version"
+
     // Choose one of the following:
     // Material Design 3
     implementation 'androidx.compose.material3:material3'
@@ -104,8 +133,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx:21.1.0'
     implementation 'com.google.firebase:firebase-auth:21.1.0'
     implementation 'com.firebaseui:firebase-ui-auth:8.0.2'
+    implementation 'com.github.quivr:android-week-view:2.3.3'
     implementation 'androidx.fragment:fragment-ktx:1.5.5'
     testImplementation 'junit:junit:4.13.2'
+    implementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+    testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.5.1'
@@ -136,6 +168,8 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
             '**/Manifest*.*',
             '**/*Test*.*',
             'android/**/*.*',
+            // Exclude DAO interface files from coverage report
+            '**room/*Dao*.*',
     ]
     def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
     def mainSrc = "$project.projectDir/src/main/java"

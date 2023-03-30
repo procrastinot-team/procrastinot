@@ -8,8 +8,8 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.habits.HabitsActivity
-import com.github.mateo762.myapplication.habits.fragments.DevelopFragment
-import com.github.mateo762.myapplication.habits.fragments.WeekFragment
+import com.github.mateo762.myapplication.habits.fragments.CreateHabitFragment
+import com.github.mateo762.myapplication.habits.fragments.week.WeekFragment
 import junit.framework.TestCase
 import org.junit.After
 import org.junit.Before
@@ -35,7 +35,7 @@ class HabitsActivityFragmentNavigationTest {
         Espresso.onView(withId(R.id.weekFragment)).perform(ViewActions.click())
         // Get a reference to the current fragment
         val fragment = getCurrentFragment()
-        // Check if the current fragment is a WeekFragment
+        // Check if the current fragment is a com.github.mateo762.myapplication.habits.fragments.week.WeekFragment
         TestCase.assertTrue(fragment is WeekFragment)
     }
 
@@ -56,7 +56,7 @@ class HabitsActivityFragmentNavigationTest {
         // Get a reference to the current fragment
         val fragment = getCurrentFragment()
         // Check if the current fragment is a DevelopFragment
-        TestCase.assertTrue(fragment is DevelopFragment)
+        TestCase.assertTrue(fragment is CreateHabitFragment)
     }
 
     private fun getCurrentFragment(): Fragment? {
