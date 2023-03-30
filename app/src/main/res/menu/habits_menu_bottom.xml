@@ -4,16 +4,22 @@
     <item
         android:id="@+id/developFragment"
         android:icon="@drawable/lens_blur_24"
+        android:iconTint="@color/dark_text"
+        android:textColor="@color/dark_text"
         android:title="@string/develop" />
 
     <item
         android:id="@+id/weekFragment"
-        android:icon="@drawable/lens_blur_24"
+        android:icon="@drawable/view_week_24"
+        android:iconTint="@color/dark_text"
+        android:textColor="@color/dark_text"
         android:title="@string/week" />
 
     <item
         android:id="@+id/listFragment"
-        android:icon="@drawable/lens_blur_24"
+        android:icon="@drawable/list_bulleted_24"
+        android:iconTint="@color/dark_text"
+        android:textColor="@color/dark_text"
         android:title="@string/list" />
 
 </menu>

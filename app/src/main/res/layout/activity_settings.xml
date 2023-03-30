@@ -17,35 +17,62 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+            android:minHeight="?attr/actionBarSize"
+            android:layout_height="wrap_content"
+            android:background="@color/top_bar_background">
 
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/settings"
+                android:textColor="@color/dark_text"
+                android:textSize="20sp" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@mipmap/ic_launcher"
+                android:padding="8dp"
+                android:layout_gravity="end"
+                android:id="@+id/circle_imageView"/>
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/holo_red_light">
+            android:background="@android:color/white">
 
             <TextView
                 android:id="@+id/text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:paddingTop="200dp"
                 android:text="Settings activity"
-                android:textSize="30sp"
-                android:layout_centerInParent="true"/>
+                android:textSize="30sp" />
 
             <Button
                 android:id="@+id/notificationButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:background="@color/card_background_dark"
                 android:layout_below="@+id/text"
+                android:textColor="@color/white"
                 android:layout_centerHorizontal="true"
                 android:text="@string/show_notification_button_text" />
 
             <Button
                 android:id="@+id/permissionButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="70dp"
+                android:textSize="15sp"
+                android:background="@color/card_background_dark"
+                android:textColor="@color/white"
                 android:layout_below="@+id/notificationButton"
                 android:layout_centerHorizontal="true"
                 android:text="@string/grant_notification_permission_button_text" />
@@ -60,5 +87,9 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header"
+        android:backgroundTint="@color/drawer_background"
+        app:itemIconTint="@color/dark_text"
+        android:drawablePadding="50dp"
+        app:drawerLayoutCornerSize="20dp"
         app:menu="@menu/nav_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>
