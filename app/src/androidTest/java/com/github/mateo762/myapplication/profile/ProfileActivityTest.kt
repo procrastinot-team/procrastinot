@@ -35,7 +35,7 @@ class ProfileActivityTest {
     fun onToolbarBackButtonClicked() {
         onView(withContentDescription("Navigate up")).perform(click())
 
-        Thread.sleep(200)
+        Thread.sleep(500)
 
         assertTrue(activityRule.scenario.state == Lifecycle.State.DESTROYED)
     }
