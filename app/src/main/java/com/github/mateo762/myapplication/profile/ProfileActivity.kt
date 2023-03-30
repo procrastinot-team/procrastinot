@@ -18,10 +18,7 @@ class ProfileActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //super.onCreateDrawer()
-
-        setupToolbar() // Remove to use inherited toolbar configuration, activity now changed
-        // to BaseActivity, it includes this in its super onCreate()
+        setupToolbar()
         adapter = ProfileGalleryAdapter()
         adapter.galleryItems = generateTextGalleryItems(R.drawable.ic_new, 13)
         binding.recyclerView.adapter = adapter
@@ -32,7 +29,7 @@ class ProfileActivity : BaseActivity() {
 
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
-        title = ""
+        title = "" // the title is not set directly on the xml, avoid having two titles per screen
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
     }

@@ -2,17 +2,16 @@ package com.github.mateo762.myapplication.ui.habits
 
 import android.content.Intent
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.TextFieldValue
@@ -60,6 +59,7 @@ fun CreateHabitScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .testTag("txt_name")
+                    .background(Color(0xFFFCF2F9))
             )
 
             Column {
@@ -100,6 +100,7 @@ fun CreateHabitScreen() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("txt_time_start")
+                        .background(Color(0xFFFCF2F9))
                 )
 
                 TextField(
@@ -119,6 +120,7 @@ fun CreateHabitScreen() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("txt_time_end")
+                        .background(Color(0xFFFCF2F9))
                 )
 
 
@@ -184,6 +186,7 @@ fun CreateHabitScreen() {
 
                         }
                     },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF7B4FC3), contentColor = Color.White),
                     modifier = Modifier
                         .padding(top = 16.dp)
                         .testTag("btn_save")

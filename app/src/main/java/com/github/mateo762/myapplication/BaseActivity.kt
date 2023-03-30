@@ -41,7 +41,7 @@ open class BaseActivity : AppCompatActivity() {
         drawer.addDrawerListener(toggle)
         toggle.syncState()
         navigationView.setNavigationItemSelectedListener(navListener)
-        // Enable clicking the profile picture
+        // Enable clicking the profile picture -- go to profile activity
         val profileIcon: ImageView = findViewById(R.id.circle_imageView)
         profileIcon.setOnClickListener { openActivitySelected(ProfileActivity()) }
     }
