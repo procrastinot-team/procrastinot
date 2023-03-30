@@ -3,7 +3,6 @@ package com.github.mateo762.myapplication.ui.habits
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -103,7 +103,7 @@ fun CreateHabitScreen() {
                         Text(day.toString(), modifier = Modifier.padding(start = 8.dp))
                     }
                 }
-
+                
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Button(
                         onClick = {
@@ -200,6 +200,10 @@ fun CreateHabitScreen() {
 
                         }
                     },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(R.color.bottom_highlight),
+                        contentColor = Color.White
+                    ),
                     modifier = Modifier
                         .padding(top = 16.dp)
                         .testTag("btn_save")
