@@ -22,7 +22,6 @@ import org.junit.runner.RunWith
 import java.time.DayOfWeek
 import java.util.*
 
-
 @RunWith(AndroidJUnit4::class)
 class CreateHabitActivityTest {
     @get:Rule
@@ -125,5 +124,23 @@ class CreateHabitActivityTest {
                 hasExtra("habitEndTime", habitEndTime)
             )
         )
+    }
+
+    @Test
+    fun clickSaveButton_noDaysSelected_noIntentSent() {
+        habitDays = listOf()
+        createHabit()
+        composeTestRule.onNodeWithTag("btn_save")
+            .performScrollTo()
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun clickSaveButton_noNameInput_noIntentSent() {
+        habitName = ""
+        createHabit()
+        composeTestRule.onNodeWithTag("btn_save")
+            .performScrollTo()
+            .assertIsDisplayed()
     }
 }
