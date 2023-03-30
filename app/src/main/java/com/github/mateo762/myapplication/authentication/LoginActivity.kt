@@ -66,18 +66,14 @@ class LoginActivity : AppCompatActivity() {
 
         // add null check on text values
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(
-                baseContext, "No values inserted. Please fill in the email and " +
-                        "password to sign in",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(baseContext, R.string.error_empty_login,
+                Toast.LENGTH_SHORT).show()
         } else {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-
                         Toast.makeText(
-                            baseContext, "Successfully logged in!",
+                            baseContext, R.string.success_login,
                             Toast.LENGTH_SHORT
                         ).show()
                         val intent = Intent(this, HomeActivity::class.java)
@@ -99,10 +95,8 @@ class LoginActivity : AppCompatActivity() {
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
                 auth.signInWithCredential(credential).addOnCompleteListener {
                     if (it.isSuccessful) {
-                        Toast.makeText(
-                            baseContext, "Successfully logged in!",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(baseContext, R.string.success_login,
+                            Toast.LENGTH_SHORT).show()
                         val intent = Intent(this, HomeActivity::class.java)
                         startActivity(intent)
                     } else {

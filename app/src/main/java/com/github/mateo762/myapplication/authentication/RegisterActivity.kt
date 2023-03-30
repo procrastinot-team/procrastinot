@@ -35,23 +35,16 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun registerUser(email: String, password: String) {
 
-        println("1st stage: $email")
         // add null check on text values
         if (email.isEmpty() || password.isEmpty()) {
-            println("2nd stage: $email")
-            Toast.makeText(
-                baseContext, "No values inserted. Please fill in the email and " +
-                        "password to sign up",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(baseContext, com.github.mateo762.myapplication.R.string.error_empty_register,
+                Toast.LENGTH_SHORT).show()
         } else {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(
-                            baseContext, "Successfully registered!",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(baseContext, com.github.mateo762.myapplication.R.string.success_register,
+                        Toast.LENGTH_SHORT).show()
                         var intent: Intent =
                             if (this.shouldShowRequestPermissionRationale(POST_NOTIFICATIONS) || !notificationManager.areNotificationsEnabled()) {
                                 Intent(this, NotificationInfoActivity::class.java)
