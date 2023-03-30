@@ -2,15 +2,21 @@ package com.github.mateo762.myapplication.profile
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import com.github.mateo762.myapplication.Habit
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.util.Objects
 
 /**
  * Activity for displaying the profile information.
@@ -28,12 +34,36 @@ class ProfileActivity : AppCompatActivity() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val db: DatabaseReference = Firebase.database.reference
+
+        val ref = db.child("users/${user?.uid}/habit_list").get().addOnCompleteListener() {
+            task ->
+            val doc = task.result
+            println(doc)
+//            val u = it.getValue(Habit::class.java) as Habit
+//            println(u.toString())
+//            val snap = doc.toString()
+//            val json = "[".plus(snap.substring(1,snap.length - 1)).plus("]")
+//            val gson = Gson()
+//            val v = (Habit::class.java)
+//            val list = ArrayList<Habit>()
+//            for (i in v.values) {
+//                list.add(gson.fromJson<Habit>(i,Habit::class.java))
+//            }
+//            val type = object : TypeToken<ArrayList<Habit>>() {}.type!!
+//            val list = gson.fromJson<Habit>(snap,type)
+//            println(list)
+//            val u = gson.fromJson(it.value.toString(),Habit::class.java)
+//            println(u.toString())
+        }
+
+
         setupToolbar()
         adapter = ProfileGalleryAdapter()
         adapter.galleryItems = generateTextGalleryItems(R.drawable.ic_new, 13)
         binding.recyclerView.adapter = adapter
 
-        binding.name.text = R.string.missing_name.toString()
+        binding.name.text = getString(R.string.missing_name)
         binding.username.text = user?.email
 
         profileImage = findViewById<ShapeableImageView>(R.id.profileImage)
@@ -50,16 +80,9 @@ class ProfileActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 val imageUri = data?.data
                 profileImage.setImageURI(imageUri)
-//                uploadImageToFirebase(imageUri)
             }
         }
     }
-//
-//    private fun uploadImageToFirebase(imageUri: Uri?) {
-//        val db: DatabaseReference = Firebase.database.reference
-//
-//        val fileRef = db.child("users/${user?.uid}/gravatar")
-//    }
 
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
