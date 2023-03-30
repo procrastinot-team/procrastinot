@@ -47,4 +47,8 @@
     <string name="notification_info_positive_button_text">I am in</string>
     <string name="notification_info_title">Get notified!</string>
     <string name="notification_info_description">Stay on top of your habits with notification reminders before the start of your habit</string>
+    <string name="create_habit_end_time_button_text">Choose End Time</string>
+    <string name="create_habit_start_time_button_text">Choose Start Time</string>
+    <string name="create_habit_end_time_text">Chosen end time = %s</string>
+    <string name="create_habit_start_time_text">Chosen start time = %s</string>
 </resources>
