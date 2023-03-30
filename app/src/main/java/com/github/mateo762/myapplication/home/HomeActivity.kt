@@ -19,7 +19,6 @@ class HomeActivity : BaseActivity() {
         super.onCreateDrawer()
         bottomNavView = findViewById(R.id.bottomNav)
         bottomNavView.setOnItemSelectedListener(bottomNavListener)
-
     }
 
     private val bottomNavListener = BottomNavigationView.OnNavigationItemSelectedListener {
