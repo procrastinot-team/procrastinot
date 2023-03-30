@@ -44,20 +44,11 @@ class NotificationInfoActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        when (requestCode) {
-            SettingsActivity.NOTIFICATION_PERMISSION_REQUEST_CODE -> {
-                // If request is cancelled, the result arrays are empty.
-                if ((grantResults.isNotEmpty() &&
-                            grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                ) {
-                    navigationToHomeActivity()
-                } else {
-                    //no-op
-                }
-                return
-            }
-            else -> {
-                // Ignore all other requests.
+        if (requestCode == SettingsActivity.NOTIFICATION_PERMISSION_REQUEST_CODE) {
+            if ((grantResults.isNotEmpty() &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            ) {
+                navigationToHomeActivity()
             }
         }
     }
