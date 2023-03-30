@@ -35,6 +35,12 @@
     <string name="today_fragment">Today Fragment</string>
     <string name="list_fragment">List Fragment</string>
     <string name="feed_fragment">Feed Fragment</string>
+    <string name="upload_picture">Upload Picture</string>
+    <string name="select_picture">Select Picture</string>
+    <string name="progress_indicator">Uploading File..</string>
+    <string name="file_name_date">yyy_MM_dd_HH_mm_ss</string>
+    <string name="try_again">Try again</string>
+    <string name="failed">Failed</string>
     <string name="notification_content_title">Habit reminder</string>
     <string name="notification_content_text">Please finish your habit</string>
     <string name="notification_permission_not_granted">Notification permission not granted</string>
