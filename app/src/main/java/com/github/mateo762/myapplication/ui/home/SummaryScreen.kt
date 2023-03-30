@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.github.mateo762.myapplication.Habit
@@ -30,7 +31,7 @@ fun HabitListScreen(habits: List<Habit>) {
                     context.startActivity(intent)
                 },
                 backgroundColor = Color.White,
-                contentColor = Color.Black
+                contentColor = colorResource(R.color.today_background)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_new),

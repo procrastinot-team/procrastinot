@@ -44,6 +44,10 @@
     <string name="grant_notification_permission_button_text">Grant notification permission</string>
     <string name="habit_notification_channel_name">Habit reminder</string>
     <string name="habit_notification_channel_description">Used for receiving habit reminders</string>
+    <string name="notification_info_negative_button_text">Skip</string>
+    <string name="notification_info_positive_button_text">I am in</string>
+    <string name="notification_info_title">Get notified!</string>
+    <string name="notification_info_description">Stay on top of your habits with notification reminders before the start of your habit</string>
     <string name="create_habit_end_time_button_text">Choose End Time</string>
     <string name="create_habit_start_time_button_text">Choose Start Time</string>
     <string name="create_habit_end_time_text">Chosen end time = %s</string>
