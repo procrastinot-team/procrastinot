@@ -2,7 +2,6 @@ package com.github.mateo762.myapplication.ui.habits
 
 import android.content.Intent
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,10 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.mateo762.myapplication.Habit
+import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
@@ -58,8 +59,10 @@ fun CreateHabitScreen() {
                 label = { Text("Name of the habit") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .testTag("txt_name")
-                    .background(Color(0xFFFCF2F9))
+                    .testTag("txt_name"),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = colorResource(R.color.card_background_light)
+                )
             )
 
             Column {
@@ -99,8 +102,10 @@ fun CreateHabitScreen() {
                     label = { Text("What time does the habit start? (HH:MM)") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .testTag("txt_time_start")
-                        .background(Color(0xFFFCF2F9))
+                        .testTag("txt_time_start"),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = colorResource(R.color.card_background_dark)
+                    )
                 )
 
                 TextField(
@@ -119,8 +124,10 @@ fun CreateHabitScreen() {
                     label = { Text("What time does the habit start? (HH:MM)") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .testTag("txt_time_end")
-                        .background(Color(0xFFFCF2F9))
+                        .testTag("txt_time_end"),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = colorResource(R.color.card_background_dark)
+                    )
                 )
 
 
@@ -186,7 +193,10 @@ fun CreateHabitScreen() {
 
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF7B4FC3), contentColor = Color.White),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(R.color.bottom_highlight),
+                        contentColor = Color.White
+                    ),
                     modifier = Modifier
                         .padding(top = 16.dp)
                         .testTag("btn_save")
