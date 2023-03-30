@@ -1,11 +1,18 @@
 package com.github.mateo762.myapplication.home.fragments
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.*
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.getHardCodedHabits
+import com.github.mateo762.myapplication.getHardCodedImages
+import com.github.mateo762.myapplication.ui.home.TodayScreen
+import java.time.LocalDateTime
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -17,6 +24,8 @@ private const val ARG_PARAM2 = "param2"
  * Use the [TodayFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+
+
 class TodayFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -30,12 +39,21 @@ class TodayFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_today, container, false)
+        return ComposeView(requireContext()).apply {
+            setContent {
+                TodayScreen(
+                    time = LocalDateTime.now(),
+                    habits = getHardCodedHabits(),
+                    images = getHardCodedImages()
+                )
+            }
+        }
     }
 
     companion object {
@@ -58,3 +76,6 @@ class TodayFragment : Fragment() {
             }
     }
 }
+
+
+

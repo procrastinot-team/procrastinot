@@ -2,13 +2,15 @@ package com.github.mateo762.myapplication
 
 import android.app.Activity
 import android.content.Intent
+import android.widget.ImageView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.github.mateo762.myapplication.authentication.LoginActivity
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.github.mateo762.myapplication.home.HomeActivity
-import com.github.mateo762.myapplication.login.LoginActivity
 import com.github.mateo762.myapplication.profile.ProfileActivity
 import com.github.mateo762.myapplication.search.SearchActivity
 import com.github.mateo762.myapplication.settings.SettingsActivity
@@ -27,6 +29,8 @@ open class BaseActivity : AppCompatActivity() {
         drawer = findViewById(R.id.drawerLayout)
         navigationView = findViewById(R.id.navView)
         toolbar = findViewById(R.id.toolbar)
+        // The title will be set statically per activity on their individual style
+        toolbar.title = ""
         setSupportActionBar(toolbar)
         val toggle =
             ActionBarDrawerToggle(
@@ -39,6 +43,9 @@ open class BaseActivity : AppCompatActivity() {
         drawer.addDrawerListener(toggle)
         toggle.syncState()
         navigationView.setNavigationItemSelectedListener(navListener)
+        // Enable clicking the profile picture -- go to profile activity
+        val profileIcon: ImageView = findViewById(R.id.circle_imageView)
+        profileIcon.setOnClickListener { openActivitySelected(ProfileActivity()) }
     }
 
     private fun openActivitySelected(activity: Activity) {
@@ -59,6 +66,7 @@ open class BaseActivity : AppCompatActivity() {
             }
             R.id.nav_profile -> {
                 openActivitySelected(ProfileActivity())
+                drawer.closeDrawer(GravityCompat.START)
             }
             R.id.nav_settings -> {
                 openActivitySelected(SettingsActivity())

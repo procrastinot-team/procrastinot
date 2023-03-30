@@ -4,6 +4,6 @@
     android:id="@+id/register_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".register.RegisterActivity">
+    tools:context=".authentication.RegisterActivity">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

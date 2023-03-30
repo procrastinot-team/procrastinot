@@ -8,4 +8,23 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#D3D3D3</color>
+    <color name="bell_yellow">#d4cb06</color>
+
+    <!-- Calendar View customized color set-->
+    <color name="accent">#C7B1E9</color>
+    <color name="header_background">#B972FF</color>
+    <color name="day_background">#F7F2F9</color>
+    <color name="today_background">#7B4FC3</color>
+    <color name="hour_separator">#FCF2F9</color>
+    <color name="today_header_text">#FFFFFF</color>
+
+    <!-- Procrastinot customized color set-->
+    <color name="top_bar_background">#FFFBFE</color>
+    <color name="bot_bar_background">#F3EDF7</color>
+    <color name="drawer_background">#F7F2F9</color>
+    <color name="card_background_dark">#E7E0EC</color>
+    <color name="card_background_light">#FCF2F9</color>
+    <color name="element_highlight">#C7B1E9</color>
+    <color name="bottom_highlight">#7B4FC3</color>
+    <color name="dark_text">#1C1B1F</color>
 </resources>

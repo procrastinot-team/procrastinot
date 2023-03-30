@@ -1,9 +1,8 @@
 package com.github.mateo762.myapplication
 
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.test.core.app.ApplicationProvider
@@ -15,7 +14,6 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.*
-import androidx.test.uiautomator.UiDevice
 import com.github.mateo762.myapplication.settings.SettingsActivity
 import org.junit.*
 import org.junit.Assert.*
@@ -31,8 +29,6 @@ class SettingsActivityTest {
     private lateinit var context: Context
     private var timeout = 10000L
     private lateinit var decorView: View
-
-    private val TAG = SettingsActivityTest::class.java.simpleName
 
     @Before
     fun setUp() {
@@ -50,6 +46,7 @@ class SettingsActivityTest {
     @After
     fun tearDown() {
         Intents.release()
+//        context.revokeSelfPermissionOnKill(POST_NOTIFICATIONS)
     }
 
     @Test
@@ -62,11 +59,7 @@ class SettingsActivityTest {
                 android.Manifest.permission.POST_NOTIFICATIONS
             )
 
-        Log.d(TAG, "permissionStatus = $permissionStatus")
-        Log.d(TAG, "Android version = ${Build.VERSION.SDK_INT}")
-
         if (PackageManager.PERMISSION_DENIED == permissionStatus) {
-            Log.d(TAG, "inside if")
             uiDevice.wait(Until.hasObject(By.textContains("Allow")), timeout)
             uiDevice.findObject(UiSelector().text(("Allow"))).click()
         }
