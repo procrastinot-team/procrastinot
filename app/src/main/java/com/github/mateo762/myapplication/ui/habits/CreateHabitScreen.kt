@@ -114,7 +114,10 @@ fun CreateHabitScreen() {
                         Text(text = stringResource(R.string.create_habit_start_time_button_text))
                     }
                     Text(
-                        text = "Chosen start time = ${habitStartTime.value}", modifier = Modifier
+                        text = stringResource(
+                            R.string.create_habit_start_time_text,
+                            habitStartTime.value
+                        ), modifier = Modifier
                             .padding(16.dp)
                             .testTag("txt_start_time_text")
                     )
@@ -132,7 +135,10 @@ fun CreateHabitScreen() {
                         Text(text = stringResource(R.string.create_habit_end_time_button_text))
                     }
                     Text(
-                        text = "Chosen end time = ${habitEndTime.value}", modifier = Modifier
+                        text = stringResource(
+                            R.string.create_habit_end_time_text,
+                            habitEndTime.value
+                        ), modifier = Modifier
                             .padding(16.dp)
                             .testTag("txt_end_time_text")
                     )
