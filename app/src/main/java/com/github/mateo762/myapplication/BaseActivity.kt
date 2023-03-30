@@ -2,6 +2,7 @@ package com.github.mateo762.myapplication
 
 import android.app.Activity
 import android.content.Intent
+import android.widget.ImageView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -40,6 +41,9 @@ open class BaseActivity : AppCompatActivity() {
         drawer.addDrawerListener(toggle)
         toggle.syncState()
         navigationView.setNavigationItemSelectedListener(navListener)
+        // Enable clicking the profile picture
+        val profileIcon: ImageView = findViewById(R.id.circle_imageView)
+        profileIcon.setOnClickListener { openActivitySelected(ProfileActivity()) }
     }
 
     private fun openActivitySelected(activity: Activity) {

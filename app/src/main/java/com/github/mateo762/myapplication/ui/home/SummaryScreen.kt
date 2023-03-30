@@ -60,7 +60,6 @@ fun HabitListItem(habit: Habit) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .testTag(habit.name)
-            .background(Color(0xFFFCF2F9))
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
