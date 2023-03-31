@@ -23,6 +23,7 @@ class SearchActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        super.onCreateDrawer()
         setupToolbar()
 
         val layoutManager = LinearLayoutManager(this)
