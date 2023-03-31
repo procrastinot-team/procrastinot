@@ -57,4 +57,5 @@
     <string name="create_habit_start_time_button_text">Choose Start Time</string>
     <string name="create_habit_end_time_text">Chosen end time = %s</string>
     <string name="create_habit_start_time_text">Chosen start time = %s</string>
+    <string name="search_people">Search People</string>
 </resources>
