@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [UserEntity::class, HabitEntity::class, PostEntity::class], version = 1)
+@Database(entities = [UserEntity::class, HabitEntity::class, PostEntity::class], version = 2)
 @TypeConverters(HabitTypeConverter::class)
 abstract class ApplicationDatabase : RoomDatabase() {
     abstract fun getUserDao(): UserDao
@@ -17,6 +17,8 @@ abstract class ApplicationDatabase : RoomDatabase() {
         Room.databaseBuilder(
             it.applicationContext, ApplicationDatabase::class.java,
             "procrastinot.db"
-        ).build()
+        )
+        .fallbackToDestructiveMigration()
+        .build()
     })
 }

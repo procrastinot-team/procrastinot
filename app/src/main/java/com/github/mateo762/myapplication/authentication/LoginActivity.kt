@@ -10,6 +10,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.home.HomeActivity
+import com.github.mateo762.myapplication.room.HabitEntity
+import com.github.mateo762.myapplication.room.UserEntity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -18,6 +20,8 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class LoginActivity : AppCompatActivity() {
@@ -66,18 +70,14 @@ class LoginActivity : AppCompatActivity() {
 
         // add null check on text values
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(
-                baseContext, "No values inserted. Please fill in the email and " +
-                        "password to sign in",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(baseContext, R.string.error_empty_login,
+                Toast.LENGTH_SHORT).show()
         } else {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-
                         Toast.makeText(
-                            baseContext, "Successfully logged in!",
+                            baseContext, R.string.success_login,
                             Toast.LENGTH_SHORT
                         ).show()
                         val intent = Intent(this, HomeActivity::class.java)
@@ -99,10 +99,34 @@ class LoginActivity : AppCompatActivity() {
                 val credential = GoogleAuthProvider.getCredential(account.idToken, null)
                 auth.signInWithCredential(credential).addOnCompleteListener {
                     if (it.isSuccessful) {
-                        Toast.makeText(
-                            baseContext, "Successfully logged in!",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        if (intent.hasExtra("from")) {
+                            val db: DatabaseReference = Firebase.database.reference
+
+                            val user = FirebaseAuth.getInstance().currentUser
+                            val uid = user?.uid
+                            val email = user?.email
+                            if (uid == null || email == null) {
+                                Toast.makeText(
+                                    this@LoginActivity, R.string.email_error,Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                val users: MutableMap<String, UserEntity> = HashMap()
+                                val u = UserEntity(uid,email,ArrayList<HabitEntity>())
+                                users[uid] = u
+                                db.child("users").updateChildren(users as Map<String, Any>)
+                                    .addOnSuccessListener {
+                                        Toast.makeText(baseContext, R.string.success_register,
+                                            Toast.LENGTH_SHORT).show()
+                                    }.addOnFailureListener {
+                                        Toast.makeText(
+                                            this@LoginActivity, R.string.try_again_error, Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                            }
+                        } else {
+                              Toast.makeText(baseContext, R.string.success_login,
+                                  Toast.LENGTH_SHORT).show()
+                        }
                         val intent = Intent(this, HomeActivity::class.java)
                         startActivity(intent)
                     } else {
