@@ -17,8 +17,10 @@ import com.github.mateo762.myapplication.settings.SettingsActivity
 import com.github.mateo762.myapplication.upload_gallery.UploadPictureActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
     private lateinit var drawer: DrawerLayout
     private lateinit var navigationView: NavigationView
