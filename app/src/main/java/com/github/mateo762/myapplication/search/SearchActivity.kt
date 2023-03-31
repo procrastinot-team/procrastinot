@@ -42,9 +42,8 @@ class SearchActivity : BaseActivity() {
 
         binding.recyclerView.adapter = adapter
 
-        val searchEditText = binding.searchEditText
         // Update adapter's filter when search bar text changes
-        searchEditText.doOnTextChanged { text, _, _, _ ->
+        binding.searchEditText.doOnTextChanged { text, _, _, _ ->
             adapter.filter(text.toString())
         }
     }
