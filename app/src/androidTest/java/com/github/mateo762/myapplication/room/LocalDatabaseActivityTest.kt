@@ -5,7 +5,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.containsInAnyOrder
 import org.junit.After
 import org.junit.Before
@@ -152,7 +151,7 @@ class LocalDatabaseActivityTest {
 
 
     private fun createTestUser(username: String): UserEntity {
-        return UserEntity(0, username, testHabitList)
+        return UserEntity("1", username, testHabitList)
     }
 
 }
