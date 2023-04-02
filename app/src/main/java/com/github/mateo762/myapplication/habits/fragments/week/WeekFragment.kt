@@ -6,13 +6,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.text.toLowerCase
+import androidx.compose.ui.text.toUpperCase
 import androidx.fragment.app.Fragment
+import com.alamkanak.weekview.DateTimeInterpreter
 import com.alamkanak.weekview.MonthLoader
 import com.alamkanak.weekview.WeekView
 import com.alamkanak.weekview.WeekViewEvent
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.getHardCodedHabits
+import java.text.SimpleDateFormat
 import java.util.*
 
 class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.EventLongPressListener,
@@ -38,6 +44,27 @@ class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.EventLong
         weekView.eventLongPressListener = this
         weekView.emptyViewLongPressListener = this
         weekView.monthChangeListener = this
+        weekView.dateTimeInterpreter = object : DateTimeInterpreter {
+            override fun interpretDate(date: Calendar): String {
+                val weekdayNameFormat = SimpleDateFormat("EEE", Locale.getDefault())
+                val weekday = weekdayNameFormat.format(date.time)
+                val format = SimpleDateFormat(" M/d", Locale.getDefault())
+
+                return weekday.toUpperCase()
+            }
+
+            override fun interpretTime(hour: Int, minutes: Int): String {
+                val calendar = Calendar.getInstance()
+                calendar.set(Calendar.HOUR_OF_DAY, hour)
+                calendar.set(Calendar.MINUTE, 0)
+
+                val sdf = SimpleDateFormat("h a", Locale.getDefault())
+                return sdf.format(calendar.time)
+            }
+        }
+
+
+
         var eventId = 1L
         var habitsList = getHardCodedHabits()
         habitsList.forEach { habit ->
