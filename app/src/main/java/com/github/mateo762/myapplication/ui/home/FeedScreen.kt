@@ -1,6 +1,8 @@
 package com.github.mateo762.myapplication.ui.home
 
+import android.content.Intent
 import android.media.Image
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -12,10 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import com.github.mateo762.myapplication.R
 
 
@@ -30,14 +34,14 @@ fun FeedScreen(images: List<Image>){
         .fillMaxSize()
         .padding(10.dp)) {
         PostThumbnail(image = null)
-        //Spacer(modifier = Modifier.height(1.dp))
         PostThumbnail(image = null)
     }
 }
 
 @Composable
 fun PostThumbnail(image: Image?) {
-        Box(
+    val context = LocalContext.current
+    Box(
             // Post box
             modifier = Modifier
                 .background(
@@ -53,6 +57,8 @@ fun PostThumbnail(image: Image?) {
                 Box(
                     modifier = Modifier
                         .size(400.dp, 250.dp)
+                        .clickable{ Toast.makeText(context, "This opens the post in PostActivity", Toast.LENGTH_SHORT).show()}
+                        // .clickable{startActivity(context, Intent(PostActivity::class.java))}
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.window),
@@ -67,7 +73,8 @@ fun PostThumbnail(image: Image?) {
 
 @Composable
 fun UserCard() {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    val context = LocalContext.current
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable{ Toast.makeText(context, "This takes you to the poster's profile", Toast.LENGTH_SHORT).show()}) {
         Image(
             painter = painterResource(R.drawable.ic_android),
             contentDescription = "avatar",
