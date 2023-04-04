@@ -18,9 +18,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.post.PostActivity
 
 
 @Composable
@@ -33,13 +35,13 @@ fun FeedScreen(images: List<Image>){
         .verticalScroll(rememberScrollState())
         .fillMaxSize()
         .padding(10.dp)) {
-        PostThumbnail(image = null)
-        PostThumbnail(image = null)
+        PostThumbnail(image = null, "Went to social event for the first time")
+        PostThumbnail(image = null, "Practiced ballroom dancing")
     }
 }
 
 @Composable
-fun PostThumbnail(image: Image?) {
+fun PostThumbnail(image: Image?, caption : String) {
     val context = LocalContext.current
     Box(
             // Post box
@@ -52,18 +54,21 @@ fun PostThumbnail(image: Image?) {
                 .size(400.dp, 300.dp)
         ) {
             Column {
-                UserCard()
+                UserCard(caption)
                 Spacer(modifier = Modifier.height(16.dp))
                 Box(
                     modifier = Modifier
                         .size(400.dp, 250.dp)
                         .clickable{ Toast.makeText(context, "This opens the post in PostActivity", Toast.LENGTH_SHORT).show()}
-                        // .clickable{startActivity(context, Intent(PostActivity::class.java))}
+                        .clickable{
+                            val intent = Intent(context, PostActivity::class.java)
+                            startActivity(context, intent, null)
+                        }
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.window),
                         contentDescription = stringResource(id = R.string.sample_post_content),
-                        contentScale = ContentScale.FillBounds)
+                        contentScale = ContentScale.Crop)
                 }
             }
         }
@@ -72,7 +77,7 @@ fun PostThumbnail(image: Image?) {
 
 
 @Composable
-fun UserCard() {
+fun UserCard(caption : String) {
     val context = LocalContext.current
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable{ Toast.makeText(context, "This takes you to the poster's profile", Toast.LENGTH_SHORT).show()}) {
         Image(
@@ -91,10 +96,13 @@ fun UserCard() {
         Spacer(modifier = Modifier.width(10.dp))
         Column {
             Text(
-                text = "Post Caption", style = MaterialTheme.typography.h6,
+                text = caption,
+                style = MaterialTheme.typography.h6,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = "@username",
+                text = "@berserk_man",
                 style = MaterialTheme.typography.body1,
             )
         }
