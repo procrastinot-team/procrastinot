@@ -1,5 +1,8 @@
 package com.github.mateo762.myapplication.habits.fragments.week
 
+import android.graphics.Color
+import com.github.mateo762.myapplication.habits.fragments.week.CustomWeekView
+// ...
 import android.graphics.RectF
 import android.os.Build
 import android.os.Bundle
@@ -24,7 +27,7 @@ import java.util.*
 class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.EventLongPressListener,
     WeekView.EmptyViewLongPressListener, MonthLoader.MonthChangeListener {
 
-    private lateinit var weekView: WeekView
+    private lateinit var weekView: CustomWeekView
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -44,6 +47,7 @@ class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.EventLong
         weekView.eventLongPressListener = this
         weekView.emptyViewLongPressListener = this
         weekView.monthChangeListener = this
+        weekView.firstDayOfWeek = Calendar.MONDAY
         weekView.dateTimeInterpreter = object : DateTimeInterpreter {
             override fun interpretDate(date: Calendar): String {
                 val weekdayNameFormat = SimpleDateFormat("EEE", Locale.getDefault())
@@ -63,12 +67,18 @@ class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.EventLong
             }
         }
 
+        // Scroll to the Monday of the current week
+        val today = Calendar.getInstance()
+        val daysFromMonday = (today.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY + 7) % 7
+        today.add(Calendar.DATE, -daysFromMonday)
+        weekView.goToDate(today)
 
 
+        var colorIndex = 0
         var eventId = 1L
         var habitsList = getHardCodedHabits()
         habitsList.forEach { habit ->
-            val weekViewEvents = habitToWeekViewEvent(habit, eventId)
+            val weekViewEvents = habitToWeekViewEvent(habit, eventId, colorsArray[colorIndex++])
             eventsList.addAll(weekViewEvents)
             eventId += weekViewEvents.size
         }
@@ -92,4 +102,22 @@ class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.EventLong
     override fun onEmptyViewLongPress(time: Calendar) {
         // Handle empty view long press
     }
+
+    private val colorsArray = arrayOf(
+        Color.parseColor("#F44336"), // Red
+        Color.parseColor("#E91E63"), // Pink
+        Color.parseColor("#3F51B5"), // Indigo
+        Color.parseColor("#2196F3"), // Blue
+        Color.parseColor("#03A9F4"), // Light Blue
+        Color.parseColor("#00BCD4"), // Cyan
+        Color.parseColor("#009688"), // Teal
+        Color.parseColor("#4CAF50"), // Green
+        Color.parseColor("#8BC34A"), // Light Green
+        Color.parseColor("#CDDC39"), // Lime
+        Color.parseColor("#FFEB3B"), // Yellow
+        Color.parseColor("#FFC107"), // Amber
+        Color.parseColor("#FF9800"), // Orange
+        Color.parseColor("#FF5722"), // Deep Orange
+        Color.parseColor("#795548")  // Brown
+    )
 }
