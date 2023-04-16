@@ -17,14 +17,16 @@ import java.util.*
 private var colorIndex = 0
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun habitToWeekViewEvent(habit: Habit, eventId: Long, color: Int): List<WeekViewEvent> {
+fun habitToWeekViewEvent(
+    habit: Habit, eventId: Long, color: Int, currentTime: LocalDateTime
+): List<WeekViewEvent> {
     val events = mutableListOf<WeekViewEvent>()
     val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
     val startTime = LocalTime.parse(habit.startTime, timeFormatter)
     val endTime = LocalTime.parse(habit.endTime, timeFormatter).minusMinutes(1)
 
-    val now = LocalDateTime.now()
+    val now = currentTime
     val startOfWeek = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
     val endOfWeek = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
 

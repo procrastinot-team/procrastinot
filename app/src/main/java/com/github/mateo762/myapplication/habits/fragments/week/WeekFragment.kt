@@ -15,19 +15,26 @@ import androidx.annotation.RequiresApi
 import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.text.toUpperCase
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.alamkanak.weekview.DateTimeInterpreter
 import com.alamkanak.weekview.MonthLoader
 import com.alamkanak.weekview.WeekView
 import com.alamkanak.weekview.WeekViewEvent
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.getHardCodedHabits
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 
-class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.EventLongPressListener,
+open class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.EventLongPressListener,
     WeekView.EmptyViewLongPressListener, MonthLoader.MonthChangeListener {
 
     private lateinit var weekView: CustomWeekView
+    @RequiresApi(Build.VERSION_CODES.O)
+    var habits = getHardCodedHabits()
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -74,13 +81,22 @@ class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.EventLong
         weekView.goToDate(today)
 
 
-        var colorIndex = 0
-        var eventId = 1L
-        var habitsList = getHardCodedHabits()
-        habitsList.forEach { habit ->
-            val weekViewEvents = habitToWeekViewEvent(habit, eventId, colorsArray[colorIndex++])
-            eventsList.addAll(weekViewEvents)
-            eventId += weekViewEvents.size
+        // Wrap the code block with launch
+        lifecycleScope.launch {
+            var colorIndex = 0
+            var eventId = 1L
+            val habitsList = habits
+
+            withContext(Dispatchers.Default) {
+                habitsList.forEach { habit ->
+                    val weekViewEvents = habitToWeekViewEvent(habit, eventId, colorsArray[colorIndex++], LocalDateTime.now())
+                    eventsList.addAll(weekViewEvents)
+                    eventId += weekViewEvents.size
+                }
+            }
+
+            // Update the UI after processing is complete
+            weekView.notifyDatasetChanged()
         }
     }
 
