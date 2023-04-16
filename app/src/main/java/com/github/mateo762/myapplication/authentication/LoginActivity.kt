@@ -12,6 +12,7 @@ import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.home.HomeActivity
 import com.github.mateo762.myapplication.room.HabitEntity
 import com.github.mateo762.myapplication.room.UserEntity
+import com.github.mateo762.myapplication.username.UsernameActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -117,18 +118,21 @@ class LoginActivity : AppCompatActivity() {
                                     .addOnSuccessListener {
                                         Toast.makeText(baseContext, R.string.success_register,
                                             Toast.LENGTH_SHORT).show()
+                                        val intent = Intent(this, UsernameActivity::class.java)
+                                        startActivity(intent)
                                     }.addOnFailureListener {
                                         Toast.makeText(
                                             this@LoginActivity, R.string.try_again_error, Toast.LENGTH_SHORT
                                         ).show()
                                     }
                             }
+
                         } else {
                               Toast.makeText(baseContext, R.string.success_login,
                                   Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this, HomeActivity::class.java)
+                            startActivity(intent)
                         }
-                        val intent = Intent(this, HomeActivity::class.java)
-                        startActivity(intent)
                     } else {
                         Toast.makeText(
                             baseContext, task.exception!!.message,
