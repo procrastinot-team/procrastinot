@@ -1,39 +1,48 @@
 package com.github.mateo762.myapplication.post
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.mateo762.myapplication.R
 
 class PostActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { ShowPost() }
+        val postTitle = intent.getStringExtra("postTitle")
+        val postBody = intent.getStringExtra("postBody")
+        val postUsername = intent.getStringExtra("postUsername")
+        setContent {
+            if (postTitle != null && postBody != null && postUsername != null) {
+                ShowPost(postTitle, postBody, postUsername)
+            }
+        }
     }
 
     @Composable
-    fun ShowPost() {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(colorResource(R.color.white)))
+    fun ShowPost(postTitle: String, postBody: String, postUsername: String) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(colorResource(R.color.white))
+        )
         {
             Column(
                 modifier = Modifier
@@ -43,19 +52,70 @@ class PostActivity : AppCompatActivity() {
                     .background(colorResource(R.color.white))
             ) {
                 Column {
+                    PostUserCard(username = postUsername)
+                    Spacer(modifier = Modifier.height(10.dp))
                     Image(
+                        // TODO: replace with actual image content from Firebase passed with intent
                         painter = painterResource(id = R.drawable.window),
                         contentDescription = stringResource(id = R.string.sample_post_content),
-                        contentScale = ContentScale.Crop
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .height(450.dp)
+                            .width(400.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .testTag("post_image")
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = postTitle,
+                        style = MaterialTheme.typography.h5,
+                        modifier = Modifier.testTag("post_title")
                     )
                     Text(
-                        text = "Went to social event for the first time",
-                        style = MaterialTheme.typography.h5
-                    )
-                    Text(
-                        text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                        text = postBody,
+                        modifier = Modifier.testTag("post_body")
                     )
                 }
+            }
+        }
+    }
+
+
+    @Composable
+    fun PostUserCard(username: String) {
+        val context = LocalContext.current
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .testTag("post_user_card")
+                .clickable {
+                Toast.makeText(
+                    context,
+                    "This takes you to the poster's profile",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }) {
+            Image(
+                painter = painterResource(R.drawable.ic_android),
+                contentDescription = "avatar",
+                contentScale = ContentScale.Crop,            // crop the image if it's not a square
+                modifier = Modifier
+                    .size(37.dp)
+                    .clip(CircleShape)                       // clip to the circle shape
+                    .border(
+                        1.dp,
+                        colorResource(R.color.today_background),
+                        CircleShape
+                    )   // add a border (optional)
+                    .testTag("user_card_avatar")
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Column {
+                Text(
+                    text = username,
+                    style = MaterialTheme.typography.h5,
+                    modifier = Modifier.testTag("user_card_username")
+                )
             }
         }
     }

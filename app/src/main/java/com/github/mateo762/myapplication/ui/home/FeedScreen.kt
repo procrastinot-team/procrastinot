@@ -35,13 +35,14 @@ fun FeedScreen(images: List<Image>){
         .verticalScroll(rememberScrollState())
         .fillMaxSize()
         .padding(10.dp)) {
-        PostThumbnail(image = null, "Went to social event for the first time")
-        PostThumbnail(image = null, "Practiced ballroom dancing")
+        // This is a for loop once everything is set correctly and the parameters are passed  to create the post
+        PostThumbnail("@berserk_man", image = null, "Went to social event for the first time", "Sample body text...")
+        PostThumbnail("@berserk_man", image = null, "Practiced dance moves", "Sample body text...")
     }
 }
 
 @Composable
-fun PostThumbnail(image: Image?, caption : String) {
+fun PostThumbnail(username : String, image: Image?, caption : String, body : String) {
     val context = LocalContext.current
     Box(
             // Post box
@@ -54,14 +55,19 @@ fun PostThumbnail(image: Image?, caption : String) {
                 .size(400.dp, 300.dp)
         ) {
             Column {
-                UserCard(caption)
+                UserCard(caption, username)
                 Spacer(modifier = Modifier.height(16.dp))
                 Box(
                     modifier = Modifier
                         .size(400.dp, 250.dp)
-                        .clickable{ Toast.makeText(context, "This opens the post in PostActivity", Toast.LENGTH_SHORT).show()}
                         .clickable{
                             val intent = Intent(context, PostActivity::class.java)
+                            intent.putExtra("postTitle", caption)
+                            intent.putExtra("postBody", body)
+                            intent.putExtra("postUsername", username)
+                            // TODO: replace with actual image content from Firebase
+                            // Unused for now
+                            intent.putExtra("imageContents", ByteArray(512))
                             startActivity(context, intent, null)
                         }
                 ) {
@@ -77,7 +83,7 @@ fun PostThumbnail(image: Image?, caption : String) {
 
 
 @Composable
-fun UserCard(caption : String) {
+fun UserCard(caption : String, username : String) {
     val context = LocalContext.current
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable{ Toast.makeText(context, "This takes you to the poster's profile", Toast.LENGTH_SHORT).show()}) {
         Image(
@@ -102,7 +108,7 @@ fun UserCard(caption : String) {
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = "@berserk_man",
+                text = username,
                 style = MaterialTheme.typography.body1,
             )
         }
