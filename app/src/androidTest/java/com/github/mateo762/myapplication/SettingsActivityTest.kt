@@ -81,6 +81,7 @@ class SettingsActivityTest {
         val text: UiObject2 = uiDevice.findObject(By.textStartsWith(expectedContent))
         assertEquals(expectedTitle, title.text)
         assertTrue(text.text.startsWith(expectedContent))
-        uiDevice.findObject(By.textStartsWith("Clear all")).click()
+//        uiDevice.findObject(By.textStartsWith("Clear all")).click()
+        uiDevice.pressBack()
     }
 }

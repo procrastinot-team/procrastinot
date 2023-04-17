@@ -1,6 +1,5 @@
 package com.github.mateo762.myapplication
 
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
