@@ -1,5 +1,6 @@
 package com.github.mateo762.myapplication
 
+import android.os.SystemClock
 import android.view.View
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.core.app.ActivityScenario
@@ -22,25 +23,26 @@ import com.github.mateo762.myapplication.TestData.emptyHabits
 import com.github.mateo762.myapplication.TestData.hardCodedHabits
 import com.github.mateo762.myapplication.TestData.hardCodedImages
 import com.github.mateo762.myapplication.TestData.noTodayHabits
+import com.github.mateo762.myapplication.TestData.testHabits
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.time.LocalDateTime
 import java.util.*
-/*
+
 @RunWith(AndroidJUnit4::class)
 class WeekViewFragmentTest {
 
-    var customTime = LocalDateTime.of(2023, 4, 16, 13, 0)
+    private lateinit var testFragment :WeekFragment
 
+    @Before
+    fun setUp() {
+        testFragment = WeekFragment().apply { habits = testHabits }
+    }
     @Test
     fun weekView_isDisplayed() {
-
-        // Override the getHardCodedHabits function to return custom habits for testing
-        val testFragment = object : WeekFragment(){}
-        testFragment.habits = hardCodedHabits
-
         // Launch the WeekFragment in a container
         launchFragmentInContainer<WeekFragment>()
+
 
         // Add assertions for the expected events displayed in the WeekView
         onView(withId(R.id.weekView))
@@ -51,6 +53,8 @@ class WeekViewFragmentTest {
 
     @Test
     fun weekView_displaysCorrectNumberOfVisibleDays() {
+        launchFragmentInContainer<WeekFragment>()
+
         val expectedVisibleDays =
             7 // Replace this with the number of visible days you set in WeekFragment
         onView(
@@ -73,4 +77,3 @@ class WeekViewFragmentTest {
         }
     }
 }
-*/

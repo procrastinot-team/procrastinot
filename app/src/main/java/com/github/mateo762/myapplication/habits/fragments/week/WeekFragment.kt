@@ -33,6 +33,7 @@ open class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.Even
     WeekView.EmptyViewLongPressListener, MonthLoader.MonthChangeListener {
 
     private lateinit var weekView: CustomWeekView
+
     @RequiresApi(Build.VERSION_CODES.O)
     var habits = getHardCodedHabits()
 
@@ -73,16 +74,14 @@ open class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.Even
                 return sdf.format(calendar.time)
             }
         }
-
-        // Scroll to the Monday of the current week
-        val today = Calendar.getInstance()
-        val daysFromMonday = (today.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY + 7) % 7
-        today.add(Calendar.DATE, -daysFromMonday)
-        weekView.goToDate(today)
-
-
         // Wrap the code block with launch
-        lifecycleScope.launch {
+        var colorIndex = 0
+        var eventId = 1L
+        val habitsList = habits
+
+
+        // Use launchWhenResumed instead of launch
+        lifecycleScope.launchWhenResumed {
             var colorIndex = 0
             var eventId = 1L
             val habitsList = habits
@@ -98,6 +97,15 @@ open class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.Even
             // Update the UI after processing is complete
             weekView.notifyDatasetChanged()
         }
+
+
+        // Scroll to the Monday of the current week
+        val today = Calendar.getInstance()
+        val daysFromMonday = (today.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY + 7) % 7
+        today.add(Calendar.DATE, -daysFromMonday)
+        weekView.goToDate(today)
+
+
     }
 
     private val eventsList = mutableListOf<WeekViewEvent>()
