@@ -163,6 +163,9 @@ dependencies {
     kaptTest 'com.google.dagger:hilt-compiler:2.45'
     implementation 'com.github.bumptech.glide:glide:4.15.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'
+
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
+    androidTestImplementation 'androidx.arch.core:core-testing:2.2.0'
 }
 
 // Allow references to generated code
