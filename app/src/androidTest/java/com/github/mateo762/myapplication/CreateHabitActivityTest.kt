@@ -27,11 +27,10 @@ class CreateHabitActivityTest {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val activityRule = ActivityScenarioRule(HabitsActivity::class.java)
-
-    @get:Rule(order = 2)
     val composeTestRule = createComposeRule()
 
+    @get:Rule(order = 2)
+    val activityRule = ActivityScenarioRule(HabitsActivity::class.java)
 
     private lateinit var habitName: String
     private lateinit var habitDays: List<DayOfWeek>
