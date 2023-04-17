@@ -23,13 +23,15 @@ import java.util.*
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class CreateHabitActivityTest {
-    @get:Rule
+    @get:Rule(order = 0)
+    val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 1)
     val activityRule = ActivityScenarioRule(HabitsActivity::class.java)
 
-    @get:Rule
+    @get:Rule(order = 2)
     val composeTestRule = createComposeRule()
-    @get:Rule
-    val hiltRule = HiltAndroidRule(this)
+
 
     private lateinit var habitName: String
     private lateinit var habitDays: List<DayOfWeek>
