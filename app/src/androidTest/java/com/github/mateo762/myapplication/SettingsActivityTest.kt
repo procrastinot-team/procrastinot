@@ -1,6 +1,5 @@
 package com.github.mateo762.myapplication
 
-import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.Context
 import android.content.pm.PackageManager
 import android.view.View
@@ -15,12 +14,18 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.*
 import com.github.mateo762.myapplication.settings.SettingsActivity
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.*
 import org.junit.Assert.*
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
 class SettingsActivityTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
     val activityRule = ActivityScenarioRule(SettingsActivity::class.java)
@@ -32,6 +37,7 @@ class SettingsActivityTest {
 
     @Before
     fun setUp() {
+        hiltRule.inject()
         activityRule.scenario.onActivity {
             decorView = it.window.decorView
         }

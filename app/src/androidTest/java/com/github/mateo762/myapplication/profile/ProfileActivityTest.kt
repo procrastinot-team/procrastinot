@@ -13,13 +13,19 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.*
 import com.github.mateo762.myapplication.R
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
 class ProfileActivityTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
     val activityRule = ActivityScenarioRule(ProfileActivity::class.java)
@@ -28,6 +34,7 @@ class ProfileActivityTest {
 
     @Before
     fun setUp() {
+        hiltRule.inject()
         context = ApplicationProvider.getApplicationContext()
     }
 
