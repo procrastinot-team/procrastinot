@@ -1,19 +1,14 @@
 package com.github.mateo762.myapplication.habits.fragments.week
 
-import android.graphics.Color
-import com.github.mateo762.myapplication.habits.fragments.week.CustomWeekView
 // ...
+import android.graphics.Color
 import android.graphics.RectF
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.text.toLowerCase
-import androidx.compose.ui.text.toUpperCase
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.alamkanak.weekview.DateTimeInterpreter
@@ -23,7 +18,6 @@ import com.alamkanak.weekview.WeekViewEvent
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.getHardCodedHabits
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -88,7 +82,12 @@ open class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.Even
 
             withContext(Dispatchers.Default) {
                 habitsList.forEach { habit ->
-                    val weekViewEvents = habitToWeekViewEvent(habit, eventId, colorsArray[colorIndex++], LocalDateTime.now())
+                    val weekViewEvents = habitToWeekViewEvent(
+                        habit,
+                        eventId,
+                        colorsArray[colorIndex++],
+                        LocalDateTime.now()
+                    )
                     eventsList.addAll(weekViewEvents)
                     eventId += weekViewEvents.size
                 }

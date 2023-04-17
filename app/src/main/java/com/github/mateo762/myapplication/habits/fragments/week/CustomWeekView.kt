@@ -1,9 +1,7 @@
 package com.github.mateo762.myapplication.habits.fragments.week
 
 import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import com.alamkanak.weekview.WeekView

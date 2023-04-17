@@ -1,6 +1,5 @@
 package com.github.mateo762.myapplication.habits.fragments.week
 
-import android.graphics.Color
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.alamkanak.weekview.WeekViewEvent
