@@ -1,6 +1,7 @@
 package com.github.mateo762.myapplication.ui.home
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,23 +11,34 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.FragmentActivity
 import com.github.mateo762.myapplication.Habit
+import com.github.mateo762.myapplication.HabitImage
 import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.TAG
+import com.github.mateo762.myapplication.ui.upload.UploadFragment
+import com.google.accompanist.coil.rememberCoilPainter
 import java.time.*
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TodayScreen(time: LocalDateTime, habits: List<Habit>, images: Array<Int>) {
+fun TodayScreen(time: LocalDateTime, habits: List<Habit>, images: List<HabitImage>) {
+    Log.d(TAG, "Habit images today screen. $images")
+    val context = LocalContext.current
     val today = time.dayOfWeek
     val now = time.toLocalTime()
     val todayHabits = habits.filter { it.days.contains(today) }
@@ -44,6 +56,15 @@ fun TodayScreen(time: LocalDateTime, habits: List<Habit>, images: Array<Int>) {
             dayDiff * 24 * 60 + minutesUntilStartTime(habit.startTime, now)
         }
         ?.first
+
+    val imagesForNextUpHabit = images
+        .sortedByDescending { it.date }
+        .filter { it.habitId == nextUpHabit?.id }
+        .take(3)
+    Log.d(TAG, "Nextuphabit id: ${nextUpHabit?.id}")
+    Log.d(TAG, "images id: ${images}")
+    Log.d(TAG, "imagesForNextUpHabit id: ${imagesForNextUpHabit}")
+
 
     val nextUpHabitDay = habits.flatMap { habit -> habit.days.map { day -> habit to day } }
         .filter { (habit, day) ->
@@ -191,39 +212,55 @@ fun TodayScreen(time: LocalDateTime, habits: List<Habit>, images: Array<Int>) {
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        ImageRow(images = images, modifier = Modifier.fillMaxWidth())
+        ImageRow(imagesUrls = imagesForNextUpHabit.map { it -> it.url }, modifier = Modifier.fillMaxWidth())
+        Button(onClick = {
+            val fragmentManager = (context as? FragmentActivity)?.supportFragmentManager
+            fragmentManager?.beginTransaction()?.replace(
+                R.id.navHostFragment,
+                UploadFragment()
+            )?.commit()
+        }) {
+            Text("Go to Upload")
+        }
     }
 }
 
 @Composable
-fun ImageRow(images: Array<Int>, modifier: Modifier = Modifier) {
+fun ImageRow(imagesUrls: List<String>, modifier: Modifier = Modifier) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentSize(Alignment.Center)
     ) {
         Row(modifier = modifier) {
-            for (image in images) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .aspectRatio(0.7f)
-                        .background(
-                            colorResource(R.color.card_background_light),
-                            RoundedCornerShape(8.dp)
-                        )
-                ) {
-                    Image(
-                        painter = painterResource(id = image),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .testTag("image")
-                    )
-                }
-                Spacer(modifier = Modifier.width(16.dp))
+            for (imageUrl in imagesUrls) {
+                val painter = rememberCoilPainter(request = imageUrl, fadeIn = true)
+                DisplayImage(painter, imageUrl, Modifier.weight(1f))
             }
         }
+    }
+}
+@Composable
+fun DisplayImage(painter: Painter, imageUrl: String, modifier: Modifier = Modifier) {
+    val cornerShape = RoundedCornerShape(12.dp)
+
+    Box(
+        modifier = modifier
+            .padding(4.dp) // Add padding for separation
+            .aspectRatio(0.7f)
+            .background(
+                colorResource(R.color.card_background_light),
+                cornerShape
+            )
+    ) {
+        Image(
+            painter = painter,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(cornerShape) // Clip the image with the same corner shape
+                .testTag("image")
+        )
     }
 }
 
