@@ -7,6 +7,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.home.HomeActivity
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Service for habit notifications.
@@ -16,10 +17,11 @@ class HabitNotificationService(
     private val notificationManager: NotificationManager
 ) {
 
+    private var notificationIdCounter: AtomicInteger = AtomicInteger()
+
     companion object {
         const val HABIT_CHANNEL_ID = "habit_channel"
         const val PENDING_INTENT_REQUEST_CODE = 13
-        const val NOTIFICATION_ID = 1
     }
 
     /**
@@ -40,6 +42,6 @@ class HabitNotificationService(
             .setContentIntent(pendingActivityIntent)
             .build()
 
-        notificationManager.notify(NOTIFICATION_ID, notification)
+        notificationManager.notify(notificationIdCounter.getAndIncrement(), notification)
     }
 }
