@@ -17,7 +17,7 @@ class HabitNotificationService(
     private val notificationManager: NotificationManager
 ) {
 
-    private var notificationIdCounter: AtomicInteger = AtomicInteger()
+    private var notificationIdCounter: AtomicInteger = AtomicInteger(1)
 
     companion object {
         const val HABIT_CHANNEL_ID = "habit_channel"
