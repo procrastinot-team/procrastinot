@@ -12,12 +12,17 @@ import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.time.DayOfWeek
 import java.util.Objects
+import java.util.concurrent.CountDownLatch
 
 /**
  * Activity for displaying the profile information.
@@ -34,29 +39,6 @@ class ProfileActivity : BaseActivity() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val db: DatabaseReference = Firebase.database.reference
-
-        val ref = db.child("users/${user?.uid}/habit_list").get().addOnCompleteListener() {
-            task ->
-            val doc = task.result
-            println(doc)
-//            val u = it.getValue(Habit::class.java) as Habit
-//            println(u.toString())
-//            val snap = doc.toString()
-//            val json = "[".plus(snap.substring(1,snap.length - 1)).plus("]")
-//            val gson = Gson()
-//            val v = (Habit::class.java)
-//            val list = ArrayList<Habit>()
-//            for (i in v.values) {
-//                list.add(gson.fromJson<Habit>(i,Habit::class.java))
-//            }
-//            val type = object : TypeToken<ArrayList<Habit>>() {}.type!!
-//            val list = gson.fromJson<Habit>(snap,type)
-//            println(list)
-//            val u = gson.fromJson(it.value.toString(),Habit::class.java)
-//            println(u.toString())
-        }
-
         setupToolbar()
         adapter = ProfileGalleryAdapter()
         adapter.galleryItems = generateTextGalleryItems(R.drawable.ic_new, 13)
@@ -70,6 +52,41 @@ class ProfileActivity : BaseActivity() {
             val openGalleryIntent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(openGalleryIntent,1000)
         }
+
+
+        // Retrieval of list of habits
+        // First, we take the reference of the database
+        val db: DatabaseReference = Firebase.database.reference
+        val ref = db.child("users/${user?.uid}/habit_list")
+
+
+        // Then, we create a list of habits and we set the value listener
+        val list = mutableListOf<Habit>()
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                // There, we access the snapshot of the db and for each
+                // habit we take each value into a variable
+                dataSnapshot.children.forEach { childSnapshot ->
+                    val name = childSnapshot.child("name").getValue(String::class.java)!!
+                    // for the days field, as it's an enum, we have to iterate once again,
+                    // and we do it for every not null value, getting back a list of
+                    // DayOfWeek object the we wrap as an ArrayList as needed in the Habit.
+                    val days = ArrayList(childSnapshot.child("days").children.mapNotNull {
+                        enumValueOf<DayOfWeek>(it.value.toString())
+                    })
+                    val startTime = childSnapshot.child("startTime").getValue(String::class.java)!!
+                    val endTime = childSnapshot.child("endTime").getValue(String::class.java)!!
+                    // Finally, we create the habit and add it to the list of habits
+                    val myObject = Habit(name, days, startTime, endTime)
+                    list.add(myObject)
+                }
+                println("list: ".plus(list))
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                print("Failed to read value." + error.toException())
+            }
+        })
     }
 
     @Override
