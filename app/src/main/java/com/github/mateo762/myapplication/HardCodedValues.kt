@@ -20,7 +20,7 @@ fun getHardCodedHabits(): List<Habit> {
                 DayOfWeek.SUNDAY
             ),
             startTime = "07:00",
-            endTime = "08:00"
+            endTime = "07:15"
         ),
         Habit(
             name = "Read",

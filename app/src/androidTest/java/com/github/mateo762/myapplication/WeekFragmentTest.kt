@@ -8,25 +8,30 @@ import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.alamkanak.weekview.WeekView
+import com.github.mateo762.myapplication.TestData.testHabits
 import com.github.mateo762.myapplication.habits.fragments.week.WeekFragment
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
 
+
 @RunWith(AndroidJUnit4::class)
 class WeekViewFragmentTest {
 
-    @Test
-    fun weekView_isDisplayed() {
-        launchFragmentInContainer<WeekFragment>()
-        onView(withId(R.id.weekView)).check(matches(isDisplayed()))
+    private lateinit var testFragment: WeekFragment
+
+    @Before
+    fun setUp() {
+        testFragment = WeekFragment().apply { habits = testHabits }
     }
 
+
     @Test
-    fun weekView_displaysCorrectNumberOfVisibleDays() {
+    fun weekView_isDisplayed_withCorrectNumberOfVisibleDays() {
         launchFragmentInContainer<WeekFragment>()
 
         val expectedVisibleDays =
