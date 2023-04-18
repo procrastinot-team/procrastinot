@@ -1,9 +1,11 @@
 package com.github.mateo762.myapplication.notifications
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.home.HomeActivity
@@ -22,6 +24,10 @@ class HabitNotificationService(
     companion object {
         const val HABIT_CHANNEL_ID = "habit_channel"
         const val PENDING_INTENT_REQUEST_CODE = 13
+    }
+
+    init {
+        createNotificationChannel()
     }
 
     /**
@@ -43,5 +49,20 @@ class HabitNotificationService(
             .build()
 
         notificationManager.notify(notificationIdCounter.getAndIncrement(), notification)
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                HABIT_CHANNEL_ID,
+                context.getString(R.string.habit_notification_channel_name),
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            channel.description = context.getString(R.string.habit_notification_channel_description)
+
+            val notificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 }
