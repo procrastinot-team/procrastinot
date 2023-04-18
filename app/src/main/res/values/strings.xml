@@ -70,7 +70,7 @@
     <string name="search_people">Search People</string>
     <string name="name">Name</string>
     <string name="description">Description</string>
-    <string name="sample_post_content" />
+    <string name="sample_post_content">Test Image</string>
     <string name="title_activity_post">PostActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>

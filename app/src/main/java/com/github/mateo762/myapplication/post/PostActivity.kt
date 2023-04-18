@@ -89,12 +89,14 @@ class PostActivity : AppCompatActivity() {
             modifier = Modifier
                 .testTag("post_user_card")
                 .clickable {
-                Toast.makeText(
-                    context,
-                    "This takes you to the poster's profile",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }) {
+                    Toast
+                        .makeText(
+                            context,
+                            "This takes you to the poster's profile",
+                            Toast.LENGTH_SHORT
+                        )
+                        .show()
+                }) {
             Image(
                 painter = painterResource(R.drawable.ic_android),
                 contentDescription = "avatar",
