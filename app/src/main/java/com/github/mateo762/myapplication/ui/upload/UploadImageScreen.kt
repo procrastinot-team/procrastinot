@@ -100,7 +100,7 @@ fun addHabitsToUser(userId: String, habits: List<Habit>) {
         val habitData = hashMapOf(
             "id" to habit.id,
             "name" to habit.name,
-            "days" to habit.days.joinToString(separator = ","),
+            "days" to habit.days,
             "startTime" to habit.startTime,
             "endTime" to habit.endTime
         )

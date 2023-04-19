@@ -208,7 +208,7 @@ fun CreateHabitScreen() {
                                 val habitData = hashMapOf(
                                     "id" to myHabit.id,
                                     "name" to myHabit.name,
-                                    "days" to myHabit.days.joinToString(separator = ","),
+                                    "days" to myHabit.days,
                                     "startTime" to myHabit.startTime,
                                     "endTime" to myHabit.endTime
                                 )
