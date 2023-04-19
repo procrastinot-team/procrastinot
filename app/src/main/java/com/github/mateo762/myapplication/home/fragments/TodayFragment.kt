@@ -71,24 +71,27 @@ class TodayFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Initialize Firebase database reference
-        imagesRef = FirebaseDatabase.getInstance().getReference("/users/${FirebaseAuth.getInstance().currentUser!!.uid}/imagesPath")
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            imagesRef = FirebaseDatabase.getInstance().getReference("/users/${currentUser.uid}/imagesPath")
 
-        imagesRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val fetchedImages = mutableListOf<HabitImage>()
-                for (childSnapshot in snapshot.children) {
-                    val image = childSnapshot.getValue(HabitImage::class.java)
-                    if (image != null) {
-                        fetchedImages.add(image)
+            imagesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val fetchedImages = mutableListOf<HabitImage>()
+                    for (childSnapshot in snapshot.children) {
+                        val image = childSnapshot.getValue(HabitImage::class.java)
+                        if (image != null) {
+                            fetchedImages.add(image)
+                        }
                     }
+                    imagesState.value = fetchedImages
                 }
-                imagesState.value = fetchedImages
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.d(TAG, "Error: ${error.message}")
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d(TAG, "Error: ${error.message}")
+                }
+            })
+        }
     }
 
     companion object {
