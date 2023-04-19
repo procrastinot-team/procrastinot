@@ -60,10 +60,12 @@ class FeedFragmentTest {
                 getInstrumentation().waitForIdleSync()
                 // Get a reference to the current activity
                 var currentActivity = getCurrentActivity()
+                getInstrumentation().waitForIdleSync()
                 // Check if the current activity is a PostActivity
                 TestCase.assertTrue(currentActivity is PostActivity)
                 // The post contents passed are tested in PostActivityTest
                 Espresso.pressBack()
+                getInstrumentation().waitForIdleSync()
                 // Get a reference to the current activity
                 currentActivity = getCurrentActivity()
                 // Check if the current activity is a HomeActivity

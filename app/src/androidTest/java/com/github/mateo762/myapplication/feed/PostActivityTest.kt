@@ -19,6 +19,7 @@ class PostActivityTest {
     private val caption = "TEST_CAPTION"
     private val body = "TEST_BODY"
     private val username = "TEST_USERNAME"
+    private val assocHabit = "TEST_ASSOCIATED_HABIT"
 
     // See ComposeTestExtensionHelper, it includes an auxiliary method to enable
     // custom intent creation prior to test setup to include the post elements to check
@@ -32,7 +33,8 @@ class PostActivityTest {
                 putExtra("postTitle", caption)
                 putExtra("postBody", body)
                 putExtra("postUsername", username)
-                // Note: Image contents is untested since atm it uses a local test image
+                putExtra("associatedHabit", assocHabit)
+                // Note: Image contents untested since atm it uses a static test image
             }
         },
         onAfterLaunched = {
@@ -40,6 +42,7 @@ class PostActivityTest {
             onNodeWithTag("post_title").assertIsDisplayed()
             onNodeWithTag("post_body").assertIsDisplayed()
             onNodeWithTag("post_image").assertIsDisplayed()
+            onNodeWithTag("associated_habit").assertIsDisplayed()
             // Additional option to find elements from sub-element UserCard
             // that contains the avatar and username
             onNodeWithTag("post_user_card", useUnmergedTree = true).assertIsDisplayed()
@@ -54,6 +57,7 @@ class PostActivityTest {
                 putExtra("postTitle", caption)
                 putExtra("postBody", body)
                 putExtra("postUsername", username)
+                putExtra("associatedHabit", assocHabit)
                 // Note: Image contents is untested since atm it uses a local test image
             }
         },

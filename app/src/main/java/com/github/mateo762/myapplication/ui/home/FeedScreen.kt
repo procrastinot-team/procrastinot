@@ -19,15 +19,17 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.post.Post
 import com.github.mateo762.myapplication.post.PostActivity
 
 
 @Composable
-fun FeedScreen(images: List<Image>) {
+fun FeedScreen(posts: List<Post>) {
     Column(
         modifier = Modifier
             .background(colorResource(R.color.white))
@@ -35,29 +37,16 @@ fun FeedScreen(images: List<Image>) {
             .fillMaxSize()
             .padding(10.dp)
     ) {
-        // This is a for loop once everything is set correctly and the parameters are passed  to create the post
-        //for(image in images){
-        //   PostThumbnail(image = image, ... )
-        //}
-        // Like this
-        PostThumbnail(
-            "@test_username",
-            image = null,
-            "Test post 1",
-            "Sample body text..."
-        )
-        PostThumbnail(
-            "@test_username",
-            image = null,
-            "Second test post but it has a longer title",
-            "Sample body text..."
-        )
+        for(post in posts){
+            PostThumbnail(post.username, post.caption, post.description, post.assocHabit)
+        }
     }
 }
 
 @Composable
 // This is the actual post thumbnail, including the header (UserCard)
-fun PostThumbnail(username: String, image: Image?, caption: String, body: String) {
+// TODO: add image:Image to function signature once the type/handling is defined.
+fun PostThumbnail(username: String, caption: String, body: String, assocHabit: String) {
     val context = LocalContext.current
     Box(
         // Post box
@@ -71,7 +60,7 @@ fun PostThumbnail(username: String, image: Image?, caption: String, body: String
             .testTag("post_thumbnail")
     ) {
         Column {
-            UserCard(caption, username)
+            UserCard(caption, username, assocHabit)
             Spacer(modifier = Modifier.height(16.dp))
             Box(
                 modifier = Modifier
@@ -81,13 +70,17 @@ fun PostThumbnail(username: String, image: Image?, caption: String, body: String
                         intent.putExtra("postTitle", caption)
                         intent.putExtra("postBody", body)
                         intent.putExtra("postUsername", username)
+                        intent.putExtra("associatedHabit", assocHabit)
                         // TODO: replace with actual image content from Firebase
-                        // Unused for now, load sample image for testing
-                        intent.putExtra("imageContents", ByteArray(512))
+                        // Unused for now, function will load sample image for testing
+                        // Pending how to handle images in the app from other task
+                        // intent.putExtra("imageContents", ByteArray(1024))
                         startActivity(context, intent, null)
                     }
             ) {
                 Image(
+                    // This is the image to be displayed in the post thumbnail in the feed (it is
+                    // currently local test data called window.jpeg)
                     painter = painterResource(id = R.drawable.window),
                     contentDescription = stringResource(id = R.string.sample_post_content),
                     contentScale = ContentScale.Crop,
@@ -105,7 +98,7 @@ fun PostThumbnail(username: String, image: Image?, caption: String, body: String
 
 @Composable
 // This is the post / thumbnail header that includes the post information
-fun UserCard(caption: String, username: String) {
+fun UserCard(caption: String, username: String, assocHabit: String) {
     val context = LocalContext.current
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -140,6 +133,11 @@ fun UserCard(caption: String, username: String) {
             Text(
                 text = username,
                 style = MaterialTheme.typography.body1,
+            )
+            Text(
+                text = assocHabit,
+                style = MaterialTheme.typography.body1,
+                fontStyle = FontStyle.Italic
             )
         }
     }
