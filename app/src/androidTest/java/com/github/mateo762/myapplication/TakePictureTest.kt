@@ -62,7 +62,11 @@ class TakePictureTest {
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         Thread.sleep(2000)
-        uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button")).click()
+        var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
+        // If the device has a physical shutter button, use it
+        if (uiShutter.exists()) {
+            uiShutter.click()
+        }
     }
 
     @Test
@@ -70,9 +74,17 @@ class TakePictureTest {
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         Thread.sleep(2000)
-        uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button")).click()
+        var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
+        // If the device has a physical shutter button, use it
+        if (uiShutter.exists()) {
+            uiShutter.click()
+        }
         Thread.sleep(2000)
-        uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button")).click()
+        var uiDone = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
+        // If the device has took a picture, select that photo. Doesnt work if there is no shutter button
+        if (uiDone.exists()) {
+            uiDone.click()
+        }
     }
 
 
