@@ -53,6 +53,7 @@ class TakePictureTest {
     @Test
     fun clickTheButton() {
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
+
     }
 
 
