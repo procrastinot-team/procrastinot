@@ -8,6 +8,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.GrantPermissionRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
@@ -19,6 +20,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.regex.Pattern
+import android.Manifest
 
 @RunWith(AndroidJUnit4::class)
 class TakePictureTest {
@@ -27,6 +29,10 @@ class TakePictureTest {
 
     @get:Rule
     val activityRule = ActivityScenarioRule(TakePhotoActivity::class.java)
+
+    @get:Rule
+    var mRuntimePermissionRule: GrantPermissionRule? =
+        GrantPermissionRule.grant(Manifest.permission.CAMERA)
 
     private lateinit var decorView: View
 
@@ -55,9 +61,7 @@ class TakePictureTest {
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         Thread.sleep(2000)
-        uiDevice.findObject(By.res("com.android.camera2:id/shutter_button").desc("Shutter").clazz("android.widget.ImageView").text(
-            Pattern.compile("")).pkg("com.android.camera2")).clickAndWait(Until.newWindow(),
-            1000)
+        uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button")).click()
     }
 
     @Test
@@ -65,9 +69,7 @@ class TakePictureTest {
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         Thread.sleep(2000)
-        uiDevice.findObject(By.res("com.android.camera2:id/shutter_button").desc("Shutter").clazz("android.widget.ImageView").text(
-            Pattern.compile("")).pkg("com.android.camera2")).clickAndWait(Until.newWindow(),
-            1000)
+        uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button")).click()
         Thread.sleep(2000)
         uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button")).click()
     }
