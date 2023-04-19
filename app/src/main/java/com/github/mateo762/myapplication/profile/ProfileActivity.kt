@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.MenuItem
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.github.mateo762.myapplication.Habit
 import com.github.mateo762.myapplication.BaseActivity
@@ -41,7 +43,7 @@ class ProfileActivity : BaseActivity() {
 
         setupToolbar()
         adapter = ProfileGalleryAdapter()
-        adapter.galleryItems = generateTextGalleryItems(R.drawable.ic_new, 13)
+//        adapter.galleryItems = generateTextGalleryItems(R.drawable.ic_new, 13)
         binding.recyclerView.adapter = adapter
 
         binding.name.text = getString(R.string.missing_name)
@@ -81,6 +83,25 @@ class ProfileActivity : BaseActivity() {
                     list.add(myObject)
                 }
                 println("list: ".plus(list))
+                val params = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                params.setMargins(16, 16, 8, 8)
+
+                var prevTextView: TextView? = findViewById<TextView>(R.id.profileGalleryTitle)
+
+                for (habit in list) {
+                    val textView = TextView(this@ProfileActivity)
+                    textView.text = habit.name
+                    textView.textSize = 16F
+                    textView.layoutParams = params
+                    // Add the TextView to the LinearLayout
+                    binding.profileActivity.addView(
+                        textView,
+                        binding.profileActivity.indexOfChild(prevTextView)+1)
+                    prevTextView = textView
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
