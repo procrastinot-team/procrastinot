@@ -1,9 +1,9 @@
-package com.github.mateo762.myapplication
+package com.github.mateo762.myapplication.models
+
 import android.os.Build
 import androidx.annotation.RequiresApi
 import kotlinx.serialization.Serializable
 import java.time.DayOfWeek
-import kotlin.collections.ArrayList
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Serializable

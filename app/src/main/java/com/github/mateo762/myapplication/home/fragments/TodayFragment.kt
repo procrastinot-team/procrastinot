@@ -11,10 +11,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.HabitImage
+import com.github.mateo762.myapplication.models.HabitImage
 import com.github.mateo762.myapplication.TAG
 import com.github.mateo762.myapplication.getHardCodedHabits
-import com.github.mateo762.myapplication.getHardCodedImages
 import com.github.mateo762.myapplication.ui.home.TodayScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -38,8 +37,10 @@ class TodayFragment : Fragment() {
     private var param2: String? = null
 
     private lateinit var imagesRef: DatabaseReference
-    private var images: List<HabitImage> = emptyList()
+    private val imagesState = mutableStateOf(emptyList<HabitImage>())
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private val dateTime = LocalDateTime.of(2023, 4, 15, 17, 0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +50,6 @@ class TodayFragment : Fragment() {
         }
     }
 
-    private val imagesState = mutableStateOf(emptyList<HabitImage>())
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -59,7 +59,7 @@ class TodayFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 TodayScreen(
-                    time = LocalDateTime.of(2023, 4, 15, 17, 0),
+                    time = dateTime,
                     habits = getHardCodedHabits(),
                     images = imagesState.value
                 )
@@ -83,11 +83,10 @@ class TodayFragment : Fragment() {
                     }
                 }
                 imagesState.value = fetchedImages
-                Log.d(TAG, "Habit images today fragment. ${imagesState.value}")
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle errors
+                Log.d(TAG, "Error: ${error.message}")
             }
         })
     }

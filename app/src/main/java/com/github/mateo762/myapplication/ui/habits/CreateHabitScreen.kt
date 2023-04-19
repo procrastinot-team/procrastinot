@@ -21,7 +21,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.github.mateo762.myapplication.Habit
+import com.github.mateo762.myapplication.models.Habit
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.TAG
 import com.github.mateo762.myapplication.habits.HabitsActivity

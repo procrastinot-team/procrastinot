@@ -16,6 +16,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.mateo762.myapplication.*
+import com.github.mateo762.myapplication.models.Habit
+import com.github.mateo762.myapplication.models.HabitImage
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -26,6 +28,8 @@ import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
 import java.util.*
+
+// TODO: This class should be deleted ASAP and be replaced by 'taking a picture' logic
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

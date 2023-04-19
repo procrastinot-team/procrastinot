@@ -13,6 +13,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.github.mateo762.myapplication.R
 
+// TODO: This class should be deleted ASAP
+
 class UploadFragment : Fragment() {
 
 

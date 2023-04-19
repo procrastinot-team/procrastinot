@@ -2,8 +2,12 @@ package com.github.mateo762.myapplication
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.github.mateo762.myapplication.models.Habit
 import java.time.DayOfWeek
 import java.util.*
+
+
+// TODO: This class should be deleted ASAP
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun getHardCodedHabits(): List<Habit> {
@@ -88,7 +92,8 @@ fun getHardCodedImages(): List<String> {
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun getOneHabit(): List<Habit>{
-    return listOf(Habit(
+    return listOf(
+        Habit(
         id = UUID.randomUUID().toString(),
         name = "Stretch",
         days = arrayListOf(
@@ -102,5 +107,6 @@ fun getOneHabit(): List<Habit>{
         ),
         startTime = "14:00",
         endTime = "15:30"
-    ))
+    )
+    )
 }

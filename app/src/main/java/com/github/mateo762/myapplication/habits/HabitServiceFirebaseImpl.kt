@@ -1,14 +1,8 @@
 package com.github.mateo762.myapplication.habits
 
 import android.util.Log
-import android.widget.Toast
-import com.github.mateo762.myapplication.Habit
-import com.github.mateo762.myapplication.TAG
+import com.github.mateo762.myapplication.models.Habit
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-import java.util.concurrent.CompletableFuture
 import javax.inject.Inject
 
 class HabitServiceFirebaseImpl @Inject constructor(
