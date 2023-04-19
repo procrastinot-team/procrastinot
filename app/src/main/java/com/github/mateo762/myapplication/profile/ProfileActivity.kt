@@ -7,11 +7,10 @@ import android.provider.MediaStore
 import android.view.MenuItem
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
-import com.github.mateo762.myapplication.Habit
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
+import com.github.mateo762.myapplication.room.HabitEntity
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -20,10 +19,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import java.time.DayOfWeek
-import java.util.Objects
 
 /**
  * Activity for displaying the profile information.
@@ -45,7 +41,7 @@ class ProfileActivity : BaseActivity() {
 //        adapter.galleryItems = generateTextGalleryItems(R.drawable.ic_new, 13)
         binding.recyclerView.adapter = adapter
 
-        binding.name.text = getString(R.string.missing_name)
+//        binding.name.text = getString(R.string.missing_name)
         binding.username.text = user?.email
 
         profileImage = findViewById<ShapeableImageView>(R.id.profileImage)
@@ -58,16 +54,26 @@ class ProfileActivity : BaseActivity() {
         // Retrieval of list of habits
         // First, we take the reference of the database
         val db: DatabaseReference = Firebase.database.reference
-        val ref = db.child("users/${user?.uid}/habit_list")
+        val ref = db.child("users/${user?.uid}/habitsPath")
 
 
         // Then, we create a list of habits and we set the value listener
-        val list = mutableListOf<Habit>()
+        val list = mutableListOf<HabitEntity>()
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                val params = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT
+                )
+                params.setMargins(16, 16, 8, 8)
+                var top = 0
+                var prevTextView: TextView? = findViewById<TextView>(R.id.profileGalleryTitle)
+
                 // There, we access the snapshot of the db and for each
                 // habit we take each value into a variable
                 dataSnapshot.children.forEach { childSnapshot ->
+                    val id = childSnapshot.child("id").getValue(String::class.java)!!
                     val name = childSnapshot.child("name").getValue(String::class.java)!!
                     // for the days field, as it's an enum, we have to iterate once again,
                     // and we do it for every not null value, getting back a list of
@@ -78,21 +84,11 @@ class ProfileActivity : BaseActivity() {
                     val startTime = childSnapshot.child("startTime").getValue(String::class.java)!!
                     val endTime = childSnapshot.child("endTime").getValue(String::class.java)!!
                     // Finally, we create the habit and add it to the list of habits
-                    val myObject = Habit(name, days, startTime, endTime)
-                    list.add(myObject)
-                }
-                println("list: ".plus(list))
-                val params = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                params.setMargins(16, 16, 8, 8)
-
-                var prevTextView: TextView? = findViewById<TextView>(R.id.profileGalleryTitle)
-
-                for (habit in list) {
+//                    val myObject = HabitEntity(id,name, days, startTime, endTime)
+//                    list.add(myObject)
                     val textView = TextView(this@ProfileActivity)
-                    textView.text = habit.name
+                    params.setMargins(16, 16 + top, 8, 8)
+                    textView.text = name
                     textView.textSize = 16F
                     textView.layoutParams = params
                     // Add the TextView to the LinearLayout
@@ -100,6 +96,7 @@ class ProfileActivity : BaseActivity() {
                         textView,
                         binding.profileActivity.indexOfChild(prevTextView)+1)
                     prevTextView = textView
+                    top += 2
                 }
             }
 
