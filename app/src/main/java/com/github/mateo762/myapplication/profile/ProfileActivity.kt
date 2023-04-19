@@ -24,7 +24,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.time.DayOfWeek
 import java.util.Objects
-import java.util.concurrent.CountDownLatch
 
 /**
  * Activity for displaying the profile information.

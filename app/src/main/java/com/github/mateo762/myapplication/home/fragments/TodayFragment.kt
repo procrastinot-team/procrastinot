@@ -2,16 +2,21 @@ package com.github.mateo762.myapplication.home.fragments
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import com.github.mateo762.myapplication.models.HabitImage
+import com.github.mateo762.myapplication.TAG
 import com.github.mateo762.myapplication.getHardCodedHabits
-import com.github.mateo762.myapplication.getHardCodedImages
 import com.github.mateo762.myapplication.ui.home.TodayScreen
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import java.time.LocalDateTime
 
 // TODO: Rename parameter arguments, choose names that match
@@ -31,6 +36,12 @@ class TodayFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private lateinit var imagesRef: DatabaseReference
+    private val imagesState = mutableStateOf(emptyList<HabitImage>())
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private val dateTime = LocalDateTime.of(2023, 4, 15, 17, 0)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -39,20 +50,47 @@ class TodayFragment : Fragment() {
         }
     }
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return ComposeView(requireContext()).apply {
             setContent {
                 TodayScreen(
-                    time = LocalDateTime.now(),
+                    time = dateTime,
                     habits = getHardCodedHabits(),
-                    images = getHardCodedImages()
+                    images = imagesState.value
                 )
             }
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Initialize Firebase database reference
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            imagesRef = FirebaseDatabase.getInstance().getReference("/users/${currentUser.uid}/imagesPath")
+
+            imagesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val fetchedImages = mutableListOf<HabitImage>()
+                    for (childSnapshot in snapshot.children) {
+                        val image = childSnapshot.getValue(HabitImage::class.java)
+                        if (image != null) {
+                            fetchedImages.add(image)
+                        }
+                    }
+                    imagesState.value = fetchedImages
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d(TAG, "Error: ${error.message}")
+                }
+            })
         }
     }
 

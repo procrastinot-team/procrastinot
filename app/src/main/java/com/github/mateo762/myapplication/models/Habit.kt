@@ -1,12 +1,19 @@
-package com.github.mateo762.myapplication
+package com.github.mateo762.myapplication.models
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import kotlinx.serialization.Serializable
 import java.time.DayOfWeek
 
+@RequiresApi(Build.VERSION_CODES.O)
+@Serializable
 data class Habit(
-    var name: String,
-    var days: ArrayList<DayOfWeek>,
-    var startTime: String,
-    var endTime: String)
+    val id: String,
+    val name: String,
+    val days: List<DayOfWeek>,
+    val startTime: String,
+    val endTime: String
+)
 /*
     constructor(name: String,days: ArrayList<DayOfWeek>,startTime: String,endTime: String) :this(){
         this.name = name
