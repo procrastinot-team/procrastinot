@@ -225,7 +225,6 @@ fun DisplayImage(
                 .fillMaxSize()
                 .clip(cornerShape) // Clip the image with the same corner shape
                 .testTag("image_${nextUpHabitName}_${numberMonth}_${numberDay}")
-                //.testTag("image-${nextUpHabitName}-${numberMonth}-${numberDay}")
         )
     }
 }
