@@ -40,6 +40,7 @@ class TakePictureTest {
 
     @Before
     fun setUp() {
+        Thread.sleep(2000)
         Intents.init()
     }
 
