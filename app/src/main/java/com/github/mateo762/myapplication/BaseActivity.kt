@@ -68,9 +68,6 @@ open class BaseActivity : AppCompatActivity() {
                 openActivitySelected(ProfileActivity())
                 drawer.closeDrawer(GravityCompat.START)
             }
-            R.id.nav_upload_picture -> {
-                openActivitySelected(UploadPictureActivity())
-            }
             R.id.nav_settings -> {
                 openActivitySelected(SettingsActivity())
             }
