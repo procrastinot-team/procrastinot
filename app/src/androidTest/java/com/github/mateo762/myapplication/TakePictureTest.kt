@@ -71,10 +71,18 @@ class TakePictureTest {
         onView(isRoot()).perform(waitFor(5000))
 
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        val uiPermissionButton = uiDevice.findObject(UiSelector().text("Only this time"))
+    Thread.sleep(2000)
+
+    var uiPermissionButton = uiDevice.findObject(UiSelector().text("While using the app"))
         if (uiPermissionButton.exists()) {
             uiPermissionButton.click()
         }
+        uiPermissionButton = uiDevice.findObject(UiSelector().text("WHILE USING THE APP"))
+        if (uiPermissionButton.exists()) {
+            uiPermissionButton.click()
+        }
+        Thread.sleep(2000)
+
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
     }
 
@@ -85,10 +93,17 @@ class TakePictureTest {
 
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        val uiPermissionButton = uiDevice.findObject(UiSelector().text("Only this time"))
+        Thread.sleep(2000)
+
+        var uiPermissionButton = uiDevice.findObject(UiSelector().text("While using the app"))
         if (uiPermissionButton.exists()) {
             uiPermissionButton.click()
         }
+        uiPermissionButton = uiDevice.findObject(UiSelector().text("WHILE USING THE APP"))
+        if (uiPermissionButton.exists()) {
+            uiPermissionButton.click()
+        }
+        Thread.sleep(2000)
         Thread.sleep(2000)
         var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
         // If the device has a physical shutter button, use it
@@ -103,10 +118,17 @@ class TakePictureTest {
 
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        val uiPermissionButton = uiDevice.findObject(UiSelector().text("Only this time"))
+        Thread.sleep(2000)
+
+        var uiPermissionButton = uiDevice.findObject(UiSelector().text("While using the app"))
         if (uiPermissionButton.exists()) {
             uiPermissionButton.click()
         }
+        uiPermissionButton = uiDevice.findObject(UiSelector().text("WHILE USING THE APP"))
+        if (uiPermissionButton.exists()) {
+            uiPermissionButton.click()
+        }
+        Thread.sleep(2000)
         Thread.sleep(2000)
         var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
         // If the device has a physical shutter button, use it
