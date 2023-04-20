@@ -55,25 +55,25 @@ class UploadPictureActivity : AppCompatActivity() {
         }
 
         val db = Firebase.database.reference.child("users").child(currentUser)
-        db.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                imagesList = arrayListOf()
-                if (snapshot.exists()) {
-                    for (dataSnapshot in snapshot.children) {
-                        val image = dataSnapshot.getValue(UserImage::class.java)
-                        image?.let {imagesList.add(image)}
-                    }
-
-                    binding.imageRecycler.adapter =
-                        ImageAdapter(imagesList, this@UploadPictureActivity)
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@UploadPictureActivity, error.toString(), Toast.LENGTH_SHORT)
-                    .show()
-            }
-        })
+//        db.addValueEventListener(object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                imagesList = arrayListOf()
+//                if (snapshot.exists()) {
+//                    for (dataSnapshot in snapshot.children) {
+//                        val image = dataSnapshot.getValue(UserImage::class.java)
+//                        image?.let {imagesList.add(image)}
+//                    }
+//
+//                    binding.imageRecycler.adapter =
+//                        ImageAdapter(imagesList, this@UploadPictureActivity)
+//                }
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                Toast.makeText(this@UploadPictureActivity, error.toString(), Toast.LENGTH_SHORT)
+//                    .show()
+//            }
+//        })
 
 
     }
