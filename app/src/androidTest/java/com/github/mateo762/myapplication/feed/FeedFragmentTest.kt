@@ -17,6 +17,8 @@ import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.home.HomeActivity
 import com.github.mateo762.myapplication.home.fragments.FeedFragment
 import com.github.mateo762.myapplication.post.PostActivity
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase
 import org.junit.After
 import org.junit.Before
@@ -25,14 +27,19 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
 class FeedFragmentTest {
     private lateinit var activityScenario: ActivityScenario<HomeActivity>
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
     val composeTestRule = createComposeRule()
 
     @Before
     fun setUp() {
+        hiltRule.inject()
         // Travel to Feed Fragment
         activityScenario = ActivityScenario.launch(HomeActivity::class.java)
         Espresso.onView(ViewMatchers.withId(R.id.feedFragment)).perform(ViewActions.click())
