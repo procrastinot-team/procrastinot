@@ -21,6 +21,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.regex.Pattern
 import android.Manifest
+import androidx.test.espresso.matcher.RootMatchers
 
 @RunWith(AndroidJUnit4::class)
 class TakePictureTest {
@@ -31,13 +32,10 @@ class TakePictureTest {
 
     @get:Rule
     val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA)
-    
+
 
     @Before
     fun setUp() {
-        activityRule.scenario.onActivity {
-            decorView = it.window.decorView
-        }
         Intents.init()
     }
 
@@ -53,7 +51,7 @@ class TakePictureTest {
         if (uiPermissionButton.exists()) {
             uiPermissionButton.click()
         }
-        onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
+        onView(withId(R.id.takePhotoButton)).inRoot(RootMatchers.isDialog()).perform(ViewActions.click())
     }
 
 
