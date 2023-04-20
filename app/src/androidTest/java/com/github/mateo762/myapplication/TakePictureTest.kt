@@ -32,7 +32,6 @@ class TakePictureTest {
 
     @get:Rule
     val activityRule = ActivityScenarioRule(TakePhotoActivity::class.java)
-    private lateinit var activityScenario: ActivityScenario<TakePhotoActivity>
 
     private lateinit var decorView: View
 
@@ -44,7 +43,6 @@ class TakePictureTest {
     @Before
     fun setUp() {
         // use get activity
-        activityScenario = ActivityScenario.launch(TakePhotoActivity::class.java)
         activityRule.scenario.onActivity {
             decorView = it.window.decorView
         }
