@@ -40,29 +40,15 @@ class TakePhotoActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getCameraPermission()
-        // User
         var firebaseUser = Firebase.auth.currentUser?.uid
-
         if (firebaseUser == null) {
             currentUser = "testUser"
         } else {
             currentUser = firebaseUser.toString()
         }
-
-        Log.d("TakePhotoActivity", "User: $currentUser")
-
-        super.onCreate(savedInstanceState)
-        if (BuildConfig.DEBUG) {
-            val km = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-            val keyguardLock = km.newKeyguardLock("TAG")
-            keyguardLock.disableKeyguard()
-            window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
-        }
-
         if(BuildConfig.DEBUG){
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
-
         setContentView(R.layout.activity_takephoto)
         imageView = findViewById(R.id.imageView)
         takePhotoText = findViewById(R.id.textView)
