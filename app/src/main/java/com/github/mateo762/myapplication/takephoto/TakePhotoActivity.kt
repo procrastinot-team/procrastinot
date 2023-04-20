@@ -56,6 +56,10 @@ class TakePhotoActivity : BaseActivity() {
             window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
         }
 
+        if(BuildConfig.DEBUG){
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+
         setContentView(R.layout.activity_takephoto)
         imageView = findViewById(R.id.imageView)
         takePhotoText = findViewById(R.id.textView)

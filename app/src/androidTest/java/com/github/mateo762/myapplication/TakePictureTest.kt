@@ -30,7 +30,7 @@ import org.hamcrest.Matcher
 @RunWith(AndroidJUnit4::class)
 class TakePictureTest {
 
-    @Rule
+    @get:Rule
     public val activityRule = ActivityScenarioRule(TakePhotoActivity::class.java)
 
     //@get:Rule
