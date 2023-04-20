@@ -1,5 +1,6 @@
 package com.github.mateo762.myapplication.profile
 
+import android.app.ActionBar
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.provider.MediaStore
 import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -41,9 +43,9 @@ class ProfileActivity : BaseActivity() {
         setContentView(binding.root)
 
         setupToolbar()
-        adapter = ProfileGalleryAdapter()
+//        adapter = ProfileGalleryAdapter()
 //        adapter.galleryItems = generateTextGalleryItems(R.drawable.ic_new, 13)
-        binding.recyclerView.adapter = adapter
+//        binding.recyclerView.adapter = adapter
 
         binding.name.text = getString(R.string.missing_name)
         binding.username.text = user?.email
@@ -87,16 +89,16 @@ class ProfileActivity : BaseActivity() {
                     val days = ArrayList(childSnapshot.child("days").children.mapNotNull {
                         enumValueOf<DayOfWeek>(it.value.toString())
                     })
-                    val startTime = childSnapshot.child("startTime").getValue(String::class.java)!!
-                    val endTime = childSnapshot.child("endTime").getValue(String::class.java)!!
 
                     val textView = TextView(this@ProfileActivity)
                     params.setMargins(16, 16 + top, 8, 8)
-                    textView.text = name
-                    textView.textSize = 16F
+
+                    // We set the textView text to display the name and days of the habit
+                    textView.text = name.plus(" : ").plus(days.joinToString(", ") {it.name})
+                    textView.textSize = 20F
                     textView.layoutParams = params
                     textViews.add(textView)
-                    top += 2
+                    top += 10
                 }
             }
 
@@ -110,7 +112,17 @@ class ProfileActivity : BaseActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 var imagesList:ArrayList<HabitImage> = arrayListOf()
                 var prevView:View = findViewById(R.id.profileGalleryTitle)
+
+                val scrollView = ScrollView(this@ProfileActivity)
+
+                val parentLayout = LinearLayout(this@ProfileActivity)
+                parentLayout.orientation = LinearLayout.VERTICAL
+
+                scrollView.addView(parentLayout)
+
                 for (i in 0 until textViews.size) {
+                    // First, we get the list of images related to the actual habit by scrolling all
+                    // the habits images and taking only the ones matching our habit's id
                     imagesList = arrayListOf()
                     for (snapshot in dataSnapshot.children){
                         val image = snapshot.getValue(HabitImage::class.java)
@@ -119,21 +131,33 @@ class ProfileActivity : BaseActivity() {
                         }
                     }
 
-                    // Add the TextView to the LinearLayout
-                    binding.profileActivity.addView(
+                    parentLayout.addView(
                         textViews[i],
-                        binding.profileActivity.indexOfChild(prevView)+1)
-                    prevView = textViews[i]
-                    println(imagesList.size)
+                        LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        ))
+
+                    // We create the recyclerView that will contain the images
                     val recyclerView = RecyclerView(this@ProfileActivity)
+                    recyclerView.layoutManager = LinearLayoutManager(
+                        this@ProfileActivity,
+                        LinearLayoutManager.HORIZONTAL,
+                        false)
+
                     val adapter = ImageAdapter(imagesList, this@ProfileActivity)
-                    recyclerView.layoutManager = LinearLayoutManager(this@ProfileActivity,LinearLayoutManager.HORIZONTAL, false)
                     recyclerView.adapter = adapter
-                    binding.profileActivity.addView(
+                    // Add the RecyclerView to the parent LinearLayout
+                    parentLayout.addView(
                         recyclerView,
-                        binding.profileActivity.indexOfChild(prevView)+1)
-                    prevView = recyclerView
+                        LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        )
+                    )
                 }
+                binding.profileActivity.addView(scrollView, binding.profileActivity.indexOfChild(prevView)+1)
+
             }
 
             override fun onCancelled(error: DatabaseError) {
