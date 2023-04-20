@@ -1,6 +1,5 @@
 package com.github.mateo762.myapplication.profile
 
-import android.app.ActionBar
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -34,8 +33,7 @@ class ProfileActivity : BaseActivity() {
 
     private val user = FirebaseAuth.getInstance().currentUser
     private lateinit var profileImage:ShapeableImageView
-    private lateinit var binding: ActivityProfileBinding
-    private lateinit var adapter: ProfileGalleryAdapter
+    lateinit var binding: ActivityProfileBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,9 +41,6 @@ class ProfileActivity : BaseActivity() {
         setContentView(binding.root)
 
         setupToolbar()
-//        adapter = ProfileGalleryAdapter()
-//        adapter.galleryItems = generateTextGalleryItems(R.drawable.ic_new, 13)
-//        binding.recyclerView.adapter = adapter
 
         binding.name.text = getString(R.string.missing_name)
         binding.username.text = user?.email
@@ -63,7 +58,8 @@ class ProfileActivity : BaseActivity() {
         val ref = db.child("users/${user?.uid}/habitsPath")
 
 
-        // Then, we create a list of habits and we set the value listener
+        // Then, we create a list of names, ids and textViews, where we store habits data
+        // and we set the value listener
         val names = mutableListOf<String>()
         val ids = mutableListOf<String>()
         val textViews = mutableListOf<TextView>()
@@ -96,6 +92,7 @@ class ProfileActivity : BaseActivity() {
                     // We set the textView text to display the name and days of the habit
                     textView.text = name.plus(" : ").plus(days.joinToString(", ") {it.name})
                     textView.textSize = 20F
+                    textView.id = R.id.habitImage
                     textView.layoutParams = params
                     textViews.add(textView)
                     top += 10
@@ -110,14 +107,17 @@ class ProfileActivity : BaseActivity() {
         val refImg = db.child("users/${user?.uid}/imagesPath")
         refImg.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var imagesList:ArrayList<HabitImage> = arrayListOf()
-                var prevView:View = findViewById(R.id.profileGalleryTitle)
+                var imagesList:ArrayList<HabitImage>
+                val prevView:View = findViewById(R.id.profileGalleryTitle)
 
+                // We create a ScrollView to allow the horizontal scroll of images.
                 val scrollView = ScrollView(this@ProfileActivity)
 
                 val parentLayout = LinearLayout(this@ProfileActivity)
                 parentLayout.orientation = LinearLayout.VERTICAL
 
+                // We insert in the scrollView the layout to allow the vertical scrolling,
+                // inside which we'll insert the horizontally scrolling recyclerViews
                 scrollView.addView(parentLayout)
 
                 for (i in 0 until textViews.size) {
@@ -127,7 +127,7 @@ class ProfileActivity : BaseActivity() {
                     for (snapshot in dataSnapshot.children){
                         val image = snapshot.getValue(HabitImage::class.java)
                         if (image!!.habitId == ids[i]) {
-                            image?.let {imagesList.add(image)}
+                            image.let {imagesList.add(image)}
                         }
                     }
 
@@ -192,13 +192,5 @@ class ProfileActivity : BaseActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    private fun generateTextGalleryItems(drawable: Int, size: Int): ArrayList<ProfileGalleryItem> {
-        val items = ArrayList<ProfileGalleryItem>()
-        repeat(size) {
-            items.add(ProfileGalleryItem(drawable))
-        }
-        return items
     }
 }
