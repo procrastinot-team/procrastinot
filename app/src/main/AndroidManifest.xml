@@ -22,9 +22,6 @@
             android:label="@string/title_activity_post"
             android:theme="@style/Theme.MyApplication.Fullscreen" />
         <activity
-            android:name=".upload_gallery.UploadPictureActivity"
-            android:exported="false" />
-        <activity
             android:name=".authentication.LoginActivity"
             android:exported="false" />
         <activity
