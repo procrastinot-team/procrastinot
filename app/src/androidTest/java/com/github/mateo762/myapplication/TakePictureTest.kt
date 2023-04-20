@@ -1,31 +1,27 @@
 package com.github.mateo762.myapplication
 
+import android.graphics.Point
+import android.os.RemoteException
 import android.view.View
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.GrantPermissionRule
-import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
-import androidx.test.uiautomator.Until
 import com.github.mateo762.myapplication.takephoto.TakePhotoActivity
+import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.regex.Pattern
-import android.Manifest
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import org.hamcrest.Matcher
 
 @RunWith(AndroidJUnit4::class)
 class TakePictureTest {
@@ -40,8 +36,20 @@ class TakePictureTest {
     @Before
     fun setUp() {
         // make the phone not go to sleep or lock
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).executeShellCommand("svc power stayon true")
-        Thread.sleep(2000)
+        val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        val coordinates: Array<Point?> = arrayOfNulls<Point>(4)
+        coordinates[0] = Point(248, 1520)
+        coordinates[1] = Point(248, 929)
+        coordinates[2] = Point(796, 1520)
+        coordinates[3] = Point(796, 929)
+        try {
+            if (!uiDevice.isScreenOn()) {
+                uiDevice.wakeUp()
+                uiDevice.swipe(coordinates, 10)
+            }
+        } catch (e: RemoteException) {
+            e.printStackTrace()
+        }
         Intents.init()
     }
 
