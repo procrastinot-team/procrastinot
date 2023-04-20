@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.Point
 import android.os.RemoteException
 import android.view.View
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
@@ -17,6 +18,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
+import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.github.mateo762.myapplication.takephoto.TakePhotoActivity
 import org.hamcrest.Matcher
 import org.junit.After
@@ -28,8 +30,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class TakePictureTest {
 
-    @get:Rule
-    public val activityRule: ActivityScenarioRule<TakePhotoActivity> = ActivityScenarioRule(TakePhotoActivity::class.java)
+    private lateinit var activityScenario: ActivityScenario<TakePhotoActivity>
 
 //    @get:Rule
 //    public val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA)
@@ -38,6 +39,7 @@ class TakePictureTest {
     @Before
     fun setUp() {
         // use get activity
+        activityScenario = ActivityScenario.launch(TakePhotoActivity::class.java)
 
         // make the phone not go to sleep or lock
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
