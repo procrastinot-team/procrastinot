@@ -191,7 +191,9 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
             '**/DisplayImage.kt',
             'models/**/*.kt',
             'habits/**/*.kt',
-            'upload_gallery/**/*.kt'
+            'upload_gallery/**/*.kt',
+            // Exclude DAO interface files from coverage report
+            '**room/*Dao*.*'
     ]
     def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
     def mainSrc = "$project.projectDir/src/main/java"
