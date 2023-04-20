@@ -51,7 +51,7 @@ class TakePictureTest {
         if (uiPermissionButton.exists()) {
             uiPermissionButton.click()
         }
-        onView(withId(R.id.takePhotoButton)).inRoot(RootMatchers.isDialog()).perform(ViewActions.click())
+        onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
     }
 
 
