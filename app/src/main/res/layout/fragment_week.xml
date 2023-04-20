@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.alamkanak.weekview.WeekView
+    <com.github.mateo762.myapplication.habits.fragments.week.CustomWeekView
         android:id="@+id/weekView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,6 +20,10 @@
         app:todayBackgroundColor="@color/today_background"
         app:hourSeparatorColor="@color/hour_separator"
         app:todayHeaderTextColor="@color/today_header_text"
+        app:hourHeight="90dp"
+        app:showNowLine="true"
+        app:nowLineThickness="4dp"
+        app:autoLimitTime="true"
    />
 
 </RelativeLayout>

@@ -2,7 +2,10 @@ package com.github.mateo762.myapplication.ui.habits
 
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.os.Build
+import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -15,11 +18,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.github.mateo762.myapplication.Habit
+import com.github.mateo762.myapplication.models.Habit
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -29,8 +31,10 @@ import com.google.firebase.ktx.Firebase
 import java.time.DayOfWeek
 import java.util.*
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CreateHabitScreen() {
+    val TAG = "CreateHabitScreen"
     val context = LocalContext.current
     var habitName by remember { mutableStateOf("") }
     var habitDays by remember { mutableStateOf(emptyList<DayOfWeek>()) }
@@ -104,7 +108,7 @@ fun CreateHabitScreen() {
                         Text(day.toString(), modifier = Modifier.padding(start = 8.dp))
                     }
                 }
-                
+
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Button(
                         onClick = {
@@ -168,7 +172,7 @@ fun CreateHabitScreen() {
                             )
                         ) {
                             Toast.makeText(
-                                context,R.string.invalid_time_error,Toast.LENGTH_SHORT
+                                context, R.string.invalid_time_error, Toast.LENGTH_SHORT
                             ).show()
                         } else {
                             // This intent would now save into a DB / Firebase
@@ -183,6 +187,7 @@ fun CreateHabitScreen() {
 
                             //
                             val myHabit = Habit(
+                                UUID.randomUUID().toString(),
                                 habitName,
                                 ArrayList(habitDays),
                                 habitStartTime.value,
@@ -195,26 +200,28 @@ fun CreateHabitScreen() {
                             val uid = user?.uid
                             if (uid == null) {
                                 Toast.makeText(
-                                    context,R.string.email_error,Toast.LENGTH_SHORT
+                                    context, R.string.email_error, Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-                                val userRef = db.child("users")
-                                var key = userRef.push().key
-                                val users : MutableMap<String,Habit> = HashMap()
-                                if (key == null) {
-                                    key = ""
-                                }
-                                val path = uid.plus("/habit_list/").plus(key)
-                                users[path]=myHabit
-                                db.child("users").updateChildren(users as Map<String, Any>)
+                                val db = Firebase.database.reference
+
+                                val habitData = hashMapOf(
+                                    "id" to myHabit.id,
+                                    "name" to myHabit.name,
+                                    "days" to myHabit.days,
+                                    "startTime" to myHabit.startTime,
+                                    "endTime" to myHabit.endTime
+                                )
+
+                                val habitRef =
+                                    db.child("users").child(uid).child("habitsPath").push()
+
+                                habitRef.setValue(habitData)
                                     .addOnSuccessListener {
-                                        Toast.makeText(
-                                            context,R.string.success_habit,Toast.LENGTH_SHORT
-                                        ).show()
-                                    }.addOnFailureListener {
-                                        Toast.makeText(
-                                            context,R.string.try_again_error,Toast.LENGTH_SHORT
-                                        ).show()
+                                        Log.d(TAG, "Habit added with ID: ${habitRef.key}")
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.w(TAG, "Error adding habit", e)
                                     }
                             }
                         }
