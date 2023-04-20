@@ -17,9 +17,12 @@ import androidx.core.content.ContextCompat
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.BuildConfig
 import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.home.HomeActivity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -100,11 +103,42 @@ class TakePhotoActivity : BaseActivity() {
     }
 
     private fun onImageCaptured() {
-        // hide button
         takePhotoButton.visibility = View.GONE
-        // show text
         takePhotoText.visibility = View.VISIBLE
         takePhotoLoader.visibility = View.VISIBLE
+        Thread.sleep(3000)
+        // upload image
+        uploadImage()
+    }
+
+    private fun uploadImage() {
+        // write to firebase storage
+        //Generate a file name based on the upload time
+        if (imageData == null) {
+            Toast.makeText(this, "No image data", Toast.LENGTH_SHORT).show()
+            // go to home
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            return
+        }
+        val formatter = SimpleDateFormat(getString(R.string.file_name_date), Locale.getDefault())
+        val now = Date()
+        val fileName = formatter.format(now)
+        val storage = FirebaseStorage.getInstance().getReference("users/$currentUser/images/$fileName")
+
+        //Upload the image to firebase storage
+        storage.putBytes(imageData).addOnSuccessListener {
+            //show toast
+            Toast.makeText(this, "Image uploaded successfully", Toast.LENGTH_SHORT).show()
+            // get the image url
+            storage.downloadUrl.addOnSuccessListener {
+                var imageUrl = it.toString()
+            }
+
+        }
+        // go to home
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
     }
 
 }

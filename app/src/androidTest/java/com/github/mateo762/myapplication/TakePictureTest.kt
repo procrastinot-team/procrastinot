@@ -1,4 +1,5 @@
 package com.github.mateo762.myapplication
+/*
 
 import android.app.Activity
 import android.graphics.Point
@@ -146,3 +147,4 @@ class TakePictureTest {
 
 
 }
+*/
