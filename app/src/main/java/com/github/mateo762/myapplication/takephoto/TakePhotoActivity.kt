@@ -36,7 +36,7 @@ class TakePhotoActivity : BaseActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //getCameraPermission()
+        getCameraPermission()
         // User
         var firebaseUser = Firebase.auth.currentUser?.uid
 
