@@ -39,6 +39,8 @@ class TakePictureTest {
 
     @Before
     fun setUp() {
+        // make the phone not go to sleep or lock
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).executeShellCommand("svc power stayon true")
         Thread.sleep(2000)
         Intents.init()
     }
@@ -81,6 +83,8 @@ class TakePictureTest {
         uiPermissionButton.click()
     }
     Thread.sleep(2000)
+    // Press back
+    uiDevice.pressBack()
     }
 
 
@@ -105,6 +109,8 @@ class TakePictureTest {
         if (uiShutter.exists()) {
             uiShutter.click()
         }
+        // Go back to the app
+        uiDevice.pressBack()
     }
 
     @Test
@@ -112,7 +118,6 @@ class TakePictureTest {
         onView(isRoot()).perform(waitFor(5000))
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
 
-        Thread.sleep(2000)
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         var uiPermissionButton = uiDevice.findObject(UiSelector().text("While using the app"))
         if (uiPermissionButton.exists()) {
@@ -122,18 +127,18 @@ class TakePictureTest {
         if (uiPermissionButton.exists()) {
             uiPermissionButton.click()
         }
-        Thread.sleep(2000)
         var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
         // If the device has a physical shutter button, use it
         if (uiShutter.exists()) {
             uiShutter.click()
         }
-        Thread.sleep(2000)
         var uiDone = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
         // If the device has took a picture, select that photo. Doesnt work if there is no shutter button
         if (uiDone.exists()) {
             uiDone.click()
         }
+        // Go back to the app
+        uiDevice.pressBack()
     }
 
 
