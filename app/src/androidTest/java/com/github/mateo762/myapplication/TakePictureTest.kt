@@ -31,11 +31,10 @@ import org.hamcrest.Matcher
 class TakePictureTest {
 
     @get:Rule
-    val activityRule = ActivityScenarioRule(TakePhotoActivity::class.java)
-    private lateinit var decorView: View
+    public val activityRule = ActivityScenarioRule(TakePhotoActivity::class.java)
 
     @get:Rule
-    val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA)
+    public val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA)
 
 
     @Before
@@ -69,29 +68,28 @@ class TakePictureTest {
 @Test
     fun clickTheButton() {
         onView(isRoot()).perform(waitFor(5000))
+        onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
 
-        val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+    val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     Thread.sleep(2000)
 
     var uiPermissionButton = uiDevice.findObject(UiSelector().text("While using the app"))
-        if (uiPermissionButton.exists()) {
-            uiPermissionButton.click()
-        }
-        uiPermissionButton = uiDevice.findObject(UiSelector().text("WHILE USING THE APP"))
-        if (uiPermissionButton.exists()) {
-            uiPermissionButton.click()
-        }
-        Thread.sleep(2000)
-
-        onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
+    if (uiPermissionButton.exists()) {
+        uiPermissionButton.click()
+    }
+    uiPermissionButton = uiDevice.findObject(UiSelector().text("WHILE USING THE APP"))
+    if (uiPermissionButton.exists()) {
+        uiPermissionButton.click()
+    }
+    Thread.sleep(2000)
     }
 
 
     @Test
     fun clickTheButtonAndTakePicture() {
         onView(isRoot()).perform(waitFor(5000))
-
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
+
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         Thread.sleep(2000)
 
