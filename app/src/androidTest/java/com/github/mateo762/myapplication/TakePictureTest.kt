@@ -1,5 +1,6 @@
 package com.github.mateo762.myapplication
 
+import android.app.Activity
 import android.graphics.Point
 import android.os.RemoteException
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.GrantPermissionRule
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
 import com.github.mateo762.myapplication.takephoto.TakePhotoActivity
@@ -27,14 +29,16 @@ import org.junit.runner.RunWith
 class TakePictureTest {
 
     @get:Rule
-    public val activityRule = ActivityScenarioRule(TakePhotoActivity::class.java)
+    public val activityRule: ActivityScenarioRule<TakePhotoActivity> = ActivityScenarioRule(TakePhotoActivity::class.java)
 
-    //@get:Rule
-    //public val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA)
+//    @get:Rule
+//    public val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA)
 
 
     @Before
     fun setUp() {
+        // use get activity
+
         // make the phone not go to sleep or lock
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         val coordinates: Array<Point?> = arrayOfNulls<Point>(4)
