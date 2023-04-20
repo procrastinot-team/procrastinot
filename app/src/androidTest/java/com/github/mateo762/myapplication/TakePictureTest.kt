@@ -25,23 +25,19 @@ import android.Manifest
 @RunWith(AndroidJUnit4::class)
 class TakePictureTest {
 
-
-
     @get:Rule
     val activityRule = ActivityScenarioRule(TakePhotoActivity::class.java)
-
-    //@get:Rule
-    //var mRuntimePermissionRule: GrantPermissionRule? =
-    //    GrantPermissionRule.grant(Manifest.permission.CAMERA)
-
     private lateinit var decorView: View
+
+    @get:Rule
+    val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA)
+    
 
     @Before
     fun setUp() {
         activityRule.scenario.onActivity {
             decorView = it.window.decorView
         }
-
         Intents.init()
     }
 
@@ -53,7 +49,10 @@ class TakePictureTest {
     @Test
     fun clickTheButton() {
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        uiDevice.findObject(UiSelector().text("Only this time")).click()
+        val uiPermissionButton = uiDevice.findObject(UiSelector().text("Only this time"))
+        if (uiPermissionButton.exists()) {
+            uiPermissionButton.click()
+        }
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
     }
 
@@ -62,7 +61,10 @@ class TakePictureTest {
     fun clickTheButtonAndTakePicture() {
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        uiDevice.findObject(UiSelector().text("Only this time")).click()
+        val uiPermissionButton = uiDevice.findObject(UiSelector().text("Only this time"))
+        if (uiPermissionButton.exists()) {
+            uiPermissionButton.click()
+        }
         Thread.sleep(2000)
         var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
         // If the device has a physical shutter button, use it
@@ -75,7 +77,10 @@ class TakePictureTest {
     fun clickTheButtonAndTakePictureGoBackToApp() {
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        uiDevice.findObject(UiSelector().text("Only this time")).click()
+        val uiPermissionButton = uiDevice.findObject(UiSelector().text("Only this time"))
+        if (uiPermissionButton.exists()) {
+            uiPermissionButton.click()
+        }
         Thread.sleep(2000)
         var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
         // If the device has a physical shutter button, use it

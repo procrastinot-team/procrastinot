@@ -1,28 +1,26 @@
 package com.github.mateo762.myapplication.takephoto
 
+import android.Manifest
+import android.app.KeyguardManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.github.mateo762.myapplication.BaseActivity
+import com.github.mateo762.myapplication.BuildConfig
 import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.home.HomeActivity
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
-import java.text.SimpleDateFormat
 import java.util.*
-import android.Manifest
-import androidx.compose.ui.graphics.Color
 
 
 class TakePhotoActivity : BaseActivity() {
@@ -38,7 +36,7 @@ class TakePhotoActivity : BaseActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getCameraPermission()
+        //getCameraPermission()
         // User
         var firebaseUser = Firebase.auth.currentUser?.uid
 
@@ -51,6 +49,12 @@ class TakePhotoActivity : BaseActivity() {
         Log.d("TakePhotoActivity", "User: $currentUser")
 
         super.onCreate(savedInstanceState)
+        if (BuildConfig.DEBUG) {
+            val km = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+            val keyguardLock = km.newKeyguardLock("TAG")
+            keyguardLock.disableKeyguard()
+            window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+        }
 
         setContentView(R.layout.activity_takephoto)
         imageView = findViewById(R.id.imageView)
