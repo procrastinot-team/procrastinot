@@ -1,12 +1,10 @@
 package com.github.mateo762.myapplication.home.fragments
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
@@ -21,44 +19,34 @@ import com.google.firebase.database.*
 class FeedFragment : Fragment() {
     private lateinit var imagesRef: DatabaseReference
     private val imagesState = mutableStateOf(emptyList<HabitImage>())
-    private var feedPosts = ArrayList<Post>()
-    private val fetchedImages = mutableListOf<HabitImage>()
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val posts = getFirebaseContent()
         return ComposeView(requireContext()).apply {
             setContent {
-                FeedScreen(posts = posts)
+                FeedScreen(
+                    posts = generatePosts(imagesState.value)
+                )
             }
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val posts = getFirebaseContent()
         super.onViewCreated(view, savedInstanceState)
-        ComposeView(requireContext()).apply {
-            setContent {
-                FeedScreen(posts = posts)
-            }
-        }
-    }
 
-
-    private fun getFirebaseContent(): ArrayList<Post> {
         // Initialize Firebase database reference
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
-            imagesRef = FirebaseDatabase.getInstance()
-                .getReference("/users/${currentUser.uid}/imagesPath")
+            imagesRef =
+                FirebaseDatabase.getInstance().getReference("/users/${currentUser.uid}/imagesPath")
 
-            imagesRef.addValueEventListener(object : ValueEventListener {
+            imagesRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    val fetchedImages = mutableListOf<HabitImage>()
                     for (childSnapshot in snapshot.children) {
                         val image = childSnapshot.getValue(HabitImage::class.java)
                         if (image != null) {
@@ -66,25 +54,16 @@ class FeedFragment : Fragment() {
                         }
                     }
                     imagesState.value = fetchedImages
-                    while(fetchedImages.size == 0){
-                        /* no-op */
-                    }
-
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     Log.d(TAG, "Error: ${error.message}")
                 }
             })
-            while(fetchedImages.size == 0) {
-
-            }
-            feedPosts = generatePosts(fetchedImages)
-            }
-        return feedPosts
+        }
     }
 
-        private fun generatePosts(fetchedImages: MutableList<HabitImage>): ArrayList<Post> {
+    private fun generatePosts(fetchedImages: List<HabitImage>): ArrayList<Post> {
         val generatedPosts = ArrayList<Post>()
         for (i in fetchedImages) {
             generatedPosts.add(
