@@ -21,7 +21,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.regex.Pattern
 import android.Manifest
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.matcher.RootMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import org.hamcrest.Matcher
 
 @RunWith(AndroidJUnit4::class)
 class TakePictureTest {
@@ -44,8 +48,27 @@ class TakePictureTest {
         Intents.release()
     }
 
-    @Test
+    private fun waitFor(timeout: Long): ViewAction {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return isRoot()
+            }
+
+            override fun getDescription(): String {
+                return "Wait for $timeout milliseconds"
+            }
+
+            override fun perform(uiController: UiController?, view: View?) {
+                uiController?.loopMainThreadForAtLeast(timeout)
+            }
+        }
+    }
+
+
+@Test
     fun clickTheButton() {
+        onView(isRoot()).perform(waitFor(5000))
+
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         val uiPermissionButton = uiDevice.findObject(UiSelector().text("Only this time"))
         if (uiPermissionButton.exists()) {
@@ -57,6 +80,8 @@ class TakePictureTest {
 
     @Test
     fun clickTheButtonAndTakePicture() {
+        onView(isRoot()).perform(waitFor(5000))
+
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         val uiPermissionButton = uiDevice.findObject(UiSelector().text("Only this time"))
@@ -73,6 +98,8 @@ class TakePictureTest {
 
     @Test
     fun clickTheButtonAndTakePictureGoBackToApp() {
+        onView(isRoot()).perform(waitFor(5000))
+
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         val uiPermissionButton = uiDevice.findObject(UiSelector().text("Only this time"))
