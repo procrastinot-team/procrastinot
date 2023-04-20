@@ -30,7 +30,12 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class TakePictureTest {
 
+    @get:Rule
+    val activityRule = ActivityScenarioRule(TakePhotoActivity::class.java)
     private lateinit var activityScenario: ActivityScenario<TakePhotoActivity>
+
+    private lateinit var decorView: View
+
 
 //    @get:Rule
 //    public val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA)
@@ -40,21 +45,8 @@ class TakePictureTest {
     fun setUp() {
         // use get activity
         activityScenario = ActivityScenario.launch(TakePhotoActivity::class.java)
-
-        // make the phone not go to sleep or lock
-        val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        val coordinates: Array<Point?> = arrayOfNulls<Point>(4)
-        coordinates[0] = Point(248, 1520)
-        coordinates[1] = Point(248, 929)
-        coordinates[2] = Point(796, 1520)
-        coordinates[3] = Point(796, 929)
-        try {
-            if (!uiDevice.isScreenOn()) {
-                uiDevice.wakeUp()
-                uiDevice.swipe(coordinates, 10)
-            }
-        } catch (e: RemoteException) {
-            e.printStackTrace()
+        activityRule.scenario.onActivity {
+            decorView = it.window.decorView
         }
         Intents.init()
     }
