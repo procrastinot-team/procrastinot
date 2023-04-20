@@ -1,60 +1,45 @@
 package com.github.mateo762.myapplication.home.fragments
 
+import android.content.ContentValues
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.post.Post
+import com.github.mateo762.myapplication.ui.home.FeedScreen
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FeedFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class FeedFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_feed, container, false)
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FeedFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FeedFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        try {
+            val feedPosts = ArrayList<Post>()
+            // Fill with 5 sample posts generated locally for visualization / testing
+            for (i in 1..5) {
+                feedPosts.add(
+                    Post(
+                        "TEST_POST_$i",
+                        "TEST_POST_DESCRIPTION_$i",
+                        "@test_username",
+                        "Associated habit to post $i",
+                        // Pending image type / structure to handle, since we use test data at
+                        // the moment, pass no image and use it directly to draw the post
+                        null
+                    )
+                )
+            }
+            return ComposeView(requireContext()).apply {
+                setContent {
+                    FeedScreen(feedPosts)
                 }
             }
+        } catch (e: Exception) {
+            Log.e(ContentValues.TAG, "onCreateView in FeedFragment", e)
+            throw e
+        }
     }
 }
