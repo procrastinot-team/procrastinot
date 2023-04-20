@@ -16,6 +16,7 @@ import com.alamkanak.weekview.MonthLoader
 import com.alamkanak.weekview.WeekView
 import com.alamkanak.weekview.WeekViewEvent
 import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.getHabits
 import com.github.mateo762.myapplication.getHardCodedHabits
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -29,7 +30,7 @@ open class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.Even
     private lateinit var weekView: CustomWeekView
 
     @RequiresApi(Build.VERSION_CODES.O)
-    var habits = getHardCodedHabits()
+    var habits = getHardCodedHabits() //TODO: Replace to getHabits
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(

@@ -48,7 +48,7 @@ fun UploadImageScreen(userId: String, habitId: String) {
         Text(text = "Upload Hardcoded habits", fontSize = 24.sp)
         Button(
             modifier = Modifier.padding(top = 16.dp),
-            onClick = { addHabitsToUser(userId, habits = getHardCodedHabits()) }
+            onClick = { addHabitsToUser(userId, habits = getHardCodedHabits()) }  //TODO Replace to getHabits
         ) {
             Text(text = "Upload Habits")
         }

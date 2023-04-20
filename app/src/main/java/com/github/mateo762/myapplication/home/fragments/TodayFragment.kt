@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import com.github.mateo762.myapplication.models.HabitImage
 import com.github.mateo762.myapplication.TAG
+import com.github.mateo762.myapplication.getHabits
 import com.github.mateo762.myapplication.getHardCodedHabits
 import com.github.mateo762.myapplication.ui.home.TodayScreen
 import com.google.firebase.auth.FirebaseAuth
@@ -60,7 +61,7 @@ class TodayFragment : Fragment() {
             setContent {
                 TodayScreen(
                     time = dateTime,
-                    habits = getHardCodedHabits(),
+                    habits = getHardCodedHabits(), //TODO Replace to getHabits
                     images = imagesState.value
                 )
             }
