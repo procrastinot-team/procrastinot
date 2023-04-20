@@ -27,16 +27,15 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.Habit
+import com.github.mateo762.myapplication.models.Habit
 import com.github.mateo762.myapplication.habits.HabitService
 import com.github.mateo762.myapplication.habits.HabitServiceCallback
 import com.github.mateo762.myapplication.habits.HabitsActivity
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 @AndroidEntryPoint
@@ -60,6 +59,7 @@ class DevelopFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun HabitInputScreen() {
         val context = LocalContext.current
@@ -195,6 +195,7 @@ class DevelopFragment : Fragment() {
 
                                 //
                                 val myHabit = Habit(
+                                    UUID.randomUUID().toString(),
                                     habitName,
                                     ArrayList(habitDays),
                                     habitStartTime.text,

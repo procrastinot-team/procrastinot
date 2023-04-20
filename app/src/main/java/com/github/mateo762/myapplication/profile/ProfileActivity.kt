@@ -5,8 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
-import com.github.mateo762.myapplication.Habit
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
@@ -15,9 +13,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.util.Objects
 
 /**
  * Activity for displaying the profile information.
