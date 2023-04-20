@@ -49,5 +49,6 @@ public class SearchActivityTest {
         onView(withId(R.id.search_edit_text)).perform(click());
         onView(withId(R.id.recycler_view)).check(matches(isDisplayed()));
         onView(withId(R.id.textInputLayout)).check(matches(isDisplayed()));
+
     }
 }
