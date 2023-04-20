@@ -83,7 +83,6 @@ class TakePictureTest {
 
 @Test
     fun clickTheButton() {
-        onView(isRoot()).perform(waitFor(5000))
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
 
     Thread.sleep(2000)
@@ -104,7 +103,6 @@ class TakePictureTest {
 
     @Test
     fun clickTheButtonAndTakePicture() {
-        onView(isRoot()).perform(waitFor(5000))
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
 
         Thread.sleep(2000)
@@ -129,7 +127,6 @@ class TakePictureTest {
 
     @Test
     fun clickTheButtonAndTakePictureGoBackToApp() {
-        onView(isRoot()).perform(waitFor(5000))
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
 
         val uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
