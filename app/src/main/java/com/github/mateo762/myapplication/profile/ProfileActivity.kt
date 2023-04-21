@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
@@ -15,11 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.TAG
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.github.mateo762.myapplication.models.HabitImage
 import com.github.mateo762.myapplication.upload_gallery.ImageAdapter
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -33,6 +36,8 @@ import java.time.DayOfWeek
  */
 class ProfileActivity : BaseActivity() {
 
+    private lateinit var nameTextView: TextView
+    private lateinit var emailTextView: TextView
     private lateinit var nameEditText: EditText
     private lateinit var emailEditText: EditText
 
@@ -60,6 +65,8 @@ class ProfileActivity : BaseActivity() {
         emailEditText.isClickable = false
         emailEditText.background = null
         btnSave.visibility = View.GONE
+
+        val uid = user!!.uid
 
         btnEdit.setOnClickListener {
             // We enable the name and email edit texts such that they can be edited
@@ -94,15 +101,27 @@ class ProfileActivity : BaseActivity() {
             btnSave.visibility = View.GONE
 
             profileImage.setOnClickListener { }
+
+            db.child("users").child(uid).child("name").setValue(newName)
+            db.child("users").child(uid).child("email").setValue(newEmail)
+
+
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                .setDisplayName(newName)
+                .build()
+
+            user.updateProfile(profileUpdates)
         }
 
-        nameEditText.setText(user?.displayName)
-        emailEditText.setText(user?.email)
+        nameEditText.setText(user.displayName)
+        db.child("users").child(uid).child("email").get().addOnSuccessListener { it ->
+            emailEditText.setText(it.getValue(String::class.java))
+        }
 
 
         // Retrieval of list of habits
         // First, we take the reference of the database
-        val ref = db.child("users/${user?.uid}/habitsPath")
+        val ref = db.child("users/${uid}/habitsPath")
 
 
         // Then, we create a list of names, ids and textViews, where we store habits data

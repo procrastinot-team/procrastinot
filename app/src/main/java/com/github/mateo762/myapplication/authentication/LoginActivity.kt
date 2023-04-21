@@ -105,13 +105,14 @@ class LoginActivity : AppCompatActivity() {
                             val user = FirebaseAuth.getInstance().currentUser
                             val uid = user?.uid
                             val email = user?.email
-                            if (uid == null || email == null) {
+                            val displayName = user?.displayName
+                            if (uid == null || email == null || displayName == null) {
                                 Toast.makeText(
-                                    this@LoginActivity, R.string.email_error,Toast.LENGTH_SHORT
+                                    this@LoginActivity, R.string.user_data_error,Toast.LENGTH_SHORT
                                 ).show()
                             } else {
                                 val users: MutableMap<String, UserEntity> = HashMap()
-                                val u = UserEntity(uid,email,ArrayList<HabitEntity>())
+                                val u = UserEntity(uid,displayName,email,ArrayList<HabitEntity>())
                                 users[uid] = u
                                 db.child("users").updateChildren(users as Map<String, Any>)
                                     .addOnSuccessListener {
