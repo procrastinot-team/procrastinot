@@ -14,7 +14,7 @@ import com.github.mateo762.myapplication.home.HomeActivity
 import com.github.mateo762.myapplication.profile.ProfileActivity
 import com.github.mateo762.myapplication.search.SearchActivity
 import com.github.mateo762.myapplication.settings.SettingsActivity
-import com.github.mateo762.myapplication.upload_gallery.UploadPictureActivity
+//import com.github.mateo762.myapplication.upload_gallery.UploadPictureActivity
 import com.github.mateo762.myapplication.takephoto.TakePhotoActivity
 
 import com.google.android.material.navigation.NavigationView
