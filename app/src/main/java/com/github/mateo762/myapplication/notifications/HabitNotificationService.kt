@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.takephoto.TakePhotoActivity
 import com.github.mateo762.myapplication.home.HomeActivity
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -34,7 +35,7 @@ class HabitNotificationService(
      * Method that displays a notification.
      */
     fun displayNotification() {
-        val activityIntent = Intent(context, HomeActivity::class.java)
+        val activityIntent = Intent(context, TakePhotoActivity::class.java)
         val pendingActivityIntent = PendingIntent.getActivity(
             context,
             PENDING_INTENT_REQUEST_CODE,
