@@ -1,6 +1,5 @@
 package com.github.mateo762.myapplication.post
 
-import android.graphics.fonts.FontStyle
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
@@ -24,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle.Companion.Italic
 import androidx.compose.ui.unit.dp
 import com.github.mateo762.myapplication.R
+import com.google.accompanist.coil.rememberCoilPainter
 
 class PostActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,15 +32,22 @@ class PostActivity : AppCompatActivity() {
         val postBody = intent.getStringExtra("postBody")
         val postUsername = intent.getStringExtra("postUsername")
         val assocHabit = intent.getStringExtra("associatedHabit")
+        val postImageUrl = intent.getStringExtra("imageUrl")
         setContent {
-            if (postTitle != null && postBody != null && postUsername != null && assocHabit != null) {
-                ShowPost(postTitle, postBody, postUsername, assocHabit)
+            if (postTitle != null && postBody != null && postUsername != null && assocHabit != null && postImageUrl != null) {
+                ShowPost(postTitle, postBody, postUsername, assocHabit, postImageUrl)
             }
         }
     }
 
     @Composable
-    fun ShowPost(postTitle: String, postBody: String, postUsername: String, assocHabit: String) {
+    fun ShowPost(
+        postTitle: String,
+        postBody: String,
+        postUsername: String,
+        assocHabit: String,
+        postImageUrl: String
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -58,8 +65,7 @@ class PostActivity : AppCompatActivity() {
                     PostUserCard(username = postUsername)
                     Spacer(modifier = Modifier.height(10.dp))
                     Image(
-                        // TODO: replace with actual image content from Firebase passed with intent
-                        painter = painterResource(id = R.drawable.window),
+                        painter = rememberCoilPainter(request = postImageUrl, fadeIn = true),
                         contentDescription = stringResource(id = R.string.sample_post_content),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier

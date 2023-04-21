@@ -1,7 +1,6 @@
 package com.github.mateo762.myapplication.ui.home
 
 import android.content.Intent
-import android.media.Image
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -23,9 +22,14 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
+import coil.compose.LocalImageLoader
+import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.post.Post
 import com.github.mateo762.myapplication.post.PostActivity
+import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.imageloading.LoadPainterDefaults
 
 
 @Composable
@@ -37,16 +41,27 @@ fun FeedScreen(posts: List<Post>) {
             .fillMaxSize()
             .padding(10.dp)
     ) {
-        for(post in posts){
-            PostThumbnail(post.username, post.caption, post.description, post.assocHabit)
+        for (post in posts) {
+            PostThumbnail(
+                post.username,
+                post.caption,
+                post.description,
+                post.habitImage.habitId,
+                post.habitImage.url
+            )
         }
     }
 }
 
 @Composable
 // This is the actual post thumbnail, including the header (UserCard)
-// TODO: add image:Image to function signature once the type/handling is defined.
-fun PostThumbnail(username: String, caption: String, body: String, assocHabit: String) {
+fun PostThumbnail(
+    username: String,
+    caption: String,
+    body: String,
+    assocHabit: String,
+    imageUrl: String
+) {
     val context = LocalContext.current
     Box(
         // Post box
@@ -71,17 +86,17 @@ fun PostThumbnail(username: String, caption: String, body: String, assocHabit: S
                         intent.putExtra("postBody", body)
                         intent.putExtra("postUsername", username)
                         intent.putExtra("associatedHabit", assocHabit)
-                        // TODO: replace with actual image content from Firebase
-                        // Unused for now, function will load sample image for testing
-                        // Pending how to handle images in the app from other task
-                        // intent.putExtra("imageContents", ByteArray(1024))
+                        intent.putExtra("imageUrl", imageUrl)
                         startActivity(context, intent, null)
                     }
             ) {
                 Image(
-                    // This is the image to be displayed in the post thumbnail in the feed (it is
-                    // currently local test data called window.jpeg)
-                    painter = painterResource(id = R.drawable.window),
+                    // This is the image to be displayed in the post thumbnail in the feed --
+                    // currently mimicking today screen
+                    painter = rememberImagePainter(
+                        data = imageUrl,
+                        imageLoader = LocalImageLoader.current,
+                    ),
                     contentDescription = stringResource(id = R.string.sample_post_content),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
