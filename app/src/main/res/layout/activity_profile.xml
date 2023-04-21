@@ -26,7 +26,7 @@
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
+        android:layout_width="379dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
@@ -35,8 +35,8 @@
         app:cardElevation="3dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="380dp"
+            android:layout_height="match_parent"
             android:background="@color/card_background_dark"
             android:orientation="horizontal"
             android:paddingTop="24dp"
@@ -57,26 +57,58 @@
                     app:shapeAppearanceOverlay="@style/roundedImageViewRounded" />
             </LinearLayout>
 
+
+            <LinearLayout
+                android:layout_width="244dp"
+                android:layout_height="92dp"
+                android:layout_weight="3"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/editTextUserName"
+                    android:layout_width="244dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="@string/user_name"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/editTextEmail"
+                    android:layout_width="244dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textEmailAddress"
+                    android:text="@string/user_email"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:text="johndoe@email.com" />
 
-                <TextView
-                    android:id="@+id/username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    tools:text="johndoe" />
+                <ImageButton
+                    android:id="@+id/btnEdit"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:contentDescription="@string/edit_icon"
+                    app:srcCompat="@android:drawable/ic_menu_edit" />
+
+                <ImageButton
+                    android:id="@+id/btnSave"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:contentDescription="@string/save_icon"
+                    app:srcCompat="@android:drawable/ic_menu_save" />
+
             </LinearLayout>
+
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 
     <TextView

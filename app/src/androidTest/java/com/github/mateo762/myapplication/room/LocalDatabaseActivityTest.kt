@@ -151,7 +151,7 @@ class LocalDatabaseActivityTest {
 
 
     private fun createTestUser(username: String): UserEntity {
-        return UserEntity("1", username, testHabitList)
+        return UserEntity("1","random name", username, testHabitList)
     }
 
 }

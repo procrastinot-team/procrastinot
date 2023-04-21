@@ -12,10 +12,14 @@
     <string name="google_sign_in">Sign In with Google</string>
     <string name="register_with_google">Register with Google</string>
     <string name="register">Register</string>
+    <string name="user_name">User\'s name</string>
+    <string name="user_email">User\'s email</string>
+    <string name="edit_icon">Button to switch to edit mode</string>
+    <string name="save_icon">Button to save and switch to view mode</string>
     <string name="already_have_logged_in">Already have an account? Login</string>
     <string name="still_not_have_an_account">Still don\'t have an account? Register now</string>\
     <string name="token_error">Error! Unable to retrieve user\'s token</string>
-    <string name="email_error">Error! Unable to retrieve user\'s email</string>
+    <string name="user_data_error">Error! Unable to retrieve user\'s data</string>
     <string name="invalid_time_error">Please enter a valid time (HH:MM)</string>
     <string name="try_again_error">Try again</string>
     <string name="success_habit">Habit successfully saved!</string>\

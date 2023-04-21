@@ -58,17 +58,18 @@ class RegisterActivity : AppCompatActivity() {
                         val uid = user?.uid
                         if (uid == null) {
                             Toast.makeText(
-                                this@RegisterActivity, R.string.email_error,Toast.LENGTH_SHORT
+                                this@RegisterActivity, R.string.user_data_error,Toast.LENGTH_SHORT
                             ).show()
                         } else {
+                            val displayName = name.plus(" ").plus(surname)
                             val profileUpdates = UserProfileChangeRequest.Builder()
-                                .setDisplayName(name.plus(" ").plus(surname))
+                                .setDisplayName(displayName)
                                 .build()
 
                             user.updateProfile(profileUpdates)
 
                             val users: MutableMap<String, UserEntity> = HashMap()
-                            val u = UserEntity(uid,email,ArrayList<HabitEntity>())
+                            val u = UserEntity(uid,displayName,email,ArrayList<HabitEntity>())
                             users[uid] = u
                             db.child("users").updateChildren(users as Map<String, Any>)
                                 .addOnSuccessListener {

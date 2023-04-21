@@ -4,8 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
@@ -13,11 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.TAG
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.github.mateo762.myapplication.models.HabitImage
 import com.github.mateo762.myapplication.upload_gallery.ImageAdapter
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -31,6 +36,11 @@ import java.time.DayOfWeek
  */
 class ProfileActivity : BaseActivity() {
 
+    private lateinit var nameTextView: TextView
+    private lateinit var emailTextView: TextView
+    private lateinit var nameEditText: EditText
+    private lateinit var emailEditText: EditText
+
     private val user = FirebaseAuth.getInstance().currentUser
     private lateinit var profileImage:ShapeableImageView
     lateinit var binding: ActivityProfileBinding
@@ -42,20 +52,76 @@ class ProfileActivity : BaseActivity() {
 
         setupToolbar()
 
-        binding.name.text = user?.displayName
-        binding.username.text = user?.email
+        val db: DatabaseReference = Firebase.database.reference
+        profileImage = findViewById(R.id.profileImage)
+        nameEditText = findViewById(R.id.editTextUserName)
+        emailEditText = findViewById(R.id.editTextEmail)
+        val btnEdit = findViewById<ImageButton>(R.id.btnEdit)
+        val btnSave = findViewById<ImageButton>(R.id.btnSave)
+        nameEditText.isEnabled = false
+        nameEditText.isClickable = false
+        nameEditText.background = null
+        emailEditText.isEnabled = false
+        emailEditText.isClickable = false
+        emailEditText.background = null
+        btnSave.visibility = View.GONE
 
-        profileImage = findViewById<ShapeableImageView>(R.id.profileImage)
-        profileImage.setOnClickListener {
-            val openGalleryIntent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(openGalleryIntent,1000)
+        val uid = user!!.uid
+
+        btnEdit.setOnClickListener {
+            // We enable the name and email edit texts such that they can be edited
+            nameEditText.isEnabled = true
+            nameEditText.isClickable = true
+            emailEditText.isEnabled = true
+            emailEditText.isClickable = true
+
+            // We hide the edit button and show the save button
+            btnEdit.visibility = View.GONE
+            btnSave.visibility = View.VISIBLE
+
+            profileImage.setOnClickListener {
+                val openGalleryIntent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                startActivityForResult(openGalleryIntent,1000)
+            }
+        }
+
+        btnSave.setOnClickListener {
+            // We save the updated value to your database or data storage
+            val newName = nameEditText.text.toString()
+            val newEmail = emailEditText.text.toString()
+
+            // We change the EditText's properties back to make it non-editable
+            nameEditText.isEnabled = false
+            nameEditText.isClickable = false
+            emailEditText.isEnabled = false
+            emailEditText.isClickable = false
+
+            // We hide the save button and show the edit button
+            btnEdit.visibility = View.VISIBLE
+            btnSave.visibility = View.GONE
+
+            profileImage.setOnClickListener { }
+
+            db.child("users").child(uid).child("name").setValue(newName)
+            db.child("users").child(uid).child("email").setValue(newEmail)
+
+
+            val profileUpdates = UserProfileChangeRequest.Builder()
+                .setDisplayName(newName)
+                .build()
+
+            user.updateProfile(profileUpdates)
+        }
+
+        nameEditText.setText(user.displayName)
+        db.child("users").child(uid).child("email").get().addOnSuccessListener { it ->
+            emailEditText.setText(it.getValue(String::class.java))
         }
 
 
         // Retrieval of list of habits
         // First, we take the reference of the database
-        val db: DatabaseReference = Firebase.database.reference
-        val ref = db.child("users/${user?.uid}/habitsPath")
+        val ref = db.child("users/${uid}/habitsPath")
 
 
         // Then, we create a list of names, ids and textViews, where we store habits data
@@ -104,7 +170,7 @@ class ProfileActivity : BaseActivity() {
             }
         })
 
-        val refImg = db.child("users/${user?.uid}/imagesPath")
+        val refImg = db.child("users/${uid}/imagesPath")
         refImg.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 var imagesList:ArrayList<HabitImage>
