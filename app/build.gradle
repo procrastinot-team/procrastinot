@@ -19,7 +19,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.github.mateo762.myapplication.CustomTestRunner"
     }
 
     buildTypes {
@@ -105,6 +105,14 @@ dependencies {
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
+    // Kotlin Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4'
+
+    // ViewModel
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+
     // Optional - Included automatically by material, only add when you need
     // the icons but not the material library (e.g. when using Material3 or a
     // custom design system based on Foundation)
@@ -135,8 +143,8 @@ dependencies {
     implementation 'com.github.quivr:android-week-view:2.3.3'
     implementation 'androidx.fragment:fragment-ktx:1.5.5'
     testImplementation 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testImplementation 'org.mockito:mockito-inline:4.2.0'
-    androidTestImplementation 'org.mockito:mockito-android:4.2.0'
+    implementation "org.mockito:mockito-core:4.0.0"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
     implementation 'androidx.test.espresso:espresso-core:3.5.1'
     testImplementation 'junit:junit:4.13.2'
     implementation 'androidx.test.uiautomator:uiautomator:2.2.0'
@@ -161,6 +169,9 @@ dependencies {
     kaptTest 'com.google.dagger:hilt-compiler:2.45'
     implementation 'com.github.bumptech.glide:glide:4.15.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'
+
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
+    androidTestImplementation 'androidx.arch.core:core-testing:2.2.0'
 }
 
 // Allow references to generated code
@@ -193,6 +204,13 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
             'habits/**/*.kt',
             'upload_gallery/**/*.kt',
             // Exclude DAO interface files from coverage report
+            '**room/*Dao*.*',
+            '**/di/**',
+            '**/util/**',
+            '**/*Hilt*.*',
+            'hilt_aggregated_deps/**',
+            '**/*_Factory.class',
+            '**/*_MembersInjector.class',
             '**room/*Dao*.*',
             // Temporarily exclude untested feed fragment classes
             '**post/*.*',

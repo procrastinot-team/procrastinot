@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.mateo762.myapplication.models.Habit
 import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.TAG
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -35,6 +34,7 @@ import java.util.*
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CreateHabitScreen() {
+    val TAG = "CreateHabitScreen"
     val context = LocalContext.current
     var habitName by remember { mutableStateOf("") }
     var habitDays by remember { mutableStateOf(emptyList<DayOfWeek>()) }

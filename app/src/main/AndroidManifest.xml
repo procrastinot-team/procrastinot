@@ -23,7 +23,12 @@
             android:theme="@style/Theme.MyApplication.Fullscreen" />
         <activity
             android:name=".authentication.LoginActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".authentication.RegisterActivity"
             android:exported="false" />
@@ -45,12 +50,10 @@
         <activity
             android:name=".home.HomeActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
+        <activity
+            android:name=".username.UsernameActivity"
+            android:exported="false"/>
         <activity
             android:name=".notifications.NotificationInfoActivity"
             android:exported="false" />

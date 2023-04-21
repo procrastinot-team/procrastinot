@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.TAG
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.github.mateo762.myapplication.models.HabitImage
 import com.github.mateo762.myapplication.upload_gallery.ImageAdapter
@@ -44,6 +43,10 @@ class ProfileActivity : BaseActivity() {
     private val user = FirebaseAuth.getInstance().currentUser
     private lateinit var profileImage:ShapeableImageView
     lateinit var binding: ActivityProfileBinding
+
+    companion object {
+        private val TAG = ProfileActivity::class.java.simpleName
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

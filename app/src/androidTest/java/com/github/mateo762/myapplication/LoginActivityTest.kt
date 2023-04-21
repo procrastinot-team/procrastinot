@@ -12,6 +12,8 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.authentication.LoginActivity
 import com.github.mateo762.myapplication.authentication.RegisterActivity
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
@@ -21,12 +23,16 @@ import org.junit.runner.RunWith
 
 
 @RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
 class LoginActivityTest {
 
     private val invalidEmail = "user.gmail.com"
     private val validEmail = "user@gmail.com"
     private val validPassword = "12345678"
     private val invalidPassword = "1234"
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -36,6 +42,7 @@ class LoginActivityTest {
 
     @Before
     fun setUp() {
+        hiltRule.inject()
         // Initialize the Intents framework
         Intents.init()
     }

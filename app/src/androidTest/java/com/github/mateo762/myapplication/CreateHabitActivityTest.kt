@@ -1,11 +1,7 @@
 package com.github.mateo762.myapplication
 
-import android.widget.TimePicker
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.contrib.PickerActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
@@ -25,12 +21,16 @@ import java.time.DayOfWeek
 import java.util.*
 
 @RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
 class CreateHabitActivityTest {
-    @get:Rule
-    val activityRule = ActivityScenarioRule(HabitsActivity::class.java)
+    @get:Rule(order = 0)
+    val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
+    @get:Rule(order = 1)
     val composeTestRule = createComposeRule()
+
+    @get:Rule(order = 2)
+    val activityRule = ActivityScenarioRule(HabitsActivity::class.java)
 
     private lateinit var habitName: String
     private lateinit var habitDays: List<DayOfWeek>
@@ -39,6 +39,7 @@ class CreateHabitActivityTest {
 
     @Before
     fun setUp() {
+        hiltRule.inject()
         habitName = "Drink Water"
         habitDays = listOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY)
         habitStartTime = "00:00"
