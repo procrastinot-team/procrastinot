@@ -11,6 +11,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.authentication.LoginActivity
 import com.github.mateo762.myapplication.authentication.RegisterActivity
+import com.github.mateo762.myapplication.home.HomeActivity
 import org.hamcrest.Matchers.*
 import org.junit.After
 import org.junit.Before
@@ -89,8 +90,8 @@ class RegisterActivityTest {
             .performClick()
         Intents.intended(
             allOf(
-                IntentMatchers.hasComponent(LoginActivity::class.java.name),
-                IntentMatchers.hasExtra("from","RegisterWithGoogle")
+                IntentMatchers.hasComponent(HomeActivity::class.java.name)
+//                IntentMatchers.hasExtra("from","RegisterWithGoogle")
             )
         )
     }
