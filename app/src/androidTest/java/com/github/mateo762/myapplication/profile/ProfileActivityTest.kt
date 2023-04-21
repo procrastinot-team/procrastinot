@@ -107,5 +107,5 @@ class ProfileActivityTest {
 //        onView(withId(R.id.btnEdit)).check(matches(isDisplayed()))
 //        onView(withId(R.id.editTextEmail)).check(matches(not(isClickable())))
 //        onView(withId(R.id.editTextUserName)).check(matches(not(isClickable())))
-    }
+//    }
 }
