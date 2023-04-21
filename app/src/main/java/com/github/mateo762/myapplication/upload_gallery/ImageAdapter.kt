@@ -8,8 +8,9 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.models.HabitImage
 
-class ImageAdapter(private val imagesList: ArrayList<UserImage>, private val context: Context) :
+class ImageAdapter(private val imagesList: ArrayList<HabitImage>, private val context: Context) :
     RecyclerView.Adapter<ImageAdapter.ImageViewHolder>() {
 
     class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -29,7 +30,7 @@ class ImageAdapter(private val imagesList: ArrayList<UserImage>, private val con
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         //Using Glide to automatically fetch the images stored in the urls and display them
-        Glide.with(context).load(imagesList[position].userImage).into(holder.image)
+        Glide.with(context).load(imagesList[position].url).into(holder.image)
     }
 
 
