@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.TAG
 import com.github.mateo762.myapplication.models.HabitImage
 import com.github.mateo762.myapplication.post.Post
 import com.github.mateo762.myapplication.ui.home.FeedScreen
@@ -20,7 +19,9 @@ class FeedFragment : Fragment() {
     private lateinit var imagesRef: DatabaseReference
     private val imagesState = mutableStateOf(emptyList<HabitImage>())
 
-
+    companion object {
+        private val TAG = FeedFragment::class.java.simpleName
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -90,7 +90,7 @@ class RegisterActivityTest {
             .performClick()
 //        Intents.intended(
 //            allOf(
-//                IntentMatchers.hasComponent(HomeActivity::class.java.name),
+//                IntentMatchers.hasComponent(LoginActivity::class.java.name),
 //                IntentMatchers.hasExtra("from","RegisterWithGoogle")
 //            )
 //        )

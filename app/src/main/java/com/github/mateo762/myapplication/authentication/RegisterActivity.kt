@@ -6,10 +6,6 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.home.HomeActivity
-import com.github.mateo762.myapplication.notifications.NotificationInfoActivity
-import com.github.mateo762.myapplication.room.HabitEntity
 import com.github.mateo762.myapplication.room.UserEntity
 import com.github.mateo762.myapplication.ui.authentication.RegisterScreen
 import com.github.mateo762.myapplication.username.UsernameActivity
@@ -52,17 +48,18 @@ class RegisterActivity : AppCompatActivity() {
                         val uid = user?.uid
                         if (uid == null) {
                             Toast.makeText(
-                                this@RegisterActivity, R.string.email_error,Toast.LENGTH_SHORT
+                                this@RegisterActivity, R.string.user_data_error,Toast.LENGTH_SHORT
                             ).show()
                         } else {
+                            val displayName = name.plus(" ").plus(surname)
                             val profileUpdates = UserProfileChangeRequest.Builder()
-                                .setDisplayName(name.plus(" ").plus(surname))
+                                .setDisplayName(displayName)
                                 .build()
 
                             user.updateProfile(profileUpdates)
 
                             val users: MutableMap<String, UserEntity> = HashMap()
-                            val u = UserEntity(uid,email,ArrayList())
+                            val u = UserEntity(uid,displayName,email,ArrayList())
                             users[uid] = u
                             db.child("users").updateChildren(users as Map<String, Any>)
                                 .addOnSuccessListener {

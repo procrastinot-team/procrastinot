@@ -185,7 +185,6 @@ fun CreateHabitScreen() {
                             intent.putExtra("habitEndTime", habitEndTime.value)
                             context.startActivity(intent)
 
-                            //
                             val myHabit = Habit(
                                 UUID.randomUUID().toString(),
                                 habitName,
@@ -195,12 +194,10 @@ fun CreateHabitScreen() {
                             )
                             val user = FirebaseAuth.getInstance().currentUser
 
-                            val db: DatabaseReference = Firebase.database.reference
-
                             val uid = user?.uid
                             if (uid == null) {
                                 Toast.makeText(
-                                    context, R.string.email_error, Toast.LENGTH_SHORT
+                                    context, R.string.user_data_error, Toast.LENGTH_SHORT
                                 ).show()
                             } else {
                                 val db = Firebase.database.reference
