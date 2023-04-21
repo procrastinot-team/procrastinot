@@ -7,6 +7,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -95,13 +96,13 @@ class ProfileActivityTest {
     @Test
     fun testEditAndSaveButtons() {
         // First, we switch to edit mode and check if we can edit and if we see the save button
-        onView(withId(R.id.btnEdit)).perform(click()).check(matches(not(isDisplayed())))
+        onView(withId(R.id.btnEdit)).perform(scrollTo(), click()).check(matches(not(isDisplayed())))
         onView(withId(R.id.btnSave)).check(matches(isDisplayed()))
         onView(withId(R.id.editTextEmail)).check(matches(isClickable()))
         onView(withId(R.id.editTextUserName)).check(matches(isClickable()))
 
         // Then we save and check that the displaying is set back properly
-        onView(withId(R.id.btnSave)).perform(click()).check(matches(not(isDisplayed())))
+        onView(withId(R.id.btnSave)).perform(scrollTo(), click()).check(matches(not(isDisplayed())))
         onView(withId(R.id.btnEdit)).check(matches(isDisplayed()))
         onView(withId(R.id.editTextEmail)).check(matches(not(isClickable())))
         onView(withId(R.id.editTextUserName)).check(matches(not(isClickable())))
