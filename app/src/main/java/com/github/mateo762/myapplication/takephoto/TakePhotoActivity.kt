@@ -69,14 +69,13 @@ class TakePhotoActivity : BaseActivity() {
 
     private fun dispatchTakePictureIntent() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        Log.d("TakePhotoActivity", "dispatchTakePictureIntent: ${takePictureIntent.resolveActivity(packageManager)}")
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Toast.makeText(this, "Image captured", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.image_captured), Toast.LENGTH_SHORT).show()
             val imageBitmap = data?.extras?.get("data") as Bitmap
             imageView.setImageBitmap(imageBitmap)
             val baos = ByteArrayOutputStream()
@@ -85,7 +84,7 @@ class TakePhotoActivity : BaseActivity() {
             imageData = data
             onImageCaptured()
         } else {
-            Toast.makeText(this, "No image captured", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.no_image_captured), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -102,7 +101,7 @@ class TakePhotoActivity : BaseActivity() {
         // write to firebase storage
         //Generate a file name based on the upload time
         if (imageData == null) {
-            Toast.makeText(this, "No image data", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.no_image_data), Toast.LENGTH_SHORT).show()
             // go to home
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
@@ -116,7 +115,7 @@ class TakePhotoActivity : BaseActivity() {
         //Upload the image to firebase storage
         storage.putBytes(imageData).addOnSuccessListener {
             //show toast
-            Toast.makeText(this, "Image uploaded successfully", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.image_uploaded), Toast.LENGTH_SHORT).show()
             // get the image url
             storage.downloadUrl.addOnSuccessListener {
                 var imageUrl = it.toString()
