@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
@@ -31,6 +33,9 @@ import java.time.DayOfWeek
  */
 class ProfileActivity : BaseActivity() {
 
+    private lateinit var nameEditText: EditText
+    private lateinit var emailEditText: EditText
+
     private val user = FirebaseAuth.getInstance().currentUser
     private lateinit var profileImage:ShapeableImageView
     lateinit var binding: ActivityProfileBinding
@@ -42,19 +47,61 @@ class ProfileActivity : BaseActivity() {
 
         setupToolbar()
 
-        binding.name.text = user?.displayName
-        binding.username.text = user?.email
+        val db: DatabaseReference = Firebase.database.reference
+        profileImage = findViewById(R.id.profileImage)
+        nameEditText = findViewById(R.id.editTextUserName)
+        emailEditText = findViewById(R.id.editTextEmail)
+        val btnEdit = findViewById<ImageButton>(R.id.btnEdit)
+        val btnSave = findViewById<ImageButton>(R.id.btnSave)
+        nameEditText.isEnabled = false
+        nameEditText.isClickable = false
+        nameEditText.background = null
+        emailEditText.isEnabled = false
+        emailEditText.isClickable = false
+        emailEditText.background = null
+        btnSave.visibility = View.GONE
 
-        profileImage = findViewById<ShapeableImageView>(R.id.profileImage)
-        profileImage.setOnClickListener {
-            val openGalleryIntent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(openGalleryIntent,1000)
+        btnEdit.setOnClickListener {
+            // We enable the name and email edit texts such that they can be edited
+            nameEditText.isEnabled = true
+            nameEditText.isClickable = true
+            emailEditText.isEnabled = true
+            emailEditText.isClickable = true
+
+            // We hide the edit button and show the save button
+            btnEdit.visibility = View.GONE
+            btnSave.visibility = View.VISIBLE
+
+            profileImage.setOnClickListener {
+                val openGalleryIntent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                startActivityForResult(openGalleryIntent,1000)
+            }
         }
+
+        btnSave.setOnClickListener {
+            // We save the updated value to your database or data storage
+            val newName = nameEditText.text.toString()
+            val newEmail = emailEditText.text.toString()
+
+            // We change the EditText's properties back to make it non-editable
+            nameEditText.isEnabled = false
+            nameEditText.isClickable = false
+            emailEditText.isEnabled = false
+            emailEditText.isClickable = false
+
+            // We hide the save button and show the edit button
+            btnEdit.visibility = View.VISIBLE
+            btnSave.visibility = View.GONE
+
+            profileImage.setOnClickListener { }
+        }
+
+        nameEditText.setText(user?.displayName)
+        emailEditText.setText(user?.email)
 
 
         // Retrieval of list of habits
         // First, we take the reference of the database
-        val db: DatabaseReference = Firebase.database.reference
         val ref = db.child("users/${user?.uid}/habitsPath")
 
 
