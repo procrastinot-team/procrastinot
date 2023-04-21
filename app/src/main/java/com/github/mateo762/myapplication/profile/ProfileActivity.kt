@@ -170,7 +170,7 @@ class ProfileActivity : BaseActivity() {
             }
         })
 
-        val refImg = db.child("users/${user?.uid}/imagesPath")
+        val refImg = db.child("users/${uid}/imagesPath")
         refImg.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 var imagesList:ArrayList<HabitImage>

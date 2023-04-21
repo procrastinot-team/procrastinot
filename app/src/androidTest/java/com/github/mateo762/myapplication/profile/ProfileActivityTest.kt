@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -69,13 +70,6 @@ class ProfileActivityTest {
         val mockFirebaseAuth = mock(FirebaseAuth::class.java)
         `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
 
-        // Static mock of FirebaseAuth impossible due to Android not allowing Mockito mocks
-//        Mockito.mockStatic(FirebaseAuth::class.java).use { utilities ->
-//            utilities.`when`<Any>(FirebaseAuth::getInstance).thenReturn(mockFirebaseAuth)
-//            assertThat("instance doesn't match the mock",
-//                FirebaseAuth.getInstance() == mockFirebaseUser)
-//        }
-
         val habits = listOf(
             Habit("habit1", "Habit 1", listOf(DayOfWeek.MONDAY),"00:00","01:00"),
             Habit("habit2", "Habit 2", listOf(DayOfWeek.TUESDAY),"00:00","01:00")
@@ -94,13 +88,22 @@ class ProfileActivityTest {
 
         activityScenario = ActivityScenario.launch(intent)
 
-        // Assert that the number of TextViews in the profileActivity matches the number of habits
-        // Failed trial to test the display of habits
-//        onView(allOf(withId(R.id.habitImage), isDisplayed())).check(matches(hasChildCount(habits.size)))
-
-
         // Clean up the database
         ref.removeValue()
     }
 
+    @Test
+    fun testEditAndSaveButtons() {
+        // First, we switch to edit mode and check if we can edit and if we see the save button
+        onView(withId(R.id.btnEdit)).perform(click()).check(matches(not(isDisplayed())))
+        onView(withId(R.id.btnSave)).check(matches(isDisplayed()))
+        onView(withId(R.id.editTextEmail)).check(matches(isClickable()))
+        onView(withId(R.id.editTextUserName)).check(matches(isClickable()))
+
+        // Then we save and check that the displaying is set back properly
+        onView(withId(R.id.btnSave)).perform(click()).check(matches(not(isDisplayed())))
+        onView(withId(R.id.btnEdit)).check(matches(isDisplayed()))
+        onView(withId(R.id.editTextEmail)).check(matches(not(isClickable())))
+        onView(withId(R.id.editTextUserName)).check(matches(not(isClickable())))
+    }
 }
