@@ -22,6 +22,8 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class RegisterActivityTest {
 
+    private val name = "Louca"
+    private val surname = "Zacharie"
     private val invalidEmail = "user.gmail.com"
     private val validEmail = "user@gmail.com"
     private val validPassword = "12345678"
@@ -159,6 +161,26 @@ class RegisterActivityTest {
             })
     }
     @Test
+    fun testBtnRegisterEmptyNameAndSurname() {
+        // click
+        composeTestRule
+            .onNodeWithTag("text_name")
+            .performClick()
+            .performTextInput(name)
+        composeTestRule
+            .onNodeWithTag("text_surname")
+            .performClick()
+            .performTextInput(surname)
+        composeTestRule
+            .onNodeWithTag("btn_register")
+            .performClick()
+        onView(withText(R.string.error_empty_register))
+            .inRoot(ToastMatcher().apply {
+                matches(isDisplayed())
+            })
+    }
+
+    @Test
     fun testBtnRegisterEmptyValues() {
         // click
         composeTestRule
@@ -170,10 +192,17 @@ class RegisterActivityTest {
             })
     }
 
-
     @Test
     fun testBtnRegisterAlreadyRegistered() {
         // click
+        composeTestRule
+            .onNodeWithTag("text_name")
+            .performClick()
+            .performTextInput(name)
+        composeTestRule
+            .onNodeWithTag("text_surname")
+            .performClick()
+            .performTextInput(surname)
         composeTestRule
             .onNodeWithTag("text_email")
             .performClick()

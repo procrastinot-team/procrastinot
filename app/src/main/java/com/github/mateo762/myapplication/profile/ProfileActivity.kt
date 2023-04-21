@@ -42,7 +42,7 @@ class ProfileActivity : BaseActivity() {
 
         setupToolbar()
 
-        binding.name.text = getString(R.string.missing_name)
+        binding.name.text = user?.displayName
         binding.username.text = user?.email
 
         profileImage = findViewById<ShapeableImageView>(R.id.profileImage)
