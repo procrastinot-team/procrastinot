@@ -24,8 +24,12 @@ import androidx.compose.ui.unit.dp
 import com.github.mateo762.myapplication.authentication.LoginActivity
 
 @Composable
-fun RegisterScreen(registerUser: (String, String) -> Unit) {
+fun RegisterScreen(registerUser: (String, String, String, String) -> Unit) {
     val context = LocalContext.current
+    val name = remember { mutableStateOf("") }
+    val nameFiller by remember { mutableStateOf("") }
+    val surname = remember { mutableStateOf("") }
+    val surnameFiller by remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val emailFiller by remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
@@ -36,22 +40,48 @@ fun RegisterScreen(registerUser: (String, String) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
+            text = nameFiller,
+            style = MaterialTheme.typography.h5,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+        TextField(
+            value = name.value,
+            onValueChange = { name.value = it },
+            label = { Text(text = "Name") },
+            modifier = Modifier
+                .padding(8.dp)
+                .testTag("text_name")
+        )
+        Text(
+            text = surnameFiller,
+            style = MaterialTheme.typography.h5,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+        TextField(
+            value = surname.value,
+            onValueChange = { surname.value = it },
+            label = { Text(text = "Surname") },
+            modifier = Modifier
+                .padding(8.dp)
+                .testTag("text_surname")
+        )
+        Text(
             text = emailFiller,
             style = MaterialTheme.typography.h5,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 4.dp)
         )
         TextField(
             value = email.value,
             onValueChange = { email.value = it },
             label = { Text(text = "Email") },
             modifier = Modifier
-                .padding(16.dp)
+                .padding(8.dp)
                 .testTag("text_email")
         )
         Text(
             text = passwordFiller,
             style = MaterialTheme.typography.h5,
-            modifier = Modifier.padding(bottom = 8.dp)
+            modifier = Modifier.padding(bottom = 4.dp)
         )
         TextField(
             value = password.value,
@@ -60,12 +90,12 @@ fun RegisterScreen(registerUser: (String, String) -> Unit) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             label = { Text(text = "Password") },
             modifier = Modifier
-                .padding(16.dp)
+                .padding(8.dp)
                 .testTag("text_password")
         )
         Button(
             onClick = {
-                registerUser(email.value, password.value)
+                registerUser(name.value, surname.value, email.value, password.value)
             },
             modifier = Modifier
                 .padding(16.dp)
