@@ -16,10 +16,10 @@ import com.github.mateo762.myapplication.search.SearchActivity
 import com.github.mateo762.myapplication.settings.SettingsActivity
 import com.github.mateo762.myapplication.upload_gallery.UploadPictureActivity
 import com.github.mateo762.myapplication.takephoto.TakePhotoActivity
+
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 open class BaseActivity : AppCompatActivity() {
@@ -69,9 +69,6 @@ open class BaseActivity : AppCompatActivity() {
             R.id.nav_profile -> {
                 openActivitySelected(ProfileActivity())
                 drawer.closeDrawer(GravityCompat.START)
-            }
-            R.id.nav_upload_picture -> {
-                openActivitySelected(UploadPictureActivity())
             }
             R.id.nav_settings -> {
                 openActivitySelected(SettingsActivity())

@@ -1,20 +1,16 @@
 package com.github.mateo762.myapplication.authentication
 
-import android.Manifest.permission.POST_NOTIFICATIONS
-import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.compose.setContent
-import com.github.mateo762.myapplication.R
 import androidx.appcompat.app.AppCompatActivity
-import com.github.mateo762.myapplication.home.HomeActivity
-import com.github.mateo762.myapplication.room.HabitEntity
+import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.room.UserEntity
-import com.github.mateo762.myapplication.notifications.NotificationInfoActivity
 import com.github.mateo762.myapplication.ui.authentication.RegisterScreen
+import com.github.mateo762.myapplication.username.UsernameActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
@@ -23,7 +19,6 @@ import com.google.firebase.ktx.Firebase
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
-    private lateinit var notificationManager: NotificationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,16 +28,13 @@ class RegisterActivity : AppCompatActivity() {
 
         // Initialize Firebase auth instance
         auth = Firebase.auth
-
-        notificationManager =
-            this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
 
-    private fun registerUser(email: String, password: String) {
+    private fun registerUser(name:String, surname:String, email: String, password: String) {
 
         // add null check on text values
-        if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(baseContext, com.github.mateo762.myapplication.R.string.error_empty_register,
+        if (name.isEmpty() || surname.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(baseContext, R.string.error_empty_register,
                 Toast.LENGTH_SHORT).show()
         } else {
             auth.createUserWithEmailAndPassword(email, password)
@@ -52,26 +44,28 @@ class RegisterActivity : AppCompatActivity() {
                         val db: DatabaseReference = Firebase.database.reference
 
                         val user = FirebaseAuth.getInstance().currentUser
+
                         val uid = user?.uid
                         if (uid == null) {
                             Toast.makeText(
-                                this@RegisterActivity, R.string.email_error,Toast.LENGTH_SHORT
+                                this@RegisterActivity, R.string.user_data_error,Toast.LENGTH_SHORT
                             ).show()
                         } else {
+                            val displayName = name.plus(" ").plus(surname)
+                            val profileUpdates = UserProfileChangeRequest.Builder()
+                                .setDisplayName(displayName)
+                                .build()
+
+                            user.updateProfile(profileUpdates)
+
                             val users: MutableMap<String, UserEntity> = HashMap()
-                            val u = UserEntity(uid,email,ArrayList<HabitEntity>())
+                            val u = UserEntity(uid,displayName,email,ArrayList())
                             users[uid] = u
                             db.child("users").updateChildren(users as Map<String, Any>)
                                 .addOnSuccessListener {
-                                    Toast.makeText(baseContext, com.github.mateo762.myapplication.R.string.success_register,
+                                    Toast.makeText(baseContext, R.string.success_register,
                                     Toast.LENGTH_SHORT).show()
-                                    
-                                    val intent: Intent =
-                                        if (this.shouldShowRequestPermissionRationale(POST_NOTIFICATIONS) || !notificationManager.areNotificationsEnabled()) {
-                                            Intent(this, NotificationInfoActivity::class.java)
-                                        } else {
-                                            Intent(this, HomeActivity::class.java)
-                                        }
+                                    val intent = Intent(this, UsernameActivity::class.java)
                                     startActivity(intent)
                                 }.addOnFailureListener {
                                     Toast.makeText(

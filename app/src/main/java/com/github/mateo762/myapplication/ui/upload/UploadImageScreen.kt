@@ -93,6 +93,7 @@ private suspend fun uploadImageToFirebaseStorageAndSaveURL(
 }
 
 fun addHabitsToUser(userId: String, habits: List<Habit>) {
+    val TAG = "addHabitsToUser"
     val db = Firebase.database.reference
     val habitsRef = db.child("users").child(userId).child("habitsPath")
 

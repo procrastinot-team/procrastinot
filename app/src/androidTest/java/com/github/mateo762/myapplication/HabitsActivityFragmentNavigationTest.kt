@@ -10,18 +10,27 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.github.mateo762.myapplication.habits.fragments.CreateHabitFragment
 import com.github.mateo762.myapplication.habits.fragments.week.WeekFragment
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
 class HabitsActivityFragmentNavigationTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
     private lateinit var activityScenario: ActivityScenario<HabitsActivity>
 
     @Before
     fun setUp() {
+        hiltRule.inject()
         activityScenario = ActivityScenario.launch(HabitsActivity::class.java)
     }
 

@@ -1,6 +1,7 @@
 package com.github.mateo762.myapplication.search
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,10 +13,15 @@ import com.github.mateo762.myapplication.profile.ProfileGalleryAdapter
 import com.github.mateo762.myapplication.profile.ProfileGalleryItem
 import com.github.mateo762.myapplication.profile.SearchItem
 import com.github.mateo762.myapplication.profile.SearchViewAdapter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 
 class SearchActivity : BaseActivity() {
 
+    private val user = FirebaseAuth.getInstance().currentUser
     private lateinit var binding: ActivitySearchBinding
     private lateinit var adapter: SearchViewAdapter
 
@@ -30,17 +36,36 @@ class SearchActivity : BaseActivity() {
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         binding.recyclerView.layoutManager = layoutManager
 
-        val items = listOf(
-            SearchItem("Pedro", "Son of Harry"),
-            SearchItem("Alice", "Married to Bob"),
-            SearchItem("Peter", "Married to Mary"),
-            SearchItem("Elisabeth", "Mother of Pascal"),
-            SearchItem("Charlotte", "Daughter of Boris")
-        )
+        println("Loaded the Search Activity")
 
-        adapter = SearchViewAdapter(items)
+        //TODO: Retrieve a list of users from Firebase
+        val database = FirebaseDatabase.getInstance()
+        val usersRef = database.getReference("usernames")
 
+        val users = mutableListOf(SearchItem("User", "Description"))
+        adapter = SearchViewAdapter(users)
         binding.recyclerView.adapter = adapter
+
+        usersRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                users.clear()
+
+                for (childSnapshot in dataSnapshot.children) {
+                    val userId = childSnapshot.key
+                    if (userId != null) {
+                        users.add(SearchItem(userId, "Some description (figure out later"))
+                    }
+                }
+
+                //adapter.notifyDataSetChanged() does not update the recycler view
+                adapter = SearchViewAdapter(users)
+                binding.recyclerView.adapter = adapter
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                println("Failed to read action")
+            }
+        })
 
         // Update adapter's filter when search bar text changes
         binding.searchEditText.doOnTextChanged { text, _, _, _ ->

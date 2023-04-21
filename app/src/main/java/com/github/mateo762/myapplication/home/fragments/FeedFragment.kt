@@ -1,60 +1,84 @@
 package com.github.mateo762.myapplication.home.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.models.HabitImage
+import com.github.mateo762.myapplication.post.Post
+import com.github.mateo762.myapplication.ui.home.FeedScreen
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [FeedFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class FeedFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var imagesRef: DatabaseReference
+    private val imagesState = mutableStateOf(emptyList<HabitImage>())
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    companion object {
+        private val TAG = FeedFragment::class.java.simpleName
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_feed, container, false)
+    ): View {
+        return ComposeView(requireContext()).apply {
+            setContent {
+                FeedScreen(
+                    posts = generatePosts(imagesState.value)
+                )
+            }
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FeedFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FeedFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Initialize Firebase database reference
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            imagesRef =
+                FirebaseDatabase.getInstance().getReference("/users/${currentUser.uid}/imagesPath")
+
+            imagesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val fetchedImages = mutableListOf<HabitImage>()
+                    for (childSnapshot in snapshot.children) {
+                        val image = childSnapshot.getValue(HabitImage::class.java)
+                        if (image != null) {
+                            fetchedImages.add(image)
+                        }
+                    }
+                    imagesState.value = fetchedImages
                 }
-            }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d(TAG, "Error: ${error.message}")
+                }
+            })
+        }
+    }
+
+    private fun generatePosts(fetchedImages: List<HabitImage>): ArrayList<Post> {
+        val generatedPosts = ArrayList<Post>()
+        for (i in fetchedImages) {
+            generatedPosts.add(
+                Post(
+                    // Currently uploaded images have no caption/description or username
+                    // TODO: add these fields upon image upload to generate a full Post
+                    "TEST_POST_$i",
+                    "TEST_POST_DESCRIPTION for Post with habitId ${i.habitId} uploaded on ${i.date}",
+                    "@test_username",
+                    "Post associated to habit ${i.habitId} ",
+                    i
+                )
+            )
+        }
+        return generatedPosts
     }
 }
