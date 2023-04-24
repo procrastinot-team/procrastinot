@@ -36,6 +36,10 @@
             android:icon="@drawable/lens_blur_24"
             android:title="Take Picture" />
         <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/baseline_info_24"
+            android:title="About" />
+        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/baseline_settings_24"
             android:iconTint="@color/dark_text"
