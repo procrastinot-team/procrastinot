@@ -27,42 +27,28 @@ class AboutActivity : BaseActivity() {
     }
 
     fun getData() {
-        // get the firebase data and set the text
         val db: DatabaseReference = Firebase.database.reference
         db.child("usernames").get().addOnSuccessListener {
-            Log.d("firebase", "Got value ${it.value}")
             users.text = it.childrenCount.toString()
-        }.addOnFailureListener{
-            Log.e("firebase", "Error getting data", it)
-        }
-
+        }.addOnFailureListener{ Log.e("firebase", "Error getting data", it) }
         db.child("users").get().addOnSuccessListener {
-            Log.d("firebase", "Got value ${it.value}")
             val users = it.children // get all users
             var postsCount = 0
             var complCount = 0
             for (user in users) {
-                // get all habits for each user in habitsPath
                 val habitsPath = user.child("habitsPath").value.toString()
-                Log.d("firebase", "Got value ${habitsPath}")
+                val compl = user.child("imagesPath").value.toString()
+
                 if (habitsPath != "null") {
                     val habits = user.child("habitsPath").childrenCount
                     postsCount += habits.toInt()
-                    Log.d("firebase", "Got value ${habits}")
                 }
-                val compl = user.child("imagesPath").value.toString()
                 if (compl != "null") {
                     val compls = user.child("imagesPath").childrenCount
                     complCount += compls.toInt()
-                    Log.d("firebase", "Got value ${compls}")
                 }
-            }
-            posts.text = postsCount.toString()
-            compl.text = complCount.toString()
-        }.addOnFailureListener{
-            Log.e("firebase", "Error getting data", it)
-        }
-
+            } ; posts.text = postsCount.toString() ; compl.text = complCount.toString()
+        }.addOnFailureListener{  Log.e("firebase", "Error getting data", it)  }
     }
 
 

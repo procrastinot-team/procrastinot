@@ -97,4 +97,11 @@
     <string name="no_image_captured">No image captured</string>
     <string name="no_image_data">No image data</string>
     <string name="image_uploaded">Image uploaded successfully</string>
+    <string name="about">About</string>
+    <string name="users_on_our_platform">Users On Our Platform</string>
+    <string name="uploaded_habits">Uploaded Habits</string>
+    <string name="number_of_posts_icon">Number of posts icon</string>
+    <string name="tasks_completed">Tasks Completed</string>
+    <string name="procrastinot">Procrastinot</string>
+    <string name="team">Team</string>
 </resources>
