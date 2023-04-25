@@ -14,13 +14,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.github.mateo762.myapplication.models.Habit
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.HabitsActivity
+import com.github.mateo762.myapplication.room.HabitEntity
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun HabitListScreen(habits: List<Habit>) {
+fun HabitListScreen(habits: List<HabitEntity>) {
     val context = LocalContext.current
     Scaffold(
         floatingActionButton = {
@@ -53,7 +53,7 @@ fun HabitListScreen(habits: List<Habit>) {
 }
 
 @Composable
-fun HabitListItem(habit: Habit) {
+fun HabitListItem(habit: HabitEntity) {
     Card(
         elevation = 4.dp,
         modifier = Modifier

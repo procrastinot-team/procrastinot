@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.models.HabitImage
 import com.github.mateo762.myapplication.post.Post
+import com.github.mateo762.myapplication.room.HabitImageEntity
 import com.github.mateo762.myapplication.ui.home.FeedScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -17,7 +17,7 @@ import com.google.firebase.database.*
 
 class FeedFragment : Fragment() {
     private lateinit var imagesRef: DatabaseReference
-    private val imagesState = mutableStateOf(emptyList<HabitImage>())
+    private val imagesState = mutableStateOf(emptyList<HabitImageEntity>())
 
     companion object {
         private val TAG = FeedFragment::class.java.simpleName
@@ -47,9 +47,9 @@ class FeedFragment : Fragment() {
 
             imagesRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val fetchedImages = mutableListOf<HabitImage>()
+                    val fetchedImages = mutableListOf<HabitImageEntity>()
                     for (childSnapshot in snapshot.children) {
-                        val image = childSnapshot.getValue(HabitImage::class.java)
+                        val image = childSnapshot.getValue(HabitImageEntity::class.java)
                         if (image != null) {
                             fetchedImages.add(image)
                         }
@@ -64,7 +64,7 @@ class FeedFragment : Fragment() {
         }
     }
 
-    private fun generatePosts(fetchedImages: List<HabitImage>): ArrayList<Post> {
+    private fun generatePosts(fetchedImages: List<HabitImageEntity>): ArrayList<Post> {
         val generatedPosts = ArrayList<Post>()
         for (i in fetchedImages) {
             generatedPosts.add(

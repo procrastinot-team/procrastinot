@@ -7,7 +7,7 @@ import com.github.mateo762.myapplication.TestData.emptyHabits
 import com.github.mateo762.myapplication.TestData.hardCodedHabits
 import com.github.mateo762.myapplication.TestData.hardCodedImages
 import com.github.mateo762.myapplication.TestData.noTodayHabits
-import com.github.mateo762.myapplication.models.Habit
+import com.github.mateo762.myapplication.room.HabitEntity
 import com.github.mateo762.myapplication.ui.home.TodayScreen
 import org.junit.Rule
 import org.junit.Test
@@ -164,7 +164,7 @@ class TodayFragmentTest {
         composeTestRule.onNodeWithTag("next_up_empty").assertExists()
     }
 
-    private fun setUpTodayScreen(habits: List<Habit>) {
+    private fun setUpTodayScreen(habits: List<HabitEntity>) {
         composeTestRule.setContent {
             TodayScreen(time = time, habits = habits, images = hardCodedImages)
         }

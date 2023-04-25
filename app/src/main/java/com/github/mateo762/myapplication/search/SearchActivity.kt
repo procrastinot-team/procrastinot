@@ -1,5 +1,7 @@
 package com.github.mateo762.myapplication.search
 
+import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -9,10 +11,7 @@ import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.github.mateo762.myapplication.databinding.ActivitySearchBinding
-import com.github.mateo762.myapplication.profile.ProfileGalleryAdapter
-import com.github.mateo762.myapplication.profile.ProfileGalleryItem
-import com.github.mateo762.myapplication.profile.SearchItem
-import com.github.mateo762.myapplication.profile.SearchViewAdapter
+import com.github.mateo762.myapplication.profile.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
@@ -42,8 +41,10 @@ class SearchActivity : BaseActivity() {
         val database = FirebaseDatabase.getInstance()
         val usersRef = database.getReference("usernames")
 
-        val users = mutableListOf(SearchItem("User", "Description"))
-        adapter = SearchViewAdapter(users)
+        val users = mutableListOf(SearchItem("UserId", "Username", "Description"))
+        adapter = SearchViewAdapter(users) { username ->
+            onUserItemClick(username)
+        }
         binding.recyclerView.adapter = adapter
 
         usersRef.addValueEventListener(object : ValueEventListener {
@@ -51,14 +52,18 @@ class SearchActivity : BaseActivity() {
                 users.clear()
 
                 for (childSnapshot in dataSnapshot.children) {
-                    val userId = childSnapshot.key
-                    if (userId != null) {
-                        users.add(SearchItem(userId, "Some description (figure out later"))
+                    val username = childSnapshot.key
+                    val userId = childSnapshot.getValue(String::class.java)!!
+                    Log.d(TAG, "username ${username}, userId $userId")
+                    if (username != null && userId != null) {
+                        users.add(SearchItem(userId, username, "Some description (figure out later"))
                     }
                 }
 
                 //adapter.notifyDataSetChanged() does not update the recycler view
-                adapter = SearchViewAdapter(users)
+                adapter = SearchViewAdapter(users) { username ->
+                    onUserItemClick(username)
+                }
                 binding.recyclerView.adapter = adapter
             }
 
@@ -87,5 +92,11 @@ class SearchActivity : BaseActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun onUserItemClick(userId: String) {
+        val intent = Intent(this, ProfileActivity::class.java)
+        intent.putExtra("userId", userId)
+        startActivity(intent)
     }
 }
