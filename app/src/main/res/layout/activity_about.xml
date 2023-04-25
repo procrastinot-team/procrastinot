@@ -88,13 +88,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_users"
-                        android:contentDescription="Number of users icon"/>
+                        android:contentDescription="@string/number_of_users_icon"/>
 
                     <TextView
                         android:id="@+id/users"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Null"
+                        android:text="@string/loading"
                         android:textSize="18sp"
                         android:layout_marginStart="8dp"/>
 
@@ -130,7 +130,7 @@
                         android:id="@+id/posts"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Null"
+                        android:text="@string/loading"
                         android:textSize="18sp"
                         android:layout_marginStart="8dp"/>
                 </LinearLayout>
@@ -156,14 +156,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_completed_posts"
-                        android:contentDescription="Number of completed posts icon"
+                        android:contentDescription="@string/number_of_completed_posts_icon"
                         android:layout_marginStart="16dp"/>
 
                     <TextView
                         android:id="@+id/compl"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Null"
+                        android:text="@string/loading"
                         android:textSize="18sp"
                         android:layout_marginStart="8dp"/>
 
@@ -185,7 +185,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="Procrastinot is a productivity app developed as part of the EPFL Software Development Project class that aims to help users overcome procrastination and build healthy habits. The app provides a simple and effective way to track progress towards achieving personal goals and breaking bad habits. With Procrastinot, users can create custom tasks and set reminders to ensure that they stay on track. The app also includes a habit-building feature that helps users develop good habits by gradually increasing the frequency and duration of the desired behavior. In addition, Procrastinot provides a range of statistics and analytics to help users monitor their progress over time and identify areas for improvement. Overall, Procrastinot is a valuable tool for anyone looking to improve their productivity and overcome procrastination. Its intuitive interface, customizable features, and habit-building capabilities make it a useful addition to any individual's arsenal for self-improvement."
+                android:text="@string/desc"
                 android:textSize="16sp"
                 android:justificationMode="inter_word"
                 />
@@ -207,7 +207,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:text="Procrastinot was developed by a team of 5 students from EPFL's Software Development Project class. The team members are: Enrico Benedettini, David Bojkovski, Jorge Encinas, Mateo Echeverry Hoyos, Anirudhh Ramesh and Mak Fazlic"
+                android:text="@string/team_desc"
                 android:textSize="16sp"
                 android:justificationMode="inter_word"
                 />
@@ -216,7 +216,7 @@
                 android:id="@+id/version"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Version 1.0"
+                android:text="@string/version_1_0"
                 android:textSize="14sp"
                 android:gravity="end"
                 android:paddingTop="16dp" />
