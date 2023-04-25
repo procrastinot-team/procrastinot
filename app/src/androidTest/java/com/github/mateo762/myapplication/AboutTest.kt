@@ -23,9 +23,9 @@ import org.junit.runner.RunWith
 @HiltAndroidTest
 class AboutTest {
 
-    private var user_count: String = "Null"
-    private var posts_count: String = "Null"
-    private var completed_count: String = "Null"
+    private var user_count: String = "Loading..."
+    private var posts_count: String = "Loading..."
+    private var completed_count: String = "Loading..."
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
