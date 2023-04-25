@@ -12,6 +12,18 @@ android {
     namespace 'com.github.mateo762.myapplication'
     compileSdk 33
 
+    packagingOptions {
+        exclude("META-INF/DEPENDENCIES")
+        exclude("META-INF/LICENSE.md")
+        exclude("META-INF/LICENSE-notice.md")
+        exclude("META-INF/license.txt")
+        exclude("META-INF/NOTICE")
+        exclude("META-INF/NOTICE.txt")
+        exclude("META-INF/notice.txt")
+        exclude("META-INF/ASL2.0")
+        exclude("META-INF/*.kotlin_module")
+    }
+
     defaultConfig {
         applicationId "com.github.mateo762.myapplication"
         minSdk 24
@@ -32,6 +44,8 @@ android {
         }
     }
 
+
+
     buildFeatures {
         compose true
         viewBinding true
@@ -49,6 +63,7 @@ android {
         jvmTarget = '1.8'
     }
 }
+
 
 dependencies {
     implementation "com.google.dagger:hilt-android:2.44"
@@ -143,8 +158,10 @@ dependencies {
     implementation 'com.github.quivr:android-week-view:2.3.3'
     implementation 'androidx.fragment:fragment-ktx:1.5.5'
     testImplementation 'org.hamcrest:java-hamcrest:2.0.0.0'
-    implementation "org.mockito:mockito-core:4.0.0"
-    testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
+    testImplementation 'org.mockito:mockito-core:4.5.1'
+    androidTestImplementation 'org.mockito:mockito-android:4.2.0'
+    androidTestImplementation "io.mockk:mockk-android:1.13.5"
+    androidTestImplementation "io.mockk:mockk-agent:1.13.5"
     implementation 'androidx.test.espresso:espresso-core:3.5.1'
     testImplementation 'junit:junit:4.13.2'
     implementation 'androidx.test.uiautomator:uiautomator:2.2.0'

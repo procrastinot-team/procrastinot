@@ -126,5 +126,5 @@ fun addHabitsToUser(userId: String, habits: List<HabitEntity>) {
 }
 
 fun addFollowerToUser(receiveFollowUser: String, sendsFollowUser: String) {
-    userRepository.followUser(sendsFollowUser, receiveFollowUser)
+return ;
 }

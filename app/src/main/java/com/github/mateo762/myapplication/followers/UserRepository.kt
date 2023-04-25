@@ -1,47 +1,48 @@
 package com.github.mateo762.myapplication.followers
 
-import android.content.ContentValues.TAG
-import android.util.Log
-import com.github.mateo762.myapplication.profile.ProfileActivity
 import com.github.mateo762.myapplication.room.UserEntity
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.TaskCompletionSource
 import com.google.firebase.database.*
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.tasks.await
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
-class UserRepository {
-    private val database = FirebaseDatabase.getInstance()
-    private val usersReference = database.getReference("users")
+class UserRepository(
+    private val database: FirebaseDatabase = FirebaseDatabase.getInstance(),
+    private val usersReference: DatabaseReference = database.getReference("users")
+) : IUserRepository {
 
-    private fun getUser(uid: String, callback: (UserEntity?) -> Unit) {
-        usersReference.child(uid).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val user = snapshot.getValue(UserEntity::class.java)
-                callback(user)
-            }
+    override suspend fun getUser(uid: String): UserEntity? {
+        return suspendCancellableCoroutine { continuation ->
+            usersReference.child(uid).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val user = snapshot.getValue(UserEntity::class.java)
+                    continuation.resume(user)
+                }
 
-            override fun onCancelled(error: DatabaseError) {
-                callback(null)
-            }
-        })
-    }
-
-    fun followUser(currentUserId: String, targetUserId: String) {
-        getUser(currentUserId) { currentUser ->
-            if (currentUser != null) {
-                val updatedFollowingList = currentUser.followingUsers.toMutableList().apply { add(targetUserId) }
-                usersReference.child(currentUserId).child("followingPath").push().setValue(updatedFollowingList)
-            }
-        }
-
-        getUser(targetUserId) { targetUser ->
-            if (targetUser != null) {
-                val updatedFollowerList = targetUser.followerUsers.toMutableList().apply { add(currentUserId) }
-                usersReference.child(targetUserId).child("followersPath").push().setValue(updatedFollowerList)
-            }
+                override fun onCancelled(error: DatabaseError) {
+                    continuation.resumeWithException(error.toException())
+                }
+            })
         }
     }
 
-    fun unfollowUser(currentUserId: String, targetUserId: String) {
+    override suspend fun followUser(currentUserId: String, targetUserId: String) {
+        val currentUser = getUser(currentUserId)
+        val targetUser = getUser(targetUserId)
+
+        if (currentUser != null) {
+            val updatedFollowingList = currentUser.followingUsers.toMutableList().apply { add(targetUserId) }
+            usersReference.child(currentUserId).child("followingPath").push().setValue(updatedFollowingList).await()
+        }
+
+        if (targetUser != null) {
+            val updatedFollowerList = targetUser.followerUsers.toMutableList().apply { add(currentUserId) }
+            usersReference.child(targetUserId).child("followersPath").push().setValue(updatedFollowerList).await()
+        }
+    }
+
+    override suspend fun unfollowUser(currentUserId: String, targetUserId: String) {
         usersReference.child(currentUserId).child("followingPath")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -74,30 +75,26 @@ class UserRepository {
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
-
-
-    fun checkIfUserFollows(currentUserId: String, targetUserId: String): Task<Boolean> {
-        val taskCompletionSource = TaskCompletionSource<Boolean>()
-
-        usersReference.child(currentUserId).child("followingPath")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    var found = false
-                    for (childSnapshot in snapshot.children) {
-                        val followingList = childSnapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
-                        if (followingList?.contains(targetUserId) == true) {
-                            found = true
-                            break
+    override suspend fun checkIfUserFollows(currentUserId: String, targetUserId: String): Boolean {
+        return suspendCancellableCoroutine { continuation ->
+            usersReference.child(currentUserId).child("followingPath")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        var found = false
+                        for (childSnapshot in snapshot.children) {
+                            val followingList = childSnapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
+                            if (followingList?.contains(targetUserId) == true) {
+                                found = true
+                                break
+                            }
                         }
+                        continuation.resume(found)
                     }
-                    taskCompletionSource.setResult(found)
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    taskCompletionSource.setResult(false)
-                }
-            })
-
-        return taskCompletionSource.task
+                    override fun onCancelled(error: DatabaseError) {
+                        continuation.resumeWithException(error.toException())
+                    }
+                })
+        }
     }
 }

@@ -29,12 +29,20 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 
 /**
  * Activity for displaying the profile information.
  */
-class ProfileActivity : BaseActivity() {
+class ProfileActivity : BaseActivity(), CoroutineScope {
+
+    private val job = Job()
+
+    override val coroutineContext = job + Dispatchers.Main
 
     private lateinit var nameTextView: TextView
     private lateinit var emailTextView: TextView
@@ -88,21 +96,19 @@ class ProfileActivity : BaseActivity() {
         } else {
             btnEdit.visibility = View.GONE
             // Check if the user is already following the profile
-            userRepository.checkIfUserFollows(user!!.uid, uid).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val isFollowing = task.result
-                    if (isFollowing) {
-                        Log.d(TAG, "YESS ${intent.getStringExtra("userId")}")
+            launch {
+                val isFollowing = userRepository.checkIfUserFollows(user!!.uid, uid)
+                if (isFollowing) {
+                    Log.d(TAG, "YESS ${intent.getStringExtra("userId")}")
 
-                        // If the user is following the profile, show the 'btnUnfollow' button
-                        btnFollow.visibility = View.GONE
-                        btnUnfollow.visibility = View.VISIBLE
-                    }else{
-                        Log.d(TAG, "NOO ${intent.getStringExtra("userId")}")
+                    // If the user is following the profile, show the 'btnUnfollow' button
+                    btnFollow.visibility = View.GONE
+                    btnUnfollow.visibility = View.VISIBLE
+                } else {
+                    Log.d(TAG, "NOO ${intent.getStringExtra("userId")}")
 
-                        btnFollow.visibility = View.VISIBLE
-                        btnUnfollow.visibility = View.GONE
-                    }
+                    btnFollow.visibility = View.VISIBLE
+                    btnUnfollow.visibility = View.GONE
                 }
             }
         }
@@ -316,14 +322,18 @@ class ProfileActivity : BaseActivity() {
 
 
     private fun followUser(currentUserId: String, targetUserId: String) {
-        userRepository.followUser(currentUserId, targetUserId)
-        btnFollow.visibility = View.GONE
-        btnUnfollow.visibility = View.VISIBLE
+        launch {
+            userRepository.followUser(currentUserId, targetUserId)
+            btnFollow.visibility = View.GONE
+            btnUnfollow.visibility = View.VISIBLE
+        }
     }
 
     private fun unfollowUser(currentUserId: String, targetUserId: String){
-        userRepository.unfollowUser(currentUserId, targetUserId)
-        btnFollow.visibility = View.VISIBLE
-        btnUnfollow.visibility = View.GONE
+        launch {
+            userRepository.unfollowUser(currentUserId, targetUserId)
+            btnFollow.visibility = View.VISIBLE
+            btnUnfollow.visibility = View.GONE
+        }
     }
 }
