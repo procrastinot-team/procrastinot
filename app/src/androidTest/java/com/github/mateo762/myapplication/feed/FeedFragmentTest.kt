@@ -14,9 +14,6 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.di.FirebaseModule
-import com.github.mateo762.myapplication.di.FirebaseModule_ProvideFirebaseAuthFactory
-import com.github.mateo762.myapplication.di.FirebaseModule_ProvideFirebaseFactory
 import com.github.mateo762.myapplication.home.HomeActivity
 import com.github.mateo762.myapplication.home.fragments.FeedFragment
 import com.github.mateo762.myapplication.models.HabitImage
@@ -25,7 +22,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase
@@ -51,7 +47,6 @@ class FeedFragmentTest {
     @Before
     fun setUp() {
         hiltRule.inject()
-        FirebaseModule_ProvideFirebaseFactory(FirebaseModule())
         // Travel to Feed Fragment
         activityScenario = ActivityScenario.launch(HomeActivity::class.java)
         fillTestPosts()
