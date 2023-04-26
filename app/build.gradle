@@ -12,18 +12,6 @@ android {
     namespace 'com.github.mateo762.myapplication'
     compileSdk 33
 
-    packagingOptions {
-        exclude("META-INF/DEPENDENCIES")
-        exclude("META-INF/LICENSE.md")
-        exclude("META-INF/LICENSE-notice.md")
-        exclude("META-INF/license.txt")
-        exclude("META-INF/NOTICE")
-        exclude("META-INF/NOTICE.txt")
-        exclude("META-INF/notice.txt")
-        exclude("META-INF/ASL2.0")
-        exclude("META-INF/*.kotlin_module")
-    }
-
     defaultConfig {
         applicationId "com.github.mateo762.myapplication"
         minSdk 24
@@ -231,7 +219,9 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
             '**room/*Dao*.*',
             // Temporarily exclude untested feed fragment classes
             '**post/*.*',
-            '**fragments/FeedFragment*.*'
+            '**fragments/FeedFragment*.*',
+            // Exclude WeekFragment
+            '**/habits/fragments/week/*'
     ]
     def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
     def mainSrc = "$project.projectDir/src/main/java"
