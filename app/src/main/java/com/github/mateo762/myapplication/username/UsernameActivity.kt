@@ -31,6 +31,31 @@ class UsernameActivity : BaseActivity() {
     private lateinit var notificationManager: NotificationManager
     private lateinit var binding: ActivityUsernameBinding
 
+    private val usernameTextWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            //no-operation
+        }
+
+        override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+            text?.let {
+                if (it.length >= 5) {
+                    viewModel.isUsernameAvailable(it.toString())
+                } else {
+                    binding.continueButton.isEnabled = false
+                    setUsernameFeedbackState(
+                        R.string.choose_username_feedback_minimum_characters,
+                        R.color.red,
+                        false
+                    )
+                }
+            }
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            //no-operation
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -40,87 +65,14 @@ class UsernameActivity : BaseActivity() {
         notificationManager =
             this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        binding.username.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                //no-operation
-            }
-
-            override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
-                text?.let {
-                    if (it.length >= 5) {
-                        viewModel.isUsernameAvailable(it.toString())
-                    } else {
-                        binding.continueButton.isEnabled = false
-                        setUsernameFeedbackState(
-                            R.string.choose_username_feedback_minimum_characters,
-                            R.color.red,
-                            false
-                        )
-                    }
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                //no-operation
-            }
-        })
+        binding.username.addTextChangedListener(usernameTextWatcher)
 
         viewModel.isUsernameTaken.observe(this) { state ->
-            when (state) {
-                is State.Failed -> {
-                    setUsernameFeedbackState(
-                        R.string.choose_username_check_username_error,
-                        R.color.red,
-                        false
-                    )
-                }
-                is State.Loading -> {
-                    setUsernameFeedbackState(
-                        R.string.choose_username_feedback_username_loading,
-                        R.color.black,
-                        false
-                    )
-                }
-                is State.Success -> {
-                    val isUsernameTaken = state.data
-                    if (isUsernameTaken) {
-                        setUsernameFeedbackState(
-                            R.string.choose_username_feedback_username_taken,
-                            R.color.red,
-                            false
-                        )
-                    } else {
-                        setUsernameFeedbackState(
-                            R.string.choose_username_feedback_username_available,
-                            R.color.green,
-                            true
-                        )
-                    }
-                }
-            }
+            handleIsUsernameTakenState(state)
         }
 
         viewModel.postUsernameLiveData.observe(this) { state ->
-            when (state) {
-                is State.Failed -> {
-                    showProgress(false)
-                    showToast(R.string.choose_username_pick_username_error)
-                }
-                is State.Loading -> {
-                    showProgress(true)
-                }
-                is State.Success -> {
-                    showProgress(false)
-                    showToast(R.string.choose_username_pick_username_success)
-                    val intent: Intent =
-                        if (this.shouldShowRequestPermissionRationale(POST_NOTIFICATIONS) || !notificationManager.areNotificationsEnabled()) {
-                            Intent(this, NotificationInfoActivity::class.java)
-                        } else {
-                            Intent(this, HomeActivity::class.java)
-                        }
-                    startActivity(intent)
-                }
-            }
+            handlePostUsernameLiveDataState(state)
         }
 
         binding.continueButton.setOnClickListener {
@@ -151,5 +103,63 @@ class UsernameActivity : BaseActivity() {
 
     private fun showProgress(show: Boolean) {
         binding.loadingContainer.visibility = if (show) View.VISIBLE else View.GONE
+    }
+
+    private fun handleIsUsernameTakenState(state: State<Boolean>) {
+        when (state) {
+            is State.Failed -> {
+                setUsernameFeedbackState(
+                    R.string.choose_username_check_username_error,
+                    R.color.red,
+                    false
+                )
+            }
+            is State.Loading -> {
+                setUsernameFeedbackState(
+                    R.string.choose_username_feedback_username_loading,
+                    R.color.black,
+                    false
+                )
+            }
+            is State.Success -> {
+                val isUsernameTaken = state.data
+                if (isUsernameTaken) {
+                    setUsernameFeedbackState(
+                        R.string.choose_username_feedback_username_taken,
+                        R.color.red,
+                        false
+                    )
+                } else {
+                    setUsernameFeedbackState(
+                        R.string.choose_username_feedback_username_available,
+                        R.color.green,
+                        true
+                    )
+                }
+            }
+        }
+    }
+
+    private fun handlePostUsernameLiveDataState(state: State<Unit>) {
+        when (state) {
+            is State.Failed -> {
+                showProgress(false)
+                showToast(R.string.choose_username_pick_username_error)
+            }
+            is State.Loading -> {
+                showProgress(true)
+            }
+            is State.Success -> {
+                showProgress(false)
+                showToast(R.string.choose_username_pick_username_success)
+                val intent: Intent =
+                    if (this.shouldShowRequestPermissionRationale(POST_NOTIFICATIONS) || !notificationManager.areNotificationsEnabled()) {
+                        Intent(this, NotificationInfoActivity::class.java)
+                    } else {
+                        Intent(this, HomeActivity::class.java)
+                    }
+                startActivity(intent)
+            }
+        }
     }
 }

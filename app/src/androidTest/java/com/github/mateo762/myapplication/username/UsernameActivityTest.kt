@@ -11,9 +11,11 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.ToastMatcher
 import com.github.mateo762.myapplication.home.HomeActivity
 import com.github.mateo762.myapplication.notifications.NotificationInfoActivity
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -21,6 +23,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -134,10 +137,30 @@ class UsernameActivityTest {
 
         onView(withId(R.id.continueButton)).perform(click())
 
+        onView(withText(Matchers.startsWith(context.getString(R.string.choose_username_pick_username_success)))).inRoot(
+            ToastMatcher().apply {
+                matches(isDisplayed())
+            })
         if (mActivity.shouldShowRequestPermissionRationale(POST_NOTIFICATIONS) || !notificationManager.areNotificationsEnabled()) {
             Intents.intended(IntentMatchers.hasComponent(NotificationInfoActivity::class.java.name))
         } else {
             Intents.intended(IntentMatchers.hasComponent(HomeActivity::class.java.name))
         }
+    }
+
+    @Test
+    fun testBlankUsername() = runTest {
+        activityRule.scenario.onActivity { activity ->
+            activity.runOnUiThread {
+                usernameEditText.setText(" ")
+            }
+        }
+
+        onView(withId(R.id.continueButton)).perform(click())
+
+        onView(withText(Matchers.startsWith(context.getString(R.string.choose_username_empty_username_message)))).inRoot(
+            ToastMatcher().apply {
+                matches(isDisplayed())
+            })
     }
 }
