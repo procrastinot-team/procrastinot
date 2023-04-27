@@ -62,6 +62,9 @@
             android:exported="true">
         </activity>
         <activity
+            android:name=".about.AboutActivity"
+            android:exported="false" />
+        <activity
             android:name=".username.UsernameActivity"
             android:exported="false"/>
         <activity

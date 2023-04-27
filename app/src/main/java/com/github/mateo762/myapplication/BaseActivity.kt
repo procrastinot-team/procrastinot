@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.github.mateo762.myapplication.about.AboutActivity
 import com.github.mateo762.myapplication.authentication.LoginActivity
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.github.mateo762.myapplication.home.HomeActivity
@@ -75,6 +76,9 @@ open class BaseActivity : AppCompatActivity() {
             }
             R.id.nav_take_photo -> {
                 openActivitySelected(TakePhotoActivity())
+            }
+            R.id.nav_about -> {
+                openActivitySelected(AboutActivity())
             }
             R.id.nav_log_out -> {
                 val intent = Intent(this@BaseActivity, LoginActivity::class.java)
