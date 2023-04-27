@@ -16,12 +16,8 @@ import androidx.test.runner.lifecycle.Stage
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.home.HomeActivity
 import com.github.mateo762.myapplication.home.fragments.FeedFragment
-import com.github.mateo762.myapplication.models.HabitImage
 import com.github.mateo762.myapplication.post.PostActivity
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.github.mateo762.myapplication.room.HabitImageEntity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase
@@ -30,13 +26,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class FeedFragmentTest {
     private lateinit var activityScenario: ActivityScenario<HomeActivity>
-    private var imagesRef = ArrayList<HabitImage>()
+    private var imagesRef = ArrayList<HabitImageEntity>()
 
     @get:Rule(order = 1)
     val composeTestRule = createComposeRule()
@@ -54,8 +49,8 @@ class FeedFragmentTest {
     }
 
     private fun fillTestPosts() {
-        for(i in 1..5){
-            imagesRef.add((HabitImage("TEST_ID_$i", "TEST_URL_$i", "TEST_DATE_$i")))
+        for (i in 1..5) {
+            imagesRef.add((HabitImageEntity("id","TEST_ID_$i", "TEST_URL_$i", "TEST_DATE_$i")))
         }
 
     }
