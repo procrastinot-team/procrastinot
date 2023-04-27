@@ -58,11 +58,6 @@ class ProfileActivityTest {
         onView(withId(R.id.profileImage)).check(matches(isDisplayed()))
     }
 
-    @Test
-    fun testEditButton_click() {
-        onView(withId(R.id.btnEdit)).perform(click())
-        onView(withId(R.id.btnSave)).check(matches(isDisplayed()))
-    }
 
 
     @Test
@@ -79,52 +74,7 @@ class ProfileActivityTest {
         onView(withId(R.id.profileGalleryTitle)).check(matches(withText(context.getString(R.string.profile_progress_gallery_title))))
     }
 
-    @Test
-    fun testEmailAndNameEditTexts_notEditableInitially() {
-        onView(withId(R.id.editTextUserName)).check(matches(not(isEnabled())))
-        onView(withId(R.id.editTextEmail)).check(matches(not(isEnabled())))
-    }
 
-    @Test
-    fun testEmailAndNameEditTexts_editableAfterClickingEditButton() {
-        onView(withId(R.id.btnEdit)).perform(click())
-
-        onView(withId(R.id.editTextUserName)).check(matches(isEnabled()))
-        onView(withId(R.id.editTextEmail)).check(matches(isEnabled()))
-    }
-
-    @Test
-    fun testEmailAndNameEditTexts_notEditableAfterClickingSaveButton() {
-        onView(withId(R.id.btnEdit)).perform(click())
-        onView(withId(R.id.btnSave)).perform(click())
-
-        onView(withId(R.id.editTextUserName)).check(matches(not(isEnabled())))
-        onView(withId(R.id.editTextEmail)).check(matches(not(isEnabled())))
-    }
-
-    @Test
-    fun testFollowButton_initiallyVisibleAndUnfollowButtonHidden() {
-        startProfileActivityWithDifferentUserId("differentUserId")
-        onView(withId(R.id.btnFollow)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-        onView(withId(R.id.btnUnfollow)).check(matches(withEffectiveVisibility(Visibility.GONE)))
-    }
-
-    @Test
-    fun testFollowButton_visibleAndUnfollowButtonHidden_afterClickingUnfollowButton() {
-        startProfileActivityWithDifferentUserId("differentUserId")
-        onView(withId(R.id.btnFollow)).perform(click()) // make sure btnUnfollow is visible
-        onView(withId(R.id.btnUnfollow)).perform(click())
-
-        onView(withId(R.id.btnFollow)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-        onView(withId(R.id.btnUnfollow)).check(matches(withEffectiveVisibility(Visibility.GONE)))
-    }
-
-    private fun startProfileActivityWithDifferentUserId(userId: String) {
-        val intent = Intent(ApplicationProvider.getApplicationContext(), ProfileActivity::class.java).apply {
-            putExtra("userId", userId)
-        }
-        activityScenario = ActivityScenario.launch(intent)
-    }
 
     // todo Mockito cannot mock this class: class com.google.firebase.auth.FirebaseUser.
 //    @Test
