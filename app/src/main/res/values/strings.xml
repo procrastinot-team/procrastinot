@@ -97,4 +97,17 @@
     <string name="no_image_captured">No image captured</string>
     <string name="no_image_data">No image data</string>
     <string name="image_uploaded">Image uploaded successfully</string>
+    <string name="about">About</string>
+    <string name="users_on_our_platform">Users On Our Platform</string>
+    <string name="uploaded_habits">Uploaded Habits</string>
+    <string name="number_of_posts_icon">Number of posts icon</string>
+    <string name="tasks_completed">Tasks Completed</string>
+    <string name="procrastinot">Procrastinot</string>
+    <string name="team">Team</string>
+    <string name="number_of_users_icon">Number of users icon</string>
+    <string name="loading">Loading...</string>
+    <string name="number_of_completed_posts_icon">Number of completed posts icon</string>
+    <string name="desc">Procrastinot is a productivity app developed as part of the EPFL Software Development Project class that aims to help users overcome procrastination and build healthy habits. The app provides a simple and effective way to track progress towards achieving personal goals and breaking bad habits. With Procrastinot, users can create custom tasks and set reminders to ensure that they stay on track. The app also includes a habit-building feature that helps users develop good habits by gradually increasing the frequency and duration of the desired behavior. In addition, Procrastinot provides a range of statistics and analytics to help users monitor their progress over time and identify areas for improvement. Overall, Procrastinot is a valuable tool for anyone looking to improve their productivity and overcome procrastination. Its intuitive interface, customizable features, and habit-building capabilities make it a useful addition to any individual\'s arsenal for self-improvement.</string>
+    <string name="team_desc">Procrastinot was developed by a team of 5 students from EPFL\'s Software Development Project class. The team members are: Enrico Benedettini, David Bojkovski, Jorge Encinas, Mateo Echeverry Hoyos, Anirudhh Ramesh and Mak Fazlic</string>
+    <string name="version_1_0">Version 1.0</string>
 </resources>
