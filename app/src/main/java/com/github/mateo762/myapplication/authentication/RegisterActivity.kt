@@ -59,7 +59,7 @@ class RegisterActivity : AppCompatActivity() {
                             user.updateProfile(profileUpdates)
 
                             val users: MutableMap<String, UserEntity> = HashMap()
-                            val u = UserEntity(uid,displayName,email,ArrayList())
+                            val u = UserEntity(uid,displayName, "username", email,ArrayList(), listOf(), listOf(), listOf())
                             users[uid] = u
                             db.child("users").updateChildren(users as Map<String, Any>)
                                 .addOnSuccessListener {

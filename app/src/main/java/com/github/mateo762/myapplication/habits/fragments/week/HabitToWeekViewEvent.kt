@@ -3,7 +3,7 @@ package com.github.mateo762.myapplication.habits.fragments.week
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.alamkanak.weekview.WeekViewEvent
-import com.github.mateo762.myapplication.models.Habit
+import com.github.mateo762.myapplication.room.HabitEntity
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -17,7 +17,7 @@ private var colorIndex = 0
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun habitToWeekViewEvent(
-    habit: Habit, eventId: Long, color: Int, currentTime: LocalDateTime
+    habit: HabitEntity, eventId: Long, color: Int, currentTime: LocalDateTime
 ): List<WeekViewEvent> {
     val events = mutableListOf<WeekViewEvent>()
     val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")

@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [UserEntity::class, HabitEntity::class, PostEntity::class], version = 3)
+@Database(entities = [UserEntity::class, HabitEntity::class, PostEntity::class, HabitImageEntity::class], version = 4)
 @TypeConverters(HabitTypeConverter::class)
 abstract class ApplicationDatabase : RoomDatabase() {
     abstract fun getUserDao(): UserDao

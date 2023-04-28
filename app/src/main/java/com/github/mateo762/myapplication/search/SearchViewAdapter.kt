@@ -9,9 +9,12 @@ import com.github.mateo762.myapplication.search.SearchItemViewHolder
 /**
  * Recycler view adapter for the profile gallery.
  */
-class SearchViewAdapter(private val items: List<SearchItem>) : RecyclerView.Adapter<SearchItemViewHolder>() {
+class SearchViewAdapter(
+    private val items: List<SearchItem>, private val onUserItemClick: (String) -> Unit
+) : RecyclerView.Adapter<SearchItemViewHolder>() {
 
     private val filteredItems = mutableListOf<SearchItem>()
+
 
     init {
         filteredItems.addAll(items)
@@ -32,7 +35,7 @@ class SearchViewAdapter(private val items: List<SearchItem>) : RecyclerView.Adap
 
     override fun onBindViewHolder(holder: SearchItemViewHolder, position: Int) {
         filteredItems.let { items ->
-            holder.bind(items[position])
+            holder.bind(items[position], onUserItemClick)
         }
     }
 

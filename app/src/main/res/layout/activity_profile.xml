@@ -105,6 +105,20 @@
                     android:contentDescription="@string/save_icon"
                     app:srcCompat="@android:drawable/ic_menu_save" />
 
+                <ImageButton
+                    android:id="@+id/btnFollow"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:contentDescription="@string/edit_icon"
+                    app:srcCompat="@drawable/ic_follow" />
+
+                <ImageButton
+                    android:id="@+id/btnUnfollow"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:contentDescription="@string/edit_icon"
+                    app:srcCompat="@drawable/ic_unfollow" />
+
             </LinearLayout>
 
         </LinearLayout>

@@ -130,7 +130,7 @@ class LocalDatabaseActivityTest {
             val startTime = "$startHour:00"
             val endHour = Random.nextInt(5) + 13
             val endTime = "$endHour:00"
-            testHabitList.add(HabitEntity(i, habitName, habitDays, startTime, endTime))
+            testHabitList.add(HabitEntity(i.toString(), habitName, habitDays, startTime, endTime))
         }
         return testHabitList
     }
@@ -151,7 +151,7 @@ class LocalDatabaseActivityTest {
 
 
     private fun createTestUser(username: String): UserEntity {
-        return UserEntity("1","random name", username, testHabitList)
+        return UserEntity("1","random name", username, "username@gmail.com", testHabitList, listOf(), listOf(), listOf())
     }
 
 }

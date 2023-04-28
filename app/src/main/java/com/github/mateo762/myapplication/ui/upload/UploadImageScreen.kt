@@ -16,8 +16,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.mateo762.myapplication.*
-import com.github.mateo762.myapplication.models.Habit
-import com.github.mateo762.myapplication.models.HabitImage
+import com.github.mateo762.myapplication.followers.UserRepository
+import com.github.mateo762.myapplication.room.HabitEntity
+import com.github.mateo762.myapplication.room.HabitImageEntity
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -30,6 +31,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 // TODO: This class should be deleted ASAP and be replaced by 'taking a picture' logic
+val userRepository = UserRepository()
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -51,6 +53,13 @@ fun UploadImageScreen(userId: String, habitId: String) {
             onClick = { addHabitsToUser(userId, habits = getHardCodedHabits()) }
         ) {
             Text(text = "Upload Habits")
+        }
+        Text(text = "Add a follower", fontSize = 24.sp)
+        Button(
+            modifier = Modifier.padding(top = 16.dp),
+            onClick = { addFollowerToUser(receiveFollowUser = "u0YjFxx6H9TwoFh6aEodiRKz8NX2", sendsFollowUser = "Vqz2G0Kr10QR2ho4imnpBZ8f0hW2") }
+        ) {
+            Text(text = "Add a follower")
         }
     }
 }
@@ -83,7 +92,7 @@ private suspend fun uploadImageToFirebaseStorageAndSaveURL(
             imagesRef.downloadUrl.addOnSuccessListener { uri ->
                 val imageUrl = uri.toString()
                 val db = Firebase.database.reference
-                val habitImage = HabitImage(habitId = habitId, url = imageUrl, date = LocalDateTime.now().toString())
+                val habitImage = HabitImageEntity(id = UUID.randomUUID().toString(),  habitId = habitId, url = imageUrl, date = LocalDateTime.now().toString())
                 db.child("users").child(userId).child("imagesPath").push().setValue(habitImage)
             }
         }.addOnFailureListener {
@@ -92,7 +101,7 @@ private suspend fun uploadImageToFirebaseStorageAndSaveURL(
     }
 }
 
-fun addHabitsToUser(userId: String, habits: List<Habit>) {
+fun addHabitsToUser(userId: String, habits: List<HabitEntity>) {
     val TAG = "addHabitsToUser"
     val db = Firebase.database.reference
     val habitsRef = db.child("users").child(userId).child("habitsPath")
@@ -114,4 +123,8 @@ fun addHabitsToUser(userId: String, habits: List<Habit>) {
                 Log.e(TAG, "Error adding habit: $e")
             }
     }
+}
+
+fun addFollowerToUser(receiveFollowUser: String, sendsFollowUser: String) {
+return ;
 }

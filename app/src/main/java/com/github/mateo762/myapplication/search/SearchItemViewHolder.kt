@@ -13,8 +13,12 @@ class SearchItemViewHolder(private var binding: ItemSearchBinding) :
     /**
      * Method called on onBindViewHolder in the adapter, that rerenders the view holder state.
      */
-    fun bind(searchItem: SearchItem) {
+    fun bind(searchItem: SearchItem, onUserItemClick: (String) -> Unit) {
         binding.searchName.setText(searchItem.name)
         binding.searchDescription.setText(searchItem.description)
+
+        binding.root.setOnClickListener {
+            onUserItemClick(searchItem.userId)
+        }
     }
 }

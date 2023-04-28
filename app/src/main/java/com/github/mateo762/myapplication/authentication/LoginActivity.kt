@@ -113,7 +113,7 @@ class LoginActivity : AppCompatActivity() {
                                 ).show()
                             } else {
                                 val users: MutableMap<String, UserEntity> = HashMap()
-                                val u = UserEntity(uid,displayName,email,ArrayList<HabitEntity>())
+                                val u = UserEntity(uid,displayName,"username", email, ArrayList<HabitEntity>(), listOf(), listOf(), listOf())
                                 users[uid] = u
                                 db.child("users").updateChildren(users as Map<String, Any>)
                                     .addOnSuccessListener {

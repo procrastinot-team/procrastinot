@@ -27,10 +27,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.models.Habit
 import com.github.mateo762.myapplication.habits.HabitService
 import com.github.mateo762.myapplication.habits.HabitServiceCallback
 import com.github.mateo762.myapplication.habits.HabitsActivity
+import com.github.mateo762.myapplication.room.HabitEntity
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
 import java.util.*
@@ -194,7 +194,7 @@ class DevelopFragment : Fragment() {
                                 context.startActivity(intent)
 
                                 //
-                                val myHabit = Habit(
+                                val myHabit = HabitEntity(
                                     UUID.randomUUID().toString(),
                                     habitName,
                                     ArrayList(habitDays),

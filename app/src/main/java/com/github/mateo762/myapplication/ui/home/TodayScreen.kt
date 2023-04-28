@@ -25,8 +25,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.models.Habit
-import com.github.mateo762.myapplication.models.HabitImage
+import com.github.mateo762.myapplication.room.HabitEntity
+import com.github.mateo762.myapplication.room.HabitImageEntity
 import com.github.mateo762.myapplication.ui.upload.UploadFragment
 import com.google.accompanist.coil.rememberCoilPainter
 import java.time.*
@@ -34,7 +34,7 @@ import java.time.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TodayScreen(time: LocalDateTime, habits: List<Habit>, images: List<HabitImage>) {
+fun TodayScreen(time: LocalDateTime, habits: List<HabitEntity>, images: List<HabitImageEntity>) {
     val context = LocalContext.current
     val now = time.toLocalTime()
 
@@ -69,7 +69,7 @@ fun TodayScreen(time: LocalDateTime, habits: List<Habit>, images: List<HabitImag
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TodayHabitsSection(todayHabits: List<Habit>, now: LocalTime) {
+fun TodayHabitsSection(todayHabits: List<HabitEntity>, now: LocalTime) {
     Box(
         modifier = Modifier
             .background(colorResource(R.color.card_background_dark), RoundedCornerShape(8.dp))
@@ -128,7 +128,7 @@ fun TodayHabitsSection(todayHabits: List<Habit>, now: LocalTime) {
 
 
 @Composable
-fun NextUpHabitsSection(nextUpHabit: Habit?, allocatedHours: Long) {
+fun NextUpHabitsSection(nextUpHabit: HabitEntity?, allocatedHours: Long) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -182,7 +182,7 @@ fun NextUpHabitsSection(nextUpHabit: Habit?, allocatedHours: Long) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ImageRow(images: List<HabitImage>, modifier: Modifier = Modifier, nextUpHabitName: String) {
+fun ImageRow(images: List<HabitImageEntity>, modifier: Modifier = Modifier, nextUpHabitName: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -201,7 +201,7 @@ fun ImageRow(images: List<HabitImage>, modifier: Modifier = Modifier, nextUpHabi
 @Composable
 fun DisplayImage(
     painter: Painter,
-    image: HabitImage,
+    image: HabitImageEntity,
     nextUpHabitName: String,
     modifier: Modifier = Modifier
 ) {
@@ -244,9 +244,9 @@ fun GoToUploadButton(context: Context) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun filterAndSortHabits(
-    habits: List<Habit>,
+    habits: List<HabitEntity>,
     time: LocalDateTime
-): Triple<List<Habit>, Habit?, DayOfWeek?> {
+): Triple<List<HabitEntity>, HabitEntity?, DayOfWeek?> {
     val today = time.dayOfWeek
     val now = time.toLocalTime()
 
@@ -273,7 +273,7 @@ fun filterAndSortHabits(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun filterImagesForNextUpHabit(images: List<HabitImage>, nextUpHabit: Habit?): List<HabitImage> {
+fun filterImagesForNextUpHabit(images: List<HabitImageEntity>, nextUpHabit: HabitEntity?): List<HabitImageEntity> {
     return images
         .sortedByDescending { it.date }
         .filter { it.habitId == nextUpHabit?.id }
@@ -283,7 +283,7 @@ fun filterImagesForNextUpHabit(images: List<HabitImage>, nextUpHabit: Habit?): L
 @RequiresApi(Build.VERSION_CODES.O)
 fun getNextUpLocalDateTime(
     time: LocalDateTime,
-    nextUpHabit: Habit?,
+    nextUpHabit: HabitEntity?,
     nextUpHabitDay: DayOfWeek?
 ): LocalDateTime {
     val nextUpLocalDate = if (nextUpHabitDay != null) {
