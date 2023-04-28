@@ -3,7 +3,6 @@ package com.github.mateo762.myapplication.search
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,7 +53,6 @@ class SearchActivity : BaseActivity() {
                 for (childSnapshot in dataSnapshot.children) {
                     val username = childSnapshot.key
                     val userId = childSnapshot.getValue(String::class.java)!!
-                    Log.d(TAG, "username ${username}, userId $userId")
                     if (username != null && userId != null) {
                         users.add(SearchItem(userId, username, "Some description (figure out later"))
                     }

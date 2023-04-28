@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
@@ -99,13 +98,11 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
             launch {
                 val isFollowing = userRepository.checkIfUserFollows(user!!.uid, uid)
                 if (isFollowing) {
-                    Log.d(TAG, "YESS ${intent.getStringExtra("userId")}")
 
                     // If the user is following the profile, show the 'btnUnfollow' button
                     btnFollow.visibility = View.GONE
                     btnUnfollow.visibility = View.VISIBLE
                 } else {
-                    Log.d(TAG, "NOO ${intent.getStringExtra("userId")}")
 
                     btnFollow.visibility = View.VISIBLE
                     btnUnfollow.visibility = View.GONE
@@ -113,7 +110,6 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
             }
         }
 
-        Log.d(TAG, "mateoo ${intent.getStringExtra("userId")}")
 
         btnFollow.setOnClickListener {
             followUser(user!!.uid, uid)
