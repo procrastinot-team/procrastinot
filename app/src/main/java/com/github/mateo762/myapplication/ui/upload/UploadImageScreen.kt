@@ -35,7 +35,7 @@ val userRepository = UserRepository()
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun UploadImageScreen(userId: String, habitId: String) {
+fun UploadImageScreen(userId: String, habitId: String, image: Int) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -43,7 +43,7 @@ fun UploadImageScreen(userId: String, habitId: String) {
         Text(text = "Upload Image", fontSize = 24.sp)
         Button(
             modifier = Modifier.padding(top = 16.dp),
-            onClick = { onUploadButtonClick(context, coroutineScope, userId, habitId) }
+            onClick = { onUploadButtonClick(context, coroutineScope, userId, habitId, image) }
         ) {
             Text(text = "Upload Picture")
         }
@@ -65,9 +65,9 @@ fun UploadImageScreen(userId: String, habitId: String) {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-private fun onUploadButtonClick(context: Context, coroutineScope: CoroutineScope, userId: String, habitId: String) {
+private fun onUploadButtonClick(context: Context, coroutineScope: CoroutineScope, userId: String, habitId: String, image: Int) {
     coroutineScope.launch {
-        uploadImageToFirebaseStorageAndSaveURL(context, userId, habitId)
+        uploadImageToFirebaseStorageAndSaveURL(context, userId, habitId, image)
     }
 }
 
@@ -76,12 +76,13 @@ private fun onUploadButtonClick(context: Context, coroutineScope: CoroutineScope
 private suspend fun uploadImageToFirebaseStorageAndSaveURL(
     context: Context,
     userId: String,
-    habitId: String
+    habitId: String,
+    image: Int
 ) {
     val storageRef = Firebase.storage.reference
     val imagesRef = storageRef.child("users/$userId/images/${UUID.randomUUID()}.jpg")
 
-    val inputStream = context.resources.openRawResource(R.drawable.exercise_hardcoded_image_3)
+    val inputStream = context.resources.openRawResource(image)
     val byteArrayOutputStream = ByteArrayOutputStream()
     inputStream.copyTo(byteArrayOutputStream)
     val data = byteArrayOutputStream.toByteArray()
@@ -92,7 +93,7 @@ private suspend fun uploadImageToFirebaseStorageAndSaveURL(
             imagesRef.downloadUrl.addOnSuccessListener { uri ->
                 val imageUrl = uri.toString()
                 val db = Firebase.database.reference
-                val habitImage = HabitImageEntity(id = UUID.randomUUID().toString(),  habitId = habitId, url = imageUrl, date = LocalDateTime.now().toString())
+                val habitImage = HabitImageEntity(id = UUID.randomUUID().toString(), userId = userId,  habitId = habitId, url = imageUrl, date = LocalDateTime.now().toString())
                 db.child("users").child(userId).child("imagesPath").push().setValue(habitImage)
             }
         }.addOnFailureListener {

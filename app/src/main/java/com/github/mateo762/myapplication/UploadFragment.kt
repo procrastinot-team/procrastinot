@@ -1,4 +1,4 @@
-package com.github.mateo762.myapplication.ui.upload
+package com.github.mateo762.myapplication
 
 import android.os.Build
 import android.os.Bundle
@@ -8,10 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.ui.upload.UploadImageScreen
 
 // TODO: This class should be deleted ASAP
 
@@ -26,7 +23,8 @@ class UploadFragment : Fragment() {
     ): View? {
         return ComposeView(requireContext()).apply {
             setContent {
-                    UploadImageScreen(userId = "meCtC5TWlEcBDcy5Ss6hzf8Qg723", habitId = "7254b3c2-1d9f-4269-82a9-d761cc979a6c")
+                    UploadImageScreen(userId = "OcCXHkORwpZu8mesFDD31XpQz9h2", habitId = "7254b3c2-1d9f-4269-82a9-d761cc979a6d",
+                    image = R.drawable.walk_1)
             }
         }
     }
