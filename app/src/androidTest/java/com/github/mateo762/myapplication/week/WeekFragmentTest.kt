@@ -18,7 +18,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
 
-/*
+
 @RunWith(AndroidJUnit4::class)
 class WeekViewFragmentTest {
 
@@ -29,6 +29,11 @@ class WeekViewFragmentTest {
         testFragment = WeekFragment().apply { habits = testHabits }
     }
 
+    @Test
+    fun weekView_isDisplayed(){
+        launchFragmentInContainer<WeekFragment>()
+        onView(withId(R.id.weekView)).check(matches(isDisplayed()))
+    }
 
     @Test
     fun weekView_isDisplayed_withCorrectNumberOfVisibleDays() {
@@ -55,4 +60,4 @@ class WeekViewFragmentTest {
             }
         }
     }
-}*/
+}
