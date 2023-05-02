@@ -1,65 +1,67 @@
 package com.github.mateo762.myapplication.home.fragments
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.getHardCodedHabits
-import com.github.mateo762.myapplication.room.HabitImageEntity
+import com.github.mateo762.myapplication.room.*
 import com.github.mateo762.myapplication.ui.home.TodayScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
+import javax.inject.Inject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [TodayFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-
-
+@AndroidEntryPoint
 class TodayFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     private lateinit var imagesRef: DatabaseReference
     private val imagesState = mutableStateOf(emptyList<HabitImageEntity>())
+    private lateinit var habitsRef: DatabaseReference
+    private val habitsState = mutableStateOf(emptyList<HabitEntity>())
+    private val TAG = TodayFragment::class.java.simpleName
+
+
+    @Inject
+    lateinit var habitDao: HabitDao
+
+    @Inject
+    lateinit var habitImageDao: HabitImageDao
+
+    @Inject
+    lateinit var habitRepository: HabitRepository
+
+    @Inject
+    lateinit var habitImageRepository: HabitImageRepository
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private val dateTime = LocalDateTime.of(2023, 4, 15, 17, 0)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return ComposeView(requireContext()).apply {
             setContent {
                 TodayScreen(
                     time = dateTime,
-                    habits = getHardCodedHabits(),
+                    habits = habitsState.value,
                     images = imagesState.value
                 )
             }
@@ -68,52 +70,119 @@ class TodayFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Get the connectivityManager to verify network functions
+        val connectivityManager =
+            context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetwork
+        // Verify we have connection -- this way we will at least always run the Listener, and if Firebase fails,
+        // then we run the failed action onCancelled
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
+        val connectionExists =
+            networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
 
-        // Initialize Firebase database reference
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        if (currentUser != null) {
-            imagesRef = FirebaseDatabase.getInstance().getReference("/users/${currentUser.uid}/imagesPath")
-
-            imagesRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val fetchedImages = mutableListOf<HabitImageEntity>()
-                    for (childSnapshot in snapshot.children) {
-                        val image = childSnapshot.getValue(HabitImageEntity::class.java)
-                        if (image != null) {
-                            fetchedImages.add(image)
-                        }
-                    }
-                    imagesState.value = fetchedImages
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.d(TAG, "Error: ${error.message}")
-                }
-            })
+        // Connect to Firebase for real time data
+        if (connectionExists) {
+            val currentUser = FirebaseAuth.getInstance().currentUser
+            if (currentUser != null) {
+                val habitsPath = "/users/${currentUser.uid}/habitsPath"
+                getFirebaseHabitsFromPath(habitsPath)
+                val imagesPath = "/users/${currentUser.uid}/imagesPath"
+                getFirebaseHabitImagesFromPath(imagesPath)
+            }
+        } else {
+            // There is no connection available - (plane mode, no service, wifi...) Use cached data
+            getLocalHabits()
+            getLocalImages()
+            Toast.makeText(context, "You're offline, using cached data", Toast.LENGTH_LONG).show()
         }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TodayFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TodayFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    // I tried to refactor this into taking different class types but it was a huge mess so I split
+    // it in two functions atm.
+    private fun getFirebaseHabitsFromPath(path: String) {
+        // Initialize Firebase database reference
+        habitsRef = FirebaseDatabase.getInstance().getReference(path)
+        habitsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val fetchedHabits = mutableListOf<HabitEntity>()
+                for (childSnapshot in snapshot.children) {
+                    val habit = childSnapshot.getValue(HabitEntity::class.java)
+                    if (habit != null) {
+                        fetchedHabits.add(habit)
+                    }
                 }
+                habitsState.value = fetchedHabits
+                updateHabitsCache(fetchedHabits)
             }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.d(TAG, "Error: ${error.message}")
+                // We have connection, but fetching from Firebase failed
+                // Fetch local data stored
+                getLocalHabits()
+                Toast.makeText(
+                    context,
+                    "Can't reach the server, using cached data",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        })
     }
 
-    private val TAG = TodayFragment::class.java.simpleName
+    private fun getFirebaseHabitImagesFromPath(path: String) {
+        imagesRef = FirebaseDatabase.getInstance()
+            .getReference(path)
+
+        imagesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val fetchedImages = mutableListOf<HabitImageEntity>()
+                for (childSnapshot in snapshot.children) {
+                    val image = childSnapshot.getValue(HabitImageEntity::class.java)
+                    if (image != null) {
+                        fetchedImages.add(image)
+                    }
+                }
+                imagesState.value = fetchedImages
+                updateImagesCache(fetchedImages)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.d(TAG, "Error: ${error.message}")
+                // Fetch local images stored
+                getLocalImages()
+                Toast.makeText(
+                    context,
+                    "Can't reach the server, using cached data",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        })
+    }
+
+    private fun getLocalHabits() {
+        GlobalScope.launch {
+            habitsState.value = habitRepository.getAllHabits()
+        }
+    }
+
+    private fun getLocalImages() {
+        GlobalScope.launch {
+            imagesState.value = habitImageRepository.getAllHabitImages()
+        }
+    }
+
+
+    fun updateHabitsCache(fetchedHabits: MutableList<HabitEntity>) {
+        GlobalScope.launch {
+            habitRepository.insertAllHabits(habitsState.value)
+        }
+    }
+
+    private fun updateImagesCache(fetchedImages: MutableList<HabitImageEntity>) {
+        GlobalScope.launch {
+            habitImageRepository.insertAllHabits(imagesState.value)
+        }
+    }
 }
 
 
