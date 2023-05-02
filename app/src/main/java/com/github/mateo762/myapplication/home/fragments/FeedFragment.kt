@@ -8,8 +8,8 @@ import android.view.ViewGroup
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.post.Post
-import com.github.mateo762.myapplication.room.HabitEntity
+import com.github.mateo762.myapplication.models.Post
+import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.room.HabitImageEntity
 import com.github.mateo762.myapplication.ui.home.FeedScreen
 import com.google.android.gms.tasks.Task
@@ -57,7 +57,8 @@ class FeedFragment : Fragment() {
         usersRef.child("followingPath").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (childSnapshot in snapshot.children) {
-                    val followingUserList = childSnapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
+                    val followingUserList =
+                        childSnapshot.getValue(object : GenericTypeIndicator<List<String>>() {})
                     if (followingUserList != null) {
                         for (followingUserId in followingUserList) {
                             Log.d(TAG, "heyyy: ${followingUserId}")

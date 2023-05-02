@@ -4,7 +4,6 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -31,7 +30,7 @@ import androidx.core.content.ContextCompat.startActivity
 import coil.compose.LocalImageLoader
 import coil.compose.rememberImagePainter
 import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.post.Post
+import com.github.mateo762.myapplication.models.Post
 import com.github.mateo762.myapplication.post.PostActivity
 import com.github.mateo762.myapplication.profile.ProfileActivity
 import com.google.firebase.database.DataSnapshot
@@ -105,7 +104,7 @@ fun PostThumbnail(
                         data = imageUrl,
                         imageLoader = LocalImageLoader.current,
                     ),
-                    contentDescription = stringResource(id = R.string.sample_post_content),
+                    contentDescription = "image_$imageUrl",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .height(400.dp)
@@ -141,7 +140,7 @@ fun UserCard(caption: String, username: String, assocHabit: String) {
         }) {
         Image(
             painter = painterResource(R.drawable.ic_android),
-            contentDescription = "avatar",
+            contentDescription = "avatar_$username",
             contentScale = ContentScale.Crop,            // crop the image if it's not a square
             modifier = Modifier
                 .size(37.dp)

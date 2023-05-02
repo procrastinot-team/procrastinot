@@ -16,7 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.HabitsActivity
-import com.github.mateo762.myapplication.room.HabitEntity
+import com.github.mateo762.myapplication.models.HabitEntity
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable

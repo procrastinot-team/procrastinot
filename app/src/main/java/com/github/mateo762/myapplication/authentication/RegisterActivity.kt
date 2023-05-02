@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.room.UserEntity
+import com.github.mateo762.myapplication.models.UserEntity
 import com.github.mateo762.myapplication.ui.authentication.RegisterScreen
 import com.github.mateo762.myapplication.username.UsernameActivity
 import com.google.firebase.auth.FirebaseAuth

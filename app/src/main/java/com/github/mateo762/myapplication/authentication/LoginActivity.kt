@@ -10,8 +10,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.home.HomeActivity
-import com.github.mateo762.myapplication.room.HabitEntity
-import com.github.mateo762.myapplication.room.UserEntity
+import com.github.mateo762.myapplication.models.HabitEntity
+import com.github.mateo762.myapplication.models.UserEntity
 import com.github.mateo762.myapplication.username.UsernameActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount

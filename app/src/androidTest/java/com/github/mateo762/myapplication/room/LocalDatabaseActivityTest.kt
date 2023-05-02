@@ -3,6 +3,9 @@ package com.github.mateo762.myapplication.room
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.mateo762.myapplication.models.HabitEntity
+import com.github.mateo762.myapplication.models.PostEntity
+import com.github.mateo762.myapplication.models.UserEntity
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsInAnyOrder

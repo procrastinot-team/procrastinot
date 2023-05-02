@@ -3,7 +3,7 @@ package com.github.mateo762.myapplication.habits.fragments.week
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.alamkanak.weekview.WeekViewEvent
-import com.github.mateo762.myapplication.room.HabitEntity
+import com.github.mateo762.myapplication.models.HabitEntity
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.LocalTime
