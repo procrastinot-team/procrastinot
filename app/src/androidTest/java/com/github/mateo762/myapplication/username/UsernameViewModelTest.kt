@@ -70,7 +70,7 @@ class UsernameViewModelTest {
     }
 
     @Test
-    fun pickUsername() = runTest {
+    fun pickUsername_Success() = runTest {
         //when
         viewModel.pickUsername("walker123")
 
@@ -78,5 +78,35 @@ class UsernameViewModelTest {
 
         //then
         assertEquals(State.success(Unit), viewModel.postUsernameLiveData.value)
+    }
+
+    @Test
+    fun isUsernameAvailable_Failure() = runTest {
+        //given
+        val service = MockUsernameModule.MockUsernameServiceWithException()
+        viewModel = UsernameViewModel(service, auth)
+
+        //when
+        viewModel.isUsernameAvailable("walker")
+
+        advanceUntilIdle()
+
+        //then
+        assertEquals(State.failed<Boolean>(), viewModel.isUsernameTaken.value)
+    }
+
+    @Test
+    fun pickUsername_Failure() = runTest {
+        //given
+        val service = MockUsernameModule.MockUsernameServiceWithException()
+        viewModel = UsernameViewModel(service, auth)
+
+        //when
+        viewModel.pickUsername("walker123")
+
+        advanceUntilIdle()
+
+        //then
+        assertEquals(State.failed<Unit>(), viewModel.postUsernameLiveData.value)
     }
 }
