@@ -123,20 +123,24 @@ class UsernameActivity : BaseActivity() {
             }
             is State.Success -> {
                 val isUsernameTaken = state.data
-                if (isUsernameTaken) {
-                    setUsernameFeedbackState(
-                        R.string.choose_username_feedback_username_taken,
-                        R.color.red,
-                        false
-                    )
-                } else {
-                    setUsernameFeedbackState(
-                        R.string.choose_username_feedback_username_available,
-                        R.color.green,
-                        true
-                    )
-                }
+                handleIsUsernameTakenSuccessState(isUsernameTaken)
             }
+        }
+    }
+
+    private fun handleIsUsernameTakenSuccessState(isUsernameTaken: Boolean) {
+        if (isUsernameTaken) {
+            setUsernameFeedbackState(
+                R.string.choose_username_feedback_username_taken,
+                R.color.red,
+                false
+            )
+        } else {
+            setUsernameFeedbackState(
+                R.string.choose_username_feedback_username_available,
+                R.color.green,
+                true
+            )
         }
     }
 
