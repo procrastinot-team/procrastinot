@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import com.github.mateo762.myapplication.models.HabitEntity
+import com.github.mateo762.myapplication.models.HabitImageEntity
 import com.github.mateo762.myapplication.room.*
 import com.github.mateo762.myapplication.ui.home.TodayScreen
 import com.google.firebase.auth.FirebaseAuth

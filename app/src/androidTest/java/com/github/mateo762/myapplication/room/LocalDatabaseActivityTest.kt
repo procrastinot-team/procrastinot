@@ -146,8 +146,8 @@ class LocalDatabaseActivityTest {
             val day = Random.nextInt(28) + 1
             val month = Random.nextInt(11) + 1
             val datePosted = "$day - $month - 2023"
-            val contents = Random.nextBytes(5)
-            testPostList.add(PostEntity(i, postCaption, postDescription, datePosted, contents))
+            val url = "test_url"
+            testPostList.add(PostEntity(i, postCaption, postDescription, datePosted, url))
         }
         return testPostList
     }

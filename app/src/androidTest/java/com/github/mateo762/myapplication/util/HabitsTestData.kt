@@ -1,7 +1,7 @@
 package com.github.mateo762.myapplication
 
 import com.github.mateo762.myapplication.models.HabitEntity
-import com.github.mateo762.myapplication.room.HabitImageEntity
+import com.github.mateo762.myapplication.models.HabitImageEntity
 import java.time.DayOfWeek
 import java.time.LocalDateTime
 

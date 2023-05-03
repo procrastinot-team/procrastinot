@@ -22,7 +22,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -30,7 +29,7 @@ import androidx.core.content.ContextCompat.startActivity
 import coil.compose.LocalImageLoader
 import coil.compose.rememberImagePainter
 import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.models.Post
+import com.github.mateo762.myapplication.models.PostEntity
 import com.github.mateo762.myapplication.post.PostActivity
 import com.github.mateo762.myapplication.profile.ProfileActivity
 import com.google.firebase.database.DataSnapshot
@@ -40,7 +39,7 @@ import com.google.firebase.database.ValueEventListener
 
 
 @Composable
-fun FeedScreen(posts: List<Post>) {
+fun FeedScreen(posts: List<PostEntity>) {
     Column(
         modifier = Modifier
             .background(colorResource(R.color.white))
@@ -53,8 +52,8 @@ fun FeedScreen(posts: List<Post>) {
                 post.username,
                 post.caption,
                 post.description,
-                post.habitImage.habitId,
-                post.habitImage.url
+                post.assocHabit,
+                post.imageUrl
             )
         }
     }

@@ -7,15 +7,15 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class PostEntity(
-    @PrimaryKey val uid: Int,
-    @ColumnInfo(name = "caption") val caption: String?,
-    @ColumnInfo(name = "description") val description: String?,
-    @ColumnInfo(name = "date_posted") val datePosted: String?,
-    // This could also be java.sql.Date
-    @ColumnInfo(typeAffinity = BLOB) val image: ByteArray?
-)
-
-// ByteArray requires hashcode and equals methods
+    @PrimaryKey(autoGenerate = true) val uid: Int,
+    @ColumnInfo(name = "caption") val caption: String = "",
+    @ColumnInfo(name = "description") val description: String = "",
+    @ColumnInfo(name = "date_posted") val datePosted: String = "",
+    @ColumnInfo(name = "image_url") val imageUrl : String = "",
+    @ColumnInfo(name = "username") val username : String = "",
+    @ColumnInfo(name = "assoc_habit") val assocHabit : String = "",
+    @ColumnInfo(name = "habit_image_entity_id") val habitImageEntityId : String = "",
+    )
 
 {
     override fun equals(other: Any?): Boolean {
@@ -26,10 +26,7 @@ data class PostEntity(
 
         if (uid != other.uid) return false
         if (datePosted != other.datePosted) return false
-        if (image != null) {
-            if (other.image == null) return false
-            if (!image.contentEquals(other.image)) return false
-        } else if (other.image != null) return false
+        if (!imageUrl.contentEquals(other.imageUrl)) return false
 
         return true
     }

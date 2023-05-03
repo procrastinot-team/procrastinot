@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.mateo762.myapplication.models.HabitImageEntity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase.assertEquals
@@ -13,7 +14,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.time.DayOfWeek
 import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
@@ -42,7 +42,8 @@ class HabitImageRepositoryTest {
     fun setupDatabase() {
         // Create a new test database instance
         val context = ApplicationProvider.getApplicationContext<Context>()
-        val testDatabase = Room.inMemoryDatabaseBuilder(context, ApplicationDatabase::class.java).build()
+        val testDatabase =
+            Room.inMemoryDatabaseBuilder(context, ApplicationDatabase::class.java).build()
 
         // Replace the production database instance with the test database instance
         habitImageRepository = HabitImageRepository(testDatabase.getHabitImageDao())
@@ -58,8 +59,6 @@ class HabitImageRepositoryTest {
 
     @Test
     fun testHabitsCache() = runBlocking {
-        val dayListA = listOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
-        val dayListB = listOf(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.FRIDAY)
         val habitImages = listOf(
             HabitImageEntity("habit_image_id_0", "habit_id_0", "url_habit_0", "date_habit_0"),
             HabitImageEntity("habit_image_id_1", "habit_id_1", "url_habit_1", "date_habit_1"),

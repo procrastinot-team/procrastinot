@@ -17,7 +17,7 @@ import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.github.mateo762.myapplication.followers.UserRepository
-import com.github.mateo762.myapplication.room.HabitImageEntity
+import com.github.mateo762.myapplication.models.HabitImageEntity
 import com.github.mateo762.myapplication.upload_gallery.ImageAdapter
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseAuth

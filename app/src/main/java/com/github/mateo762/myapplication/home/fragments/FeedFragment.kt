@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.models.Post
 import com.github.mateo762.myapplication.models.HabitEntity
-import com.github.mateo762.myapplication.room.HabitImageEntity
+import com.github.mateo762.myapplication.models.HabitImageEntity
+import com.github.mateo762.myapplication.models.PostEntity
 import com.github.mateo762.myapplication.ui.home.FeedScreen
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -25,7 +25,7 @@ import kotlinx.coroutines.withContext
 class FeedFragment : Fragment() {
     private lateinit var usersRef: DatabaseReference
     private lateinit var imagesRef: DatabaseReference
-    private val imagesState = mutableStateOf(emptyList<Post>())
+    private val feedState = mutableStateOf(emptyList<PostEntity>())
 
     companion object {
         private val TAG = FeedFragment::class.java.simpleName
@@ -37,7 +37,7 @@ class FeedFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                FeedScreen(posts = imagesState.value)
+                FeedScreen(posts = feedState.value)
             }
         }
     }
@@ -97,23 +97,26 @@ class FeedFragment : Fragment() {
 
     private fun generatePosts(fetchedImages: List<HabitImageEntity>) {
         CoroutineScope(Dispatchers.IO).launch {
-            val generatedPosts = mutableListOf<Post>()
+            val generatedPosts = mutableListOf<PostEntity>()
 
             fetchedImages.forEach { image ->
                 val username = fetchUsernameForImage(image.userId).await()
                 val habitName = fetchHabitNameForImage(image.userId, image.habitId).await()
-                val post = Post(
-                    "$habitName",
+                val postEntity = PostEntity(
+                    0,
+                    "TEST_POST_CAPTION for PostEntity relating to ${image.habitId}",
                     "TEST_POST_DESCRIPTION for Post with habitId ${image.habitId} uploaded on ${image.date}",
-                    "$username",
+                    "Posted on ${image.date}",
+                    image.url,
+                    username,
                     "Post associated to habit ${image.habitId}",
-                    image
+                    image.id
                 )
-                generatedPosts.add(post)
+                generatedPosts.add(postEntity)
             }
 
             withContext(Dispatchers.Main) {
-                imagesState.value = imagesState.value + generatedPosts
+                feedState.value = feedState.value + generatedPosts
             }
         }
     }

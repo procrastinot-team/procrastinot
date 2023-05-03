@@ -1,5 +1,6 @@
 package com.github.mateo762.myapplication.room
 
+import com.github.mateo762.myapplication.models.HabitImageEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
