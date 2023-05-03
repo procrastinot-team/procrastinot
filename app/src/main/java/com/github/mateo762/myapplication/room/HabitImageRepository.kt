@@ -11,7 +11,7 @@ class HabitImageRepository @Inject constructor(private val habitImageDao: HabitI
         }
     }
 
-    suspend fun insertAllHabits(habitImages: List<HabitImageEntity>) {
+    suspend fun insertAllHabitImages(habitImages: List<HabitImageEntity>) {
         withContext(Dispatchers.IO) {
             habitImageDao.cacheAll(habitImages)
         }

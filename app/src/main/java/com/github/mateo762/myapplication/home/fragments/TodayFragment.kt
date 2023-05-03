@@ -74,8 +74,8 @@ class TodayFragment : Fragment() {
         val connectivityManager =
             context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = connectivityManager.activeNetwork
-        // Verify we have connection -- this way we will at least always run the Listener, and if Firebase fails,
-        // then we run the failed action onCancelled
+        // Verify we have connection -- this way we will at least always run the Listener,
+        // and if Firebase fails, then we run the failed action onCancelled
         val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
         val connectionExists =
             networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
@@ -91,14 +91,15 @@ class TodayFragment : Fragment() {
             }
         } else {
             // There is no connection available - (plane mode, no service, wifi...) Use cached data
+            // The Firebase Listener never runs if there is no connection!
             getLocalHabits()
             getLocalImages()
             Toast.makeText(context, "You're offline, using cached data", Toast.LENGTH_LONG).show()
         }
     }
 
-    // I tried to refactor this into taking different class types but it was a huge mess so I split
-    // it in two functions atm.
+    // I tried to refactor this into a single function taking different class types
+    // but it was a huge mess so I split it in two very similar functions for now.
     private fun getFirebaseHabitsFromPath(path: String) {
         // Initialize Firebase database reference
         habitsRef = FirebaseDatabase.getInstance().getReference(path)
@@ -174,13 +175,13 @@ class TodayFragment : Fragment() {
 
     fun updateHabitsCache(fetchedHabits: MutableList<HabitEntity>) {
         GlobalScope.launch {
-            habitRepository.insertAllHabits(habitsState.value)
+            habitRepository.insertAllHabits(fetchedHabits)
         }
     }
 
     private fun updateImagesCache(fetchedImages: MutableList<HabitImageEntity>) {
         GlobalScope.launch {
-            habitImageRepository.insertAllHabits(imagesState.value)
+            habitImageRepository.insertAllHabitImages(fetchedImages)
         }
     }
 }
