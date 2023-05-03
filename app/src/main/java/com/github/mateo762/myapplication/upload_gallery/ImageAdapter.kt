@@ -8,9 +8,9 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.models.HabitImage
+import com.github.mateo762.myapplication.room.HabitImageEntity
 
-class ImageAdapter(private val imagesList: ArrayList<HabitImage>, private val context: Context) :
+class ImageAdapter(private val imagesList: ArrayList<HabitImageEntity>, private val context: Context) :
     RecyclerView.Adapter<ImageAdapter.ImageViewHolder>() {
 
     class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

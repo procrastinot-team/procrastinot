@@ -2,7 +2,7 @@ package com.github.mateo762.myapplication
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.github.mateo762.myapplication.models.Habit
+import com.github.mateo762.myapplication.models.HabitEntity
 import java.time.DayOfWeek
 import java.util.*
 
@@ -10,10 +10,10 @@ import java.util.*
 // TODO: This class should be deleted ASAP
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun getHardCodedHabits(): List<Habit> {
+fun getHardCodedHabits(): List<HabitEntity> {
 
     return listOf(
-        Habit(
+        HabitEntity(
             id = "7254b3c2-1d9f-4269-82a9-d761cc979a6a",
             name = "Stretch",
             days = arrayListOf(
@@ -28,21 +28,21 @@ fun getHardCodedHabits(): List<Habit> {
             startTime = "07:00",
             endTime = "07:15"
         ),
-        Habit(
+        HabitEntity(
             id = "7254b3c2-1d9f-4269-82a9-d761cc979a6b",
             name = "Read",
             days = arrayListOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY, DayOfWeek.FRIDAY),
             startTime = "08:00",
             endTime = "09:00"
         ),
-        Habit(
+        HabitEntity(
             id = "7254b3c2-1d9f-4269-82a9-d761cc979a6c",
             name = "Exercise",
             days = arrayListOf(DayOfWeek.TUESDAY, DayOfWeek.THURSDAY, DayOfWeek.SATURDAY),
             startTime = "18:00",
             endTime = "19:00"
         ),
-        Habit(
+        HabitEntity(
             id = "7254b3c2-1d9f-4269-82a9-d761cc979a6d",
             name = "Walk",
             days = arrayListOf(
@@ -54,7 +54,7 @@ fun getHardCodedHabits(): List<Habit> {
             startTime = "06:00",
             endTime = "07:00"
         ),
-        Habit(
+        HabitEntity(
             id = "7254b3c2-1d9f-4269-82a9-d761cc979a6e",
             name = "Study",
             days = arrayListOf(
@@ -66,7 +66,7 @@ fun getHardCodedHabits(): List<Habit> {
             startTime = "20:00",
             endTime = "22:00"
         ),
-        Habit(
+        HabitEntity(
             id = "7254b3c2-1d9f-4269-82a9-d761cc979a6f",
             name = "Ride bike",
             days = arrayListOf(
@@ -91,9 +91,9 @@ fun getHardCodedImages(): List<String> {
 
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun getOneHabit(): List<Habit>{
+fun getOneHabit(): List<HabitEntity>{
     return listOf(
-        Habit(
+        HabitEntity(
         id = UUID.randomUUID().toString(),
         name = "Stretch",
         days = arrayListOf(

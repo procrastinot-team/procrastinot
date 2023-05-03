@@ -1,5 +1,7 @@
 package com.github.mateo762.myapplication.profile
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.Lifecycle
@@ -8,29 +10,22 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.models.Habit
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase.assertTrue
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.not
+import org.hamcrest.core.IsNot.not
+import org.junit.After
 import org.junit.Assert.*
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
-import java.time.DayOfWeek
 
 
 @RunWith(AndroidJUnit4::class)
@@ -50,8 +45,20 @@ class ProfileActivityTest {
     @Before
     fun setUp() {
         hiltRule.inject()
+        Intents.init()
         context = ApplicationProvider.getApplicationContext()
     }
+    @After
+    fun tearDown() {
+        Intents.release()
+    }
+
+    @Test
+    fun testProfileActivity_isDisplayed() {
+        onView(withId(R.id.profileImage)).check(matches(isDisplayed()))
+    }
+
+
 
     @Test
     fun onToolbarBackButtonClicked() {
@@ -66,6 +73,8 @@ class ProfileActivityTest {
     fun onProfileGalleryTitleDisplayed() {
         onView(withId(R.id.profileGalleryTitle)).check(matches(withText(context.getString(R.string.profile_progress_gallery_title))))
     }
+
+
 
     // todo Mockito cannot mock this class: class com.google.firebase.auth.FirebaseUser.
 //    @Test

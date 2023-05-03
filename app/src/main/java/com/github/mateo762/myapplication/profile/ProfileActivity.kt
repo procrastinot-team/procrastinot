@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
@@ -17,7 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
-import com.github.mateo762.myapplication.models.HabitImage
+import com.github.mateo762.myapplication.followers.UserRepository
+import com.github.mateo762.myapplication.room.HabitImageEntity
 import com.github.mateo762.myapplication.upload_gallery.ImageAdapter
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseAuth
@@ -28,21 +28,35 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 
 /**
  * Activity for displaying the profile information.
  */
-class ProfileActivity : BaseActivity() {
+class ProfileActivity : BaseActivity(), CoroutineScope {
+
+    private val job = Job()
+
+    override val coroutineContext = job + Dispatchers.Main
 
     private lateinit var nameTextView: TextView
     private lateinit var emailTextView: TextView
     private lateinit var nameEditText: EditText
     private lateinit var emailEditText: EditText
+    private lateinit var btnEdit: ImageButton
+    private lateinit var btnSave: ImageButton
+    private lateinit var btnFollow: ImageButton
+    private lateinit var btnUnfollow: ImageButton
 
     private val user = FirebaseAuth.getInstance().currentUser
     private lateinit var profileImage:ShapeableImageView
     lateinit var binding: ActivityProfileBinding
+    private val userRepository = UserRepository()
+
 
     companion object {
         private val TAG = ProfileActivity::class.java.simpleName
@@ -59,8 +73,10 @@ class ProfileActivity : BaseActivity() {
         profileImage = findViewById(R.id.profileImage)
         nameEditText = findViewById(R.id.editTextUserName)
         emailEditText = findViewById(R.id.editTextEmail)
-        val btnEdit = findViewById<ImageButton>(R.id.btnEdit)
-        val btnSave = findViewById<ImageButton>(R.id.btnSave)
+        btnEdit = findViewById(R.id.btnEdit)
+        btnSave = findViewById(R.id.btnSave)
+        btnFollow = findViewById(R.id.btnFollow)
+        btnUnfollow = findViewById(R.id.btnUnfollow)
         nameEditText.isEnabled = false
         nameEditText.isClickable = false
         nameEditText.background = null
@@ -69,7 +85,39 @@ class ProfileActivity : BaseActivity() {
         emailEditText.background = null
         btnSave.visibility = View.GONE
 
-        val uid = user!!.uid
+        val uid = intent.getStringExtra("userId") ?: user!!.uid
+
+
+        if (uid == user!!.uid) {
+            btnFollow.visibility = View.GONE
+            btnUnfollow.visibility = View.GONE
+            btnEdit.visibility = View.VISIBLE
+        } else {
+            btnEdit.visibility = View.GONE
+            // Check if the user is already following the profile
+            launch {
+                val isFollowing = userRepository.checkIfUserFollows(user!!.uid, uid)
+                if (isFollowing) {
+
+                    // If the user is following the profile, show the 'btnUnfollow' button
+                    btnFollow.visibility = View.GONE
+                    btnUnfollow.visibility = View.VISIBLE
+                } else {
+
+                    btnFollow.visibility = View.VISIBLE
+                    btnUnfollow.visibility = View.GONE
+                }
+            }
+        }
+
+
+        btnFollow.setOnClickListener {
+            followUser(user!!.uid, uid)
+        }
+
+        btnUnfollow.setOnClickListener {
+            unfollowUser(user!!.uid, uid)
+        }
 
         btnEdit.setOnClickListener {
             // We enable the name and email edit texts such that they can be edited
@@ -113,13 +161,17 @@ class ProfileActivity : BaseActivity() {
                 .setDisplayName(newName)
                 .build()
 
-            user.updateProfile(profileUpdates)
+            user?.updateProfile(profileUpdates)
         }
 
-        nameEditText.setText(user.displayName)
+        //nameEditText.setText(user?.displayName ?: "unknown")
+        db.child("users").child(uid).child("name").get().addOnSuccessListener { it ->
+            nameEditText.setText(it.getValue(String::class.java))
+        }
         db.child("users").child(uid).child("email").get().addOnSuccessListener { it ->
             emailEditText.setText(it.getValue(String::class.java))
         }
+
 
 
         // Retrieval of list of habits
@@ -176,7 +228,7 @@ class ProfileActivity : BaseActivity() {
         val refImg = db.child("users/${uid}/imagesPath")
         refImg.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var imagesList:ArrayList<HabitImage>
+                var imagesList:ArrayList<HabitImageEntity>
                 val prevView:View = findViewById(R.id.profileGalleryTitle)
 
                 // We create a ScrollView to allow the horizontal scroll of images.
@@ -194,7 +246,7 @@ class ProfileActivity : BaseActivity() {
                     // the habits images and taking only the ones matching our habit's id
                     imagesList = arrayListOf()
                     for (snapshot in dataSnapshot.children){
-                        val image = snapshot.getValue(HabitImage::class.java)
+                        val image = snapshot.getValue(HabitImageEntity::class.java)
                         if (image!!.habitId == ids[i]) {
                             image.let {imagesList.add(image)}
                         }
@@ -233,6 +285,7 @@ class ProfileActivity : BaseActivity() {
                 print("Failed to read value." + error.toException())
             }
         })
+
     }
 
     @Override
@@ -260,6 +313,23 @@ class ProfileActivity : BaseActivity() {
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+
+    private fun followUser(currentUserId: String, targetUserId: String) {
+        launch {
+            userRepository.followUser(currentUserId, targetUserId)
+            btnFollow.visibility = View.GONE
+            btnUnfollow.visibility = View.VISIBLE
+        }
+    }
+
+    private fun unfollowUser(currentUserId: String, targetUserId: String){
+        launch {
+            userRepository.unfollowUser(currentUserId, targetUserId)
+            btnFollow.visibility = View.VISIBLE
+            btnUnfollow.visibility = View.GONE
         }
     }
 }

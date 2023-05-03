@@ -21,11 +21,10 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.github.mateo762.myapplication.models.Habit
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.HabitsActivity
+import com.github.mateo762.myapplication.models.HabitEntity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.time.DayOfWeek
@@ -185,7 +184,7 @@ fun CreateHabitScreen() {
                             intent.putExtra("habitEndTime", habitEndTime.value)
                             context.startActivity(intent)
 
-                            val myHabit = Habit(
+                            val myHabit = HabitEntity(
                                 UUID.randomUUID().toString(),
                                 habitName,
                                 ArrayList(habitDays),

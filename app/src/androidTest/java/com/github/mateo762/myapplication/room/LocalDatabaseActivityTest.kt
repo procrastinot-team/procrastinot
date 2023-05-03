@@ -3,6 +3,9 @@ package com.github.mateo762.myapplication.room
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.mateo762.myapplication.models.HabitEntity
+import com.github.mateo762.myapplication.models.PostEntity
+import com.github.mateo762.myapplication.models.UserEntity
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.containsInAnyOrder
@@ -130,7 +133,7 @@ class LocalDatabaseActivityTest {
             val startTime = "$startHour:00"
             val endHour = Random.nextInt(5) + 13
             val endTime = "$endHour:00"
-            testHabitList.add(HabitEntity(i, habitName, habitDays, startTime, endTime))
+            testHabitList.add(HabitEntity(i.toString(), habitName, habitDays, startTime, endTime))
         }
         return testHabitList
     }
@@ -151,7 +154,7 @@ class LocalDatabaseActivityTest {
 
 
     private fun createTestUser(username: String): UserEntity {
-        return UserEntity("1","random name", username, testHabitList)
+        return UserEntity("1","random name", username, "username@gmail.com", testHabitList, listOf(), listOf(), listOf())
     }
 
 }

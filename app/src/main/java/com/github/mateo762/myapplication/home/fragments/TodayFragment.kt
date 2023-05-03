@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.models.HabitImage
 import com.github.mateo762.myapplication.getHardCodedHabits
+import com.github.mateo762.myapplication.room.HabitImageEntity
 import com.github.mateo762.myapplication.ui.home.TodayScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -36,7 +36,7 @@ class TodayFragment : Fragment() {
     private var param2: String? = null
 
     private lateinit var imagesRef: DatabaseReference
-    private val imagesState = mutableStateOf(emptyList<HabitImage>())
+    private val imagesState = mutableStateOf(emptyList<HabitImageEntity>())
 
     @RequiresApi(Build.VERSION_CODES.O)
     private val dateTime = LocalDateTime.of(2023, 4, 15, 17, 0)
@@ -76,9 +76,9 @@ class TodayFragment : Fragment() {
 
             imagesRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val fetchedImages = mutableListOf<HabitImage>()
+                    val fetchedImages = mutableListOf<HabitImageEntity>()
                     for (childSnapshot in snapshot.children) {
-                        val image = childSnapshot.getValue(HabitImage::class.java)
+                        val image = childSnapshot.getValue(HabitImageEntity::class.java)
                         if (image != null) {
                             fetchedImages.add(image)
                         }

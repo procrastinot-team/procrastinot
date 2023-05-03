@@ -1,6 +1,7 @@
 package com.github.mateo762.myapplication.room
 
 import androidx.room.TypeConverter
+import com.github.mateo762.myapplication.models.HabitEntity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
@@ -37,5 +38,28 @@ class HabitTypeConverter {
         return gson.fromJson(data, listType)
     }
 
+    @TypeConverter
+    fun habitImageEntityListToJson(habitImageEntityList: List<HabitImageEntity>?): String? {
+        return gson.toJson(habitImageEntityList)
+    }
+
+    @TypeConverter
+    fun jsonToHabitImageEntityList(json: String?): List<HabitImageEntity>? {
+        if (json == null) return null
+        val type = object : TypeToken<List<HabitImageEntity>>() {}.type
+        return gson.fromJson(json, type)
+    }
+
+    @TypeConverter
+    fun stringListToJson(stringList: List<String>?): String? {
+        return gson.toJson(stringList)
+    }
+
+    @TypeConverter
+    fun jsonToStringList(json: String?): List<String>? {
+        if (json == null) return null
+        val type = object : TypeToken<List<String>>() {}.type
+        return gson.fromJson(json, type)
+    }
 
 }

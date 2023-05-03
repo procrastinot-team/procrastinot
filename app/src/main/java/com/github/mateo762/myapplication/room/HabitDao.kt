@@ -1,6 +1,7 @@
 package com.github.mateo762.myapplication.room
 
 import androidx.room.*
+import com.github.mateo762.myapplication.models.HabitEntity
 
 @Dao
 interface HabitDao {

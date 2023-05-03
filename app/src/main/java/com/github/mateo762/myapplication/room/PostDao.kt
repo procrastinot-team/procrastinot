@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import com.github.mateo762.myapplication.models.PostEntity
 
 @Dao
 interface PostDao {

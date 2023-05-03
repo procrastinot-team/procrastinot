@@ -1,7 +1,7 @@
 package com.github.mateo762.myapplication.habits
 
 import android.util.Log
-import com.github.mateo762.myapplication.models.Habit
+import com.github.mateo762.myapplication.models.HabitEntity
 import com.google.firebase.database.DatabaseReference
 import javax.inject.Inject
 
@@ -10,7 +10,7 @@ class HabitServiceFirebaseImpl @Inject constructor(
 ) : HabitService {
     private var TAG = HabitServiceFirebaseImpl::class.java.simpleName
 
-    override fun addHabit(user: String, habit: Habit, callback: HabitServiceCallback) {
+    override fun addHabit(user: String, habit: HabitEntity, callback: HabitServiceCallback) {
         Log.d(TAG, "Hello database")
         //val db: DatabaseReference = Firebase.database.reference
         // makfazlic should be replaced with the userId retrieved from the auth
