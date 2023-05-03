@@ -23,7 +23,7 @@ class HabitToWeekEventTest {
             days = listOf(DayOfWeek.MONDAY)
         )
 
-        val events = habitToWeekViewEvent(habit, 1, Color.BLUE, LocalDateTime.of(2023, 4, 15, 15, 0))
+        val events = habitToWeekViewEvent(habit, 1, Color.BLUE, LocalDateTime.of(2023, 4, 15, 15, 0), false)
 
         assertEquals(1, events.size)
 

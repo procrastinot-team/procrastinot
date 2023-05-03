@@ -16,6 +16,7 @@ import com.alamkanak.weekview.WeekView
 import com.alamkanak.weekview.WeekViewEvent
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.getHardCodedHabits
+import com.github.mateo762.myapplication.models.HabitEntity
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
@@ -24,9 +25,12 @@ open class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.Even
     WeekView.EmptyViewLongPressListener, MonthLoader.MonthChangeListener {
 
     private lateinit var weekView: CustomWeekView
+    public var isTest = false
 
     @RequiresApi(Build.VERSION_CODES.O)
     var habits = getHardCodedHabits()
+
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -77,7 +81,8 @@ open class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.Even
                 habit,
                 eventId,
                 colorsArray[colorIndex++],
-                LocalDateTime.now()
+                LocalDateTime.now(),
+                isTest
             )
             eventsList.addAll(weekViewEvents)
             eventId += weekViewEvents.size

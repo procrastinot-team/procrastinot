@@ -17,8 +17,10 @@ fun habitToWeekViewEvent(
     habit: HabitEntity,
     eventId: Long,
     color: Int,
-    date: LocalDateTime
+    date: LocalDateTime,
+    isTest: Boolean
 ): List<WeekViewEvent> {
+    if(isTest) return emptyList()
     val events = mutableListOf<WeekViewEvent>()
     val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 

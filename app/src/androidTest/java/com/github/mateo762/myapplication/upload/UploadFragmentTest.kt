@@ -27,3 +27,4 @@ class UploadFragmentTest {
         onView(ViewMatchers.withContentDescription("upload_compose_view")).check(matches(isDisplayed()))
     }
 }
+
