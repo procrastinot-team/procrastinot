@@ -1,4 +1,4 @@
-package com.github.mateo762.myapplication
+package com.github.mateo762.myapplication.upload
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule

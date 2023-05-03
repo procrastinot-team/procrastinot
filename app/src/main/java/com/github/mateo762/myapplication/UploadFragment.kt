@@ -22,6 +22,7 @@ class UploadFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return ComposeView(requireContext()).apply {
+            contentDescription = "upload_compose_view"
             setContent {
                     UploadImageScreen(userId = "OcCXHkORwpZu8mesFDD31XpQz9h2", habitId = "7254b3c2-1d9f-4269-82a9-d761cc979a6d",
                     image = R.drawable.walk_1)
