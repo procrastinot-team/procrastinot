@@ -10,15 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.alamkanak.weekview.DateTimeInterpreter
 import com.alamkanak.weekview.MonthLoader
 import com.alamkanak.weekview.WeekView
 import com.alamkanak.weekview.WeekViewEvent
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.getHardCodedHabits
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.*
@@ -74,27 +71,16 @@ open class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.Even
         val habitsList = habits
 
 
-        // Use launchWhenResumed instead of launch
-        lifecycleScope.launchWhenResumed {
-            var colorIndex = 0
-            var eventId = 1L
-            val habitsList = habits
 
-            withContext(Dispatchers.Default) {
-                habitsList.forEach { habit ->
-                    val weekViewEvents = habitToWeekViewEvent(
-                        habit,
-                        eventId,
-                        colorsArray[colorIndex++],
-                        LocalDateTime.now()
-                    )
-                    eventsList.addAll(weekViewEvents)
-                    eventId += weekViewEvents.size
-                }
-            }
-
-            // Update the UI after processing is complete
-            weekView.notifyDatasetChanged()
+        habitsList.forEach { habit ->
+            val weekViewEvents = habitToWeekViewEvent(
+                habit,
+                eventId,
+                colorsArray[colorIndex++],
+                LocalDateTime.now()
+            )
+            eventsList.addAll(weekViewEvents)
+            eventId += weekViewEvents.size
         }
 
 
@@ -102,9 +88,6 @@ open class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.Even
         val today = Calendar.getInstance()
         val daysFromMonday = (today.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY + 7) % 7
         today.add(Calendar.DATE, -daysFromMonday)
-        weekView.goToDate(today)
-
-
     }
 
     private val eventsList = mutableListOf<WeekViewEvent>()
@@ -116,14 +99,17 @@ open class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.Even
 
     override fun onEventClick(event: WeekViewEvent, eventRect: RectF) {
         // Handle event click
+        return
     }
 
     override fun onEventLongPress(event: WeekViewEvent, eventRect: RectF) {
         // Handle event long press
+        return
     }
 
     override fun onEmptyViewLongPress(time: Calendar) {
         // Handle empty view long press
+        return
     }
 
     private val colorsArray = arrayOf(

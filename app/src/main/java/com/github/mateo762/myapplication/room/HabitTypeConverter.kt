@@ -1,6 +1,7 @@
 package com.github.mateo762.myapplication.room
 
 import androidx.room.TypeConverter
+import com.github.mateo762.myapplication.models.HabitEntity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type

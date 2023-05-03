@@ -1,4 +1,4 @@
-package com.github.mateo762.myapplication.post
+package com.github.mateo762.myapplication.models
 
 import com.github.mateo762.myapplication.room.HabitImageEntity
 

@@ -13,11 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.mateo762.myapplication.*
-import com.github.mateo762.myapplication.followers.UserRepository
-import com.github.mateo762.myapplication.room.HabitEntity
+import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.room.HabitImageEntity
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -31,43 +31,35 @@ import java.time.LocalDateTime
 import java.util.*
 
 // TODO: This class should be deleted ASAP and be replaced by 'taking a picture' logic
-val userRepository = UserRepository()
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun UploadImageScreen(userId: String, habitId: String) {
+fun UploadImageScreen(userId: String, habitId: String, image: Int) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "Upload Image", fontSize = 24.sp)
         Button(
-            modifier = Modifier.padding(top = 16.dp),
-            onClick = { onUploadButtonClick(context, coroutineScope, userId, habitId) }
+            modifier = Modifier.padding(top = 16.dp).testTag("btnImage"),
+            onClick = { onUploadButtonClick(context, coroutineScope, userId, habitId, image) }
         ) {
             Text(text = "Upload Picture")
         }
         Text(text = "Upload Hardcoded habits", fontSize = 24.sp)
         Button(
-            modifier = Modifier.padding(top = 16.dp),
+            modifier = Modifier.padding(top = 16.dp).testTag("btnHabits"),
             onClick = { addHabitsToUser(userId, habits = getHardCodedHabits()) }
         ) {
             Text(text = "Upload Habits")
-        }
-        Text(text = "Add a follower", fontSize = 24.sp)
-        Button(
-            modifier = Modifier.padding(top = 16.dp),
-            onClick = { addFollowerToUser(receiveFollowUser = "u0YjFxx6H9TwoFh6aEodiRKz8NX2", sendsFollowUser = "Vqz2G0Kr10QR2ho4imnpBZ8f0hW2") }
-        ) {
-            Text(text = "Add a follower")
         }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-private fun onUploadButtonClick(context: Context, coroutineScope: CoroutineScope, userId: String, habitId: String) {
+private fun onUploadButtonClick(context: Context, coroutineScope: CoroutineScope, userId: String, habitId: String, image: Int) {
     coroutineScope.launch {
-        uploadImageToFirebaseStorageAndSaveURL(context, userId, habitId)
+        uploadImageToFirebaseStorageAndSaveURL(context, userId, habitId, image)
     }
 }
 
@@ -76,12 +68,13 @@ private fun onUploadButtonClick(context: Context, coroutineScope: CoroutineScope
 private suspend fun uploadImageToFirebaseStorageAndSaveURL(
     context: Context,
     userId: String,
-    habitId: String
+    habitId: String,
+    image: Int
 ) {
     val storageRef = Firebase.storage.reference
     val imagesRef = storageRef.child("users/$userId/images/${UUID.randomUUID()}.jpg")
 
-    val inputStream = context.resources.openRawResource(R.drawable.exercise_hardcoded_image_3)
+    val inputStream = context.resources.openRawResource(image)
     val byteArrayOutputStream = ByteArrayOutputStream()
     inputStream.copyTo(byteArrayOutputStream)
     val data = byteArrayOutputStream.toByteArray()
@@ -92,7 +85,7 @@ private suspend fun uploadImageToFirebaseStorageAndSaveURL(
             imagesRef.downloadUrl.addOnSuccessListener { uri ->
                 val imageUrl = uri.toString()
                 val db = Firebase.database.reference
-                val habitImage = HabitImageEntity(id = UUID.randomUUID().toString(),  habitId = habitId, url = imageUrl, date = LocalDateTime.now().toString())
+                val habitImage = HabitImageEntity(id = UUID.randomUUID().toString(), userId = userId,  habitId = habitId, url = imageUrl, date = LocalDateTime.now().toString())
                 db.child("users").child(userId).child("imagesPath").push().setValue(habitImage)
             }
         }.addOnFailureListener {
@@ -123,8 +116,4 @@ fun addHabitsToUser(userId: String, habits: List<HabitEntity>) {
                 Log.e(TAG, "Error adding habit: $e")
             }
     }
-}
-
-fun addFollowerToUser(receiveFollowUser: String, sendsFollowUser: String) {
-return ;
 }

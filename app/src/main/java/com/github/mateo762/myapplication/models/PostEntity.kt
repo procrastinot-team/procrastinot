@@ -1,4 +1,4 @@
-package com.github.mateo762.myapplication.room
+package com.github.mateo762.myapplication.models
 
 import androidx.room.ColumnInfo
 import androidx.room.ColumnInfo.Companion.BLOB

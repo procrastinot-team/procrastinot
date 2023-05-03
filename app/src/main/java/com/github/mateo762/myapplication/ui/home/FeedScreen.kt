@@ -1,7 +1,9 @@
 package com.github.mateo762.myapplication.ui.home
 
+import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
-import android.widget.Toast
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -9,6 +11,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,12 +29,14 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import coil.compose.LocalImageLoader
 import coil.compose.rememberImagePainter
-import coil.request.ImageRequest
 import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.post.Post
+import com.github.mateo762.myapplication.models.Post
 import com.github.mateo762.myapplication.post.PostActivity
-import com.google.accompanist.coil.rememberCoilPainter
-import com.google.accompanist.imageloading.LoadPainterDefaults
+import com.github.mateo762.myapplication.profile.ProfileActivity
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 
 @Composable
@@ -97,7 +104,7 @@ fun PostThumbnail(
                         data = imageUrl,
                         imageLoader = LocalImageLoader.current,
                     ),
-                    contentDescription = stringResource(id = R.string.sample_post_content),
+                    contentDescription = "image_$imageUrl",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .height(400.dp)
@@ -115,18 +122,25 @@ fun PostThumbnail(
 // This is the post / thumbnail header that includes the post information
 fun UserCard(caption: String, username: String, assocHabit: String) {
     val context = LocalContext.current
+    val userId = remember { mutableStateOf("") }
+
+    LaunchedEffect(username) {
+        fetchUserId(username) { fetchedUserId ->
+            userId.value = fetchedUserId
+        }
+    }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.clickable {
-            Toast.makeText(
-                context,
-                "This takes you to the poster's profile",
-                Toast.LENGTH_SHORT
-            ).show()
+            Log.d(TAG, "mateo:  ${userId.value}")
+
+            if (userId.value.isNotEmpty()) {
+                onUserItemClick(context, userId.value)
+            }
         }) {
         Image(
             painter = painterResource(R.drawable.ic_android),
-            contentDescription = "avatar",
+            contentDescription = "avatar_$username",
             contentScale = ContentScale.Crop,            // crop the image if it's not a square
             modifier = Modifier
                 .size(37.dp)
@@ -146,7 +160,7 @@ fun UserCard(caption: String, username: String, assocHabit: String) {
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = username,
+                text = "@$username",
                 style = MaterialTheme.typography.body1,
             )
             Text(
@@ -156,4 +170,25 @@ fun UserCard(caption: String, username: String, assocHabit: String) {
             )
         }
     }
+}
+
+private fun fetchUserId(username: String, onUserIdFetched: (String) -> Unit) {
+    val usernamesRef = FirebaseDatabase.getInstance().getReference("/usernames/$username")
+
+    usernamesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            val userId = snapshot.getValue(String::class.java) ?: ""
+            onUserIdFetched(userId)
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            Log.d("FeedScreen", "Error: ${error.message}")
+        }
+    })
+}
+
+private fun onUserItemClick(context: Context, userId: String) {
+    val intent = Intent(context, ProfileActivity::class.java)
+    intent.putExtra("userId", userId)
+    startActivity(context, intent, null)
 }

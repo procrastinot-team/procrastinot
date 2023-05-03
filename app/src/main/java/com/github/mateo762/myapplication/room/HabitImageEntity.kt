@@ -6,8 +6,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class HabitImageEntity(
-    @PrimaryKey val id: String,
-    @ColumnInfo val habitId: String,
-    @ColumnInfo var url: String,
-    @ColumnInfo var date: String
+    @PrimaryKey val id: String = "",
+    @ColumnInfo val userId: String = "",
+    @ColumnInfo val habitId: String = "",
+    @ColumnInfo var url: String = "",
+    @ColumnInfo var date: String = ""
 )

@@ -1,24 +1,16 @@
 package com.github.mateo762.myapplication
 
 import com.github.mateo762.myapplication.followers.UserRepository
-import com.github.mateo762.myapplication.room.UserEntity
+import com.github.mateo762.myapplication.models.UserEntity
 import com.google.firebase.database.*
 import junit.framework.TestCase.assertEquals
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
-import kotlin.coroutines.suspendCoroutine
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 
 
 class UserRepositoryTest {

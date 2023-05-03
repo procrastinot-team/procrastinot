@@ -1,6 +1,6 @@
 package com.github.mateo762.myapplication.followers
 
-import com.github.mateo762.myapplication.room.UserEntity
+import com.github.mateo762.myapplication.models.UserEntity
 import com.google.firebase.database.*
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
@@ -10,9 +10,9 @@ import kotlin.coroutines.resumeWithException
 class UserRepository(
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance(),
     private val usersReference: DatabaseReference = database.getReference("users")
-) : IUserRepository {
+) {
 
-    override suspend fun getUser(uid: String): UserEntity? {
+    suspend fun getUser(uid: String): UserEntity? {
         return suspendCancellableCoroutine { continuation ->
             usersReference.child(uid).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -27,7 +27,7 @@ class UserRepository(
         }
     }
 
-    override suspend fun followUser(currentUserId: String, targetUserId: String) {
+    suspend fun followUser(currentUserId: String, targetUserId: String) {
         val currentUser = getUser(currentUserId)
         val targetUser = getUser(targetUserId)
 
@@ -42,7 +42,7 @@ class UserRepository(
         }
     }
 
-    override suspend fun unfollowUser(currentUserId: String, targetUserId: String) {
+    fun unfollowUser(currentUserId: String, targetUserId: String) {
         usersReference.child(currentUserId).child("followingPath")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -75,7 +75,7 @@ class UserRepository(
                 override fun onCancelled(error: DatabaseError) {}
             })
     }
-    override suspend fun checkIfUserFollows(currentUserId: String, targetUserId: String): Boolean {
+    suspend fun checkIfUserFollows(currentUserId: String, targetUserId: String): Boolean {
         return suspendCancellableCoroutine { continuation ->
             usersReference.child(currentUserId).child("followingPath")
                 .addListenerForSingleValueEvent(object : ValueEventListener {

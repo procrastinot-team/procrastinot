@@ -2,7 +2,7 @@ package com.github.mateo762.myapplication
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.github.mateo762.myapplication.room.HabitEntity
+import com.github.mateo762.myapplication.models.HabitEntity
 import java.time.DayOfWeek
 import java.util.*
 

@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.HabitsActivity
-import com.github.mateo762.myapplication.room.HabitEntity
+import com.github.mateo762.myapplication.models.HabitEntity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase

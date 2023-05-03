@@ -1,7 +1,7 @@
 package com.github.mateo762.myapplication.habits
 
 import android.util.Log
-import com.github.mateo762.myapplication.room.HabitEntity
+import com.github.mateo762.myapplication.models.HabitEntity
 import com.google.firebase.database.DatabaseReference
 import javax.inject.Inject
 
