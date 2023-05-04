@@ -3,8 +3,7 @@ package com.github.mateo762.myapplication.feed
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.mateo762.myapplication.models.Post
-import com.github.mateo762.myapplication.room.HabitImageEntity
+import com.github.mateo762.myapplication.models.PostEntity
 import com.github.mateo762.myapplication.ui.home.FeedScreen
 import org.junit.Rule
 import org.junit.Test
@@ -17,22 +16,26 @@ class FeedScreenTest {
     val composeTestRule = createComposeRule()
 
     private val samplePosts = listOf(
-        Post(
+        PostEntity(
+            0,
             username = "user1",
             caption = "Caption 1",
             description = "Description 1",
-            habitImage = HabitImageEntity("image1", "user1",
-                "habit1", "https://example.com/image1.png"),
-            assocHabit = "assocHabit1"
+            datePosted = "date1",
+            habitImageEntityId = "image1",
+            assocHabit = "habit1",
+            imageUrl = "https://example.com/image1.png"
         ),
-        Post(
+        PostEntity(
+            0,
             username = "user2",
             caption = "Caption 2",
             description = "Description 2",
-            habitImage = HabitImageEntity("image2", "user2",
-                "habit2", "https://example.com/image2.png"),
-            assocHabit = "assocHabit2"
-        )
+            datePosted = "date2",
+            habitImageEntityId = "image2",
+            assocHabit = "habit2",
+            imageUrl = "https://example.com/image2.png"
+        ),
     )
 
     @Test

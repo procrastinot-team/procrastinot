@@ -50,8 +50,8 @@
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/profileImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_gravity="center"
                     android:src="@mipmap/ic_launcher"
                     app:shapeAppearanceOverlay="@style/roundedImageViewRounded" />
@@ -65,21 +65,53 @@
                 android:orientation="vertical">
 
                 <EditText
-                    android:id="@+id/editTextUserName"
+                    android:id="@+id/editTextName"
                     android:layout_width="244dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
+                    android:autofillHints="@string/user_name_editable"
                     android:ems="10"
+                    android:hint="@string/user_name_editable"
                     android:inputType="textPersonName"
-                    android:text="@string/user_name"
                     android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/editTextEmail"
                     android:layout_width="244dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
+                    android:autofillHints="@string/user_email_editable"
                     android:ems="10"
+                    android:hint="@string/user_email_editable"
                     android:inputType="textEmailAddress"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/textViewName"
+                    android:layout_width="242dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="start"
+                    android:gravity="start"
+                    android:text="@string/user_name"
+                    android:textColor="@color/dark_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/textViewEmail"
+                    android:layout_width="242dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="start"
+                    android:gravity="start"
                     android:text="@string/user_email"
+                    android:textColor="@color/dark_text"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/textViewUsername"
+                    android:layout_width="242dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="start"
+                    android:gravity="start"
+                    android:text="@string/user_username"
+                    android:textColor="@color/dark_text"
                     android:textSize="14sp" />
 
                 <LinearLayout
@@ -159,29 +191,29 @@
 
                 <ImageButton
                     android:id="@+id/btnEdit"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:contentDescription="@string/edit_icon"
                     app:srcCompat="@android:drawable/ic_menu_edit" />
 
                 <ImageButton
                     android:id="@+id/btnSave"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:contentDescription="@string/save_icon"
                     app:srcCompat="@android:drawable/ic_menu_save" />
 
                 <ImageButton
                     android:id="@+id/btnFollow"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:contentDescription="@string/edit_icon"
                     app:srcCompat="@drawable/ic_follow" />
 
                 <ImageButton
                     android:id="@+id/btnUnfollow"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:contentDescription="@string/edit_icon"
                     app:srcCompat="@drawable/ic_unfollow" />
 

@@ -13,7 +13,10 @@
     <string name="register_with_google">Register with Google</string>
     <string name="register">Register</string>
     <string name="user_name">User\'s name</string>
+    <string name="user_name_editable">User\'s name editable</string>
     <string name="user_email">User\'s email</string>
+    <string name="user_email_editable">User\'s email editable</string>
+    <string name="user_username">User\'s username</string>
     <string name="edit_icon">Button to switch to edit mode</string>
     <string name="save_icon">Button to save and switch to view mode</string>
     <string name="already_have_logged_in">Already have an account? Login</string>

@@ -8,7 +8,9 @@ import com.github.mateo762.myapplication.home.fragments.FeedFragment
 import com.github.mateo762.myapplication.home.fragments.SummaryFragment
 import com.github.mateo762.myapplication.home.fragments.TodayFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeActivity : BaseActivity() {
 
     private lateinit var bottomNavView: BottomNavigationView

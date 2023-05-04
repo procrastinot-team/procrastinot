@@ -6,15 +6,17 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.github.mateo762.myapplication.models.HabitEntity
+import com.github.mateo762.myapplication.models.HabitImageEntity
 import com.github.mateo762.myapplication.models.PostEntity
 import com.github.mateo762.myapplication.models.UserEntity
 
-@Database(entities = [UserEntity::class, HabitEntity::class, PostEntity::class, HabitImageEntity::class], version = 4)
+@Database(entities = [UserEntity::class, HabitEntity::class, PostEntity::class, HabitImageEntity::class], version = 8)
 @TypeConverters(HabitTypeConverter::class)
 abstract class ApplicationDatabase : RoomDatabase() {
     abstract fun getUserDao(): UserDao
     abstract fun getPostDao(): PostDao
     abstract fun getHabitDao(): HabitDao
+    abstract fun getHabitImageDao(): HabitImageDao
 
     companion object : SingletonHolder<ApplicationDatabase, Context>({
         Room.databaseBuilder(
