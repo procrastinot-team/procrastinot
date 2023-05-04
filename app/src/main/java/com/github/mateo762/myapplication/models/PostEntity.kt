@@ -23,17 +23,19 @@ data class PostEntity(
         if (javaClass != other?.javaClass) return false
 
         other as PostEntity
-
-        if (uid != other.uid) return false
         if (datePosted != other.datePosted) return false
+        if (!caption.contentEquals(other.caption)) return false
         if (!imageUrl.contentEquals(other.imageUrl)) return false
+        if (!description.contentEquals(other.description)) return false
+        if (!habitImageEntityId.contentEquals(other.habitImageEntityId)) return false
+        if (!assocHabit.contentEquals(other.assocHabit)) return false
 
         return true
     }
 
     override fun hashCode(): Int {
         var result = uid
-        result = 31 * result + (datePosted?.hashCode() ?: 0)
+        result = 31 * result + (datePosted.hashCode() ?: 0)
         return result
     }
 }

@@ -34,5 +34,11 @@ object RoomModule {
         return database.getHabitImageDao()
     }
 
+    @Provides
+    @Singleton
+    fun providePostDao(database: ApplicationDatabase): PostDao {
+        return database.getPostDao()
+    }
+
 
 }
