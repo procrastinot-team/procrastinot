@@ -59,7 +59,7 @@ class UsernameViewModel @Inject constructor(
     /**
      * Posts the username that was picked to Firebase.
      */
-    fun pickUsername(username: String) {
+    fun pickUsername(username: String, oldUsername: String? = null) {
         val currentUser = firebaseAuth.currentUser
         currentUser?.let { user ->
             postUsernameLiveData.postValue(State.loading())
@@ -83,6 +83,10 @@ class UsernameViewModel @Inject constructor(
                 combined?.collect {
                     postUsernameLiveData.postValue(State.success(Unit))
                 }
+            }
+
+            oldUsername?.let {
+                usernameService.deleteUsername(it)
             }
         }
     }
