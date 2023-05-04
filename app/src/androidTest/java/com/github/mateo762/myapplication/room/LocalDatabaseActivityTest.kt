@@ -33,7 +33,7 @@ class LocalDatabaseActivityTest {
     fun createDB() {
         testHabitList.add(zeroHabit)
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(context, ApplicationDatabase::class.java).build()
+        db = ApplicationDatabase.getInstance(context)
         userDao = db.getUserDao()
         postDao = db.getPostDao()
         habitDao = db.getHabitDao()
@@ -41,7 +41,7 @@ class LocalDatabaseActivityTest {
 
     @After
     fun tearDown() {
-        db.close()
+        db.clearAllTables()
     }
 
     @Test

@@ -219,6 +219,11 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
 
             // Exclude DAO interface files from coverage report
             '**room/*Dao*.*',
+            // Exclude manually since the above line seems to not work?
+            '**room/HabitDao*.*',
+            '**room/HabitImageDao*.*',
+            '**room/PostDao*.*',
+            '**room/UserDao*.*',
 
             // Exclude Hilt generated classes
             '**/*Hilt*.*',
