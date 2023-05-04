@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.mateo762.myapplication.util.State
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -33,24 +34,25 @@ class UsernameViewModel @Inject constructor(
      */
     fun isUsernameAvailable(chosenUsername: String) {
         viewModelScope.launch {
-            usernameService.getUsernames()
-                .catch { exception ->
-                    Log.d(TAG, exception.message.toString())
-                    isUsernameTaken.postValue(State.failed())
-                }
-                .collect { usernames ->
-                    var isUsernameAvailable = true
-                    for (username in usernames) {
-                        if (chosenUsername == username) {
-                            isUsernameTaken.postValue(State.Success(true))
-                            isUsernameAvailable = false
-                            break
+            try {
+                usernameService.getUsernames()
+                    .collect { usernames ->
+                        var isUsernameAvailable = true
+                        for (username in usernames) {
+                            if (chosenUsername == username) {
+                                isUsernameTaken.postValue(State.Success(true))
+                                isUsernameAvailable = false
+                                break
+                            }
+                        }
+                        if (isUsernameAvailable) {
+                            isUsernameTaken.postValue(State.Success(false))
                         }
                     }
-                    if (isUsernameAvailable) {
-                        isUsernameTaken.postValue(State.Success(false))
-                    }
-                }
+            } catch (exception: Exception) {
+                Log.d(TAG, exception.message.toString())
+                isUsernameTaken.postValue(State.failed())
+            }
         }
     }
 
@@ -62,21 +64,25 @@ class UsernameViewModel @Inject constructor(
         currentUser?.let { user ->
             postUsernameLiveData.postValue(State.loading())
 
-            val combined = combine(
-                usernameService.postUsernameToUsernames(username, user.uid),
-                usernameService.postUsernameToUser(username, user.uid)
-            ) { a, b ->
-                listOf(a, b)
+            var combined: Flow<List<Unit>>? = null
+
+
+            try {
+                combined = combine(
+                    usernameService.postUsernameToUsernames(username, user.uid),
+                    usernameService.postUsernameToUser(username, user.uid)
+                ) { a, b ->
+                    listOf(a, b)
+                }
+            } catch (exception: Exception) {
+                Log.d(TAG, exception.message.toString())
+                postUsernameLiveData.postValue(State.failed())
             }
+
             viewModelScope.launch {
-                combined
-                    .catch {
-                        Log.d(TAG, it.message.toString())
-                        postUsernameLiveData.postValue(State.failed())
-                    }
-                    .collect {
-                        postUsernameLiveData.postValue(State.success(Unit))
-                    }
+                combined?.collect {
+                    postUsernameLiveData.postValue(State.success(Unit))
+                }
             }
         }
     }

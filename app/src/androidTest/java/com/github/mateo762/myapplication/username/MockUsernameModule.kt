@@ -64,4 +64,18 @@ class MockUsernameModule {
             }
         }
     }
+
+    class MockUsernameServiceWithException : UsernameService {
+        override fun getUsernames(): Flow<ArraySet<String>> {
+            throw RuntimeException()
+        }
+
+        override fun postUsernameToUsernames(username: String, uid: String): Flow<Unit> {
+            throw RuntimeException()
+        }
+
+        override fun postUsernameToUser(username: String, uid: String): Flow<Unit> {
+            throw RuntimeException()
+        }
+    }
 }
