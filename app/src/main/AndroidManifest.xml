@@ -65,7 +65,7 @@
             android:name=".about.AboutActivity"
             android:exported="false" />
         <activity
-            android:name=".username.UsernameActivity"
+            android:name=".username.UsernameActivity$EntryPoint"
             android:exported="false"/>
         <activity
             android:name=".notifications.NotificationInfoActivity"

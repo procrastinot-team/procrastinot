@@ -24,8 +24,10 @@ import dagger.hilt.android.AndroidEntryPoint
 /**
  * Activity for picking a unique username.
  */
-@AndroidEntryPoint
-class UsernameActivity : BaseActivity() {
+abstract class UsernameActivity : BaseActivity() {
+
+    @AndroidEntryPoint
+    class EntryPoint: UsernameActivity()
 
     private val viewModel: UsernameViewModel by viewModels()
     private lateinit var notificationManager: NotificationManager

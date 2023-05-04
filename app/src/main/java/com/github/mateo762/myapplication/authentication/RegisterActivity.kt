@@ -65,7 +65,7 @@ class RegisterActivity : AppCompatActivity() {
                                 .addOnSuccessListener {
                                     Toast.makeText(baseContext, R.string.success_register,
                                     Toast.LENGTH_SHORT).show()
-                                    val intent = Intent(this, UsernameActivity::class.java)
+                                    val intent = Intent(this, UsernameActivity.EntryPoint::class.java)
                                     startActivity(intent)
                                 }.addOnFailureListener {
                                     Toast.makeText(

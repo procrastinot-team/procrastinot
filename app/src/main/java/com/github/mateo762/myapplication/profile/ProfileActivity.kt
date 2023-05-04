@@ -139,7 +139,7 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
         }
 
         changeUsernameButton.setOnClickListener {
-            val intent = Intent(this, UsernameActivity::class.java).apply {
+            val intent = Intent(this, UsernameActivity.EntryPoint::class.java).apply {
                 putExtra(UsernameActivity.OLD_USERNAME_KEY, usernameTextView.text)
             }
             startActivity(intent)
