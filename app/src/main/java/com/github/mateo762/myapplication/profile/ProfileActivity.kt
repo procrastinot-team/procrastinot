@@ -252,8 +252,8 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
 
                 // Set the number of habits and the average repetitions per week
                 averageRepetitionsPerWeek = daysCount.sum() / daysCount.size
-                habitCountText.text = "Posted habits: $numberOfhabits"
-                avgPerWeekText.text = "Avg. Days in Week: $averageRepetitionsPerWeek"
+                habitCountText.text = getString(R.string.posted_habits) + numberOfhabits.toString()
+                avgPerWeekText.text = getString(R.string.avg_days_week) + averageRepetitionsPerWeek.toString()
 
                 // Get the earliest and latest habit
                 var earliestHour = starts[0].split(":")[0].toInt()
@@ -278,8 +278,8 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
                 }
 
                 // Set the earliest and latest habit
-                earliestText.text = "Earliest start: $earliestHour:$earliestMinute"
-                latestText.text = "Latest end: $latestHour:$latestMinute"
+                earliestText.text = getString(R.string.earlystart) + earliestHour.toString() + ":" + earliestMinute.toString()
+                latestText.text = getString(R.string.lateend) + latestHour.toString() + ":" + latestMinute.toString()
             }
 
 
@@ -354,7 +354,7 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
         refFollow.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 numberOfFollowing = dataSnapshot.childrenCount.toInt()
-                followingText.text = "Following: $numberOfFollowing"
+                followingText.text = getString(R.string.following) + numberOfFollowing.toString()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -366,7 +366,7 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
         refFollowers.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 numberOfFollowers = dataSnapshot.childrenCount.toInt()
-                followersText.text = "Followers: $numberOfFollowers"
+                followersText.text = getString(R.string.followers) + numberOfFollowers.toString()
             }
 
             override fun onCancelled(error: DatabaseError) {
