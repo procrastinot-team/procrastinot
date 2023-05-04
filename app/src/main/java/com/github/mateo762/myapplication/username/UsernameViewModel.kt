@@ -60,13 +60,10 @@ class UsernameViewModel @Inject constructor(
      * Posts the username that was picked to Firebase.
      */
     fun pickUsername(username: String, oldUsername: String? = null) {
-        val currentUser = firebaseAuth.currentUser
-        currentUser?.let { user ->
+        firebaseAuth.currentUser?.let { user ->
             postUsernameLiveData.postValue(State.loading())
-
+            
             var combined: Flow<List<Unit>>? = null
-
-
             try {
                 combined = combine(
                     usernameService.postUsernameToUsernames(username, user.uid),

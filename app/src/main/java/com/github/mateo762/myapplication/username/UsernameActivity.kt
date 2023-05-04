@@ -141,20 +141,24 @@ class UsernameActivity : BaseActivity() {
                 showProgress(true)
             }
             is State.Success -> {
-                showProgress(false)
-                showToast(R.string.choose_username_pick_username_success)
-                if (oldUsername != null) {
-                    finish()
-                } else {
-                    val intent: Intent =
-                        if (this.shouldShowRequestPermissionRationale(POST_NOTIFICATIONS) || !notificationManager.areNotificationsEnabled()) {
-                            Intent(this, NotificationInfoActivity::class.java)
-                        } else {
-                            Intent(this, HomeActivity::class.java)
-                        }
-                    startActivity(intent)
-                }
+                handlePostUsernameSuccess()
             }
+        }
+    }
+
+    private fun handlePostUsernameSuccess() {
+        showProgress(false)
+        showToast(R.string.choose_username_pick_username_success)
+        if (oldUsername != null) {
+            finish()
+        } else {
+            val intent: Intent =
+                if (this.shouldShowRequestPermissionRationale(POST_NOTIFICATIONS) || !notificationManager.areNotificationsEnabled()) {
+                    Intent(this, NotificationInfoActivity::class.java)
+                } else {
+                    Intent(this, HomeActivity::class.java)
+                }
+            startActivity(intent)
         }
     }
 
