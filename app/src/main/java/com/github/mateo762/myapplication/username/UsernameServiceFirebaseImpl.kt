@@ -47,4 +47,8 @@ class UsernameServiceFirebaseImpl @Inject constructor(
         db.child(USERS_REF).child(uid).child(USERNAME_REF).setValue(username).await()
         emit(Unit)
     }.flowOn(Dispatchers.IO)
+
+    override fun deleteUsername(username: String) {
+        db.child(USERNAMES_REF).child(username).removeValue()
+    }
 }

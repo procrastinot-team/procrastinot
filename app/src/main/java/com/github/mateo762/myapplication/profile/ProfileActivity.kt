@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -22,6 +23,7 @@ import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.github.mateo762.myapplication.followers.UserRepository
 import com.github.mateo762.myapplication.models.HabitImageEntity
 import com.github.mateo762.myapplication.upload_gallery.ImageAdapter
+import com.github.mateo762.myapplication.username.UsernameActivity
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -65,11 +67,14 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
     private lateinit var latestText: TextView
     private lateinit var followersText: TextView
     private lateinit var followingText: TextView
+    private lateinit var changeUsernameButton: Button
 
     private val user = FirebaseAuth.getInstance().currentUser
     private lateinit var profileImage:ShapeableImageView
     lateinit var binding: ActivityProfileBinding
     private val userRepository = UserRepository()
+    private lateinit var db: DatabaseReference
+    private lateinit var uid: String
 
 
     companion object {
@@ -83,13 +88,14 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
 
         setupToolbar()
 
-        val db: DatabaseReference = Firebase.database.reference
+        db = Firebase.database.reference
         profileImage = findViewById(R.id.profileImage)
         nameEditText = findViewById(R.id.editTextName)
         emailEditText = findViewById(R.id.editTextEmail)
         nameTextView = findViewById(R.id.textViewName)
         emailTextView = findViewById(R.id.textViewEmail)
         usernameTextView = findViewById(R.id.textViewUsername)
+        changeUsernameButton = findViewById(R.id.changeUsernameButton)
         btnEdit = findViewById(R.id.btnEdit)
         btnSave = findViewById(R.id.btnSave)
         btnFollow = findViewById(R.id.btnFollow)
@@ -108,9 +114,10 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
         emailEditText.isClickable = false
         emailEditText.background = null
         emailEditText.visibility = View.GONE
+        changeUsernameButton.visibility = View.GONE
         btnSave.visibility = View.GONE
 
-        val uid = intent.getStringExtra("userId") ?: user!!.uid
+        uid = intent.getStringExtra("userId") ?: user!!.uid
 
 
         if (uid == user!!.uid) {
@@ -144,6 +151,13 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
             unfollowUser(user!!.uid, uid)
         }
 
+        changeUsernameButton.setOnClickListener {
+            val intent = Intent(this, UsernameActivity::class.java).apply {
+                putExtra(UsernameActivity.OLD_USERNAME_KEY, usernameTextView.text)
+            }
+            startActivity(intent)
+        }
+
         btnEdit.setOnClickListener {
             // We enable the name and email edit texts such that they can be edited
             nameEditText.isEnabled = true
@@ -157,6 +171,7 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
             emailEditText.setText(emailTextView.text)
             emailTextView.visibility = View.GONE
             usernameTextView.visibility = View.GONE
+            changeUsernameButton.visibility = View.VISIBLE
 
             // We hide the edit button and show the save button
             btnEdit.visibility = View.GONE
@@ -185,6 +200,7 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
             emailEditText.visibility = View.GONE
             emailTextView.text = newEmail
             usernameTextView.visibility = View.VISIBLE
+            changeUsernameButton.visibility= View.GONE
 
             // We hide the save button and show the edit button
             btnEdit.visibility = View.VISIBLE
@@ -227,11 +243,12 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
         db.child("users").child(uid).child("email").get().addOnSuccessListener { it ->
             emailTextView.text = it.getValue(String::class.java)
         }
-        db.child("users").child(uid).child("username").get().addOnSuccessListener { it ->
-            usernameTextView.text = it.getValue(String::class.java)
-        }
 
-        // We create a list of names, ids, starts, ends, daysList and textViews, where we store habits data
+        // Retrieval of list of habits
+        // First, we take the reference of the database
+        val ref = db.child("users/${uid}/habitsPath")
+
+        // Then, we create a list of names, ids and textViews, where we store habits data
         // and we set the value listener
         val names = mutableListOf<String>()
         val ids = mutableListOf<String>()
@@ -420,6 +437,14 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
         })
 
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        db.child("users").child(uid).child("username").get().addOnSuccessListener { it ->
+            usernameTextView.text = it.getValue(String::class.java)
+        }
     }
 
     @Override

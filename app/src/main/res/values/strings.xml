@@ -119,4 +119,5 @@
     <string name="lateend">\"Latest end: \"</string>
     <string name="following">\"Following: \"</string>
     <string name="followers">\"Followers: \"</string>
+    <string name="change_username_button_text">Change username</string>
 </resources>
