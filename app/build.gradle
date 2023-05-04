@@ -87,7 +87,8 @@ dependencies {
     def room_version = "2.5.0"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
-    implementation 'com.google.firebase:firebase-firestore-ktx:23.0.3'
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 
     implementation 'com.google.code.gson:gson:2.9.0'
     kapt "androidx.room:room-compiler:$room_version"
@@ -218,7 +219,11 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
 
             // Exclude DAO interface files from coverage report
             '**room/*Dao*.*',
-            '**room/*Dao*.*',
+            // Exclude manually since the above line seems to not work?
+            '**room/HabitDao*.*',
+            '**room/HabitImageDao*.*',
+            '**room/PostDao*.*',
+            '**room/UserDao*.*',
 
             // Exclude Hilt generated classes
             '**/*Hilt*.*',

@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.models.HabitEntity
-import com.github.mateo762.myapplication.room.HabitImageEntity
+import com.github.mateo762.myapplication.models.HabitImageEntity
 import com.github.mateo762.myapplication.UploadFragment
 import com.google.accompanist.coil.rememberCoilPainter
 import java.time.*
