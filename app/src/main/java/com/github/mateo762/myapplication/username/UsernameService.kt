@@ -22,4 +22,9 @@ interface UsernameService {
      * Method that updates the usernames under the user reference.
      */
     fun postUsernameToUser(username: String, uid: String) : Flow<Unit>
+
+    /**
+     * Method that deletes the username.
+     */
+    fun deleteUsername(username: String)
 }

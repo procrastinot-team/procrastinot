@@ -30,6 +30,7 @@ class UsernameActivity : BaseActivity() {
     private val viewModel: UsernameViewModel by viewModels()
     private lateinit var notificationManager: NotificationManager
     private lateinit var binding: ActivityUsernameBinding
+    private var oldUsername: String? = null
 
     private val usernameTextWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -56,11 +57,17 @@ class UsernameActivity : BaseActivity() {
         }
     }
 
+    companion object {
+        const val OLD_USERNAME_KEY = "OLD_USERNAME_KEY"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityUsernameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        oldUsername = intent?.getStringExtra(OLD_USERNAME_KEY)
 
         notificationManager =
             this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -80,29 +87,9 @@ class UsernameActivity : BaseActivity() {
             if (chosenUsername.isNullOrBlank()) {
                 showToast(R.string.choose_username_empty_username_message)
             } else {
-                viewModel.pickUsername(chosenUsername.toString())
+                viewModel.pickUsername(chosenUsername.toString(), oldUsername)
             }
         }
-    }
-
-    private fun setUsernameFeedbackState(
-        @StringRes feedbackTextRes: Int,
-        @ColorRes feedbackTextColor: Int,
-        isContinueButtonEnabled: Boolean
-    ) {
-        binding.usernameFeedback.text =
-            getString(feedbackTextRes)
-        binding.usernameFeedback.setTextColor(
-            ContextCompat.getColor(
-                this,
-                feedbackTextColor
-            )
-        )
-        binding.continueButton.isEnabled = isContinueButtonEnabled
-    }
-
-    private fun showProgress(show: Boolean) {
-        binding.loadingContainer.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     private fun handleIsUsernameTakenState(state: State<Boolean>) {
@@ -154,16 +141,44 @@ class UsernameActivity : BaseActivity() {
                 showProgress(true)
             }
             is State.Success -> {
-                showProgress(false)
-                showToast(R.string.choose_username_pick_username_success)
-                val intent: Intent =
-                    if (this.shouldShowRequestPermissionRationale(POST_NOTIFICATIONS) || !notificationManager.areNotificationsEnabled()) {
-                        Intent(this, NotificationInfoActivity::class.java)
-                    } else {
-                        Intent(this, HomeActivity::class.java)
-                    }
-                startActivity(intent)
+                handlePostUsernameSuccess()
             }
         }
+    }
+
+    private fun handlePostUsernameSuccess() {
+        showProgress(false)
+        showToast(R.string.choose_username_pick_username_success)
+        if (oldUsername != null) {
+            finish()
+        } else {
+            val intent: Intent =
+                if (this.shouldShowRequestPermissionRationale(POST_NOTIFICATIONS) || !notificationManager.areNotificationsEnabled()) {
+                    Intent(this, NotificationInfoActivity::class.java)
+                } else {
+                    Intent(this, HomeActivity::class.java)
+                }
+            startActivity(intent)
+        }
+    }
+
+    private fun setUsernameFeedbackState(
+        @StringRes feedbackTextRes: Int,
+        @ColorRes feedbackTextColor: Int,
+        isContinueButtonEnabled: Boolean
+    ) {
+        binding.usernameFeedback.text =
+            getString(feedbackTextRes)
+        binding.usernameFeedback.setTextColor(
+            ContextCompat.getColor(
+                this,
+                feedbackTextColor
+            )
+        )
+        binding.continueButton.isEnabled = isContinueButtonEnabled
+    }
+
+    private fun showProgress(show: Boolean) {
+        binding.loadingContainer.visibility = if (show) View.VISIBLE else View.GONE
     }
 }
