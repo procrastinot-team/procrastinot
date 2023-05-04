@@ -1,6 +1,7 @@
 package com.github.mateo762.myapplication.room
 
 import android.content.Context
+import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.models.HabitEntity
@@ -32,7 +33,6 @@ class LocalDatabaseActivityTest {
     fun createDB() {
         testHabitList.add(zeroHabit)
         val context = ApplicationProvider.getApplicationContext<Context>()
-        // db = Room.inMemoryDatabaseBuilder(context, ApplicationDatabase::class.java).build()
         db = ApplicationDatabase.getInstance(context)
         userDao = db.getUserDao()
         postDao = db.getPostDao()
@@ -79,7 +79,7 @@ class LocalDatabaseActivityTest {
     @Test
     fun testAddAndRetrievePosts() {
         val testPosts = generatePosts(5)
-        postDao.insertAll(*testPosts.toTypedArray()) // Process list as variable arguments
+        postDao.insertAll(testPosts) // Process list as variable arguments
         val retrievedPosts = postDao.getAll()
         assertThat(retrievedPosts, `is`(testPosts))
     }
@@ -97,10 +97,10 @@ class LocalDatabaseActivityTest {
 
     @Test
     fun testDeletePost() {
-        val testPost = generatePosts(1).first()
+        val testPost = generatePosts(1)
         postDao.insertAll(testPost)
         // Delete by checking primary key of the given entity
-        postDao.delete(testPost)
+        postDao.delete(testPost[0])
         val retrievedPosts = habitDao.getAll()
         assertThat(retrievedPosts, not(containsInAnyOrder(testPost)))
     }
@@ -146,8 +146,8 @@ class LocalDatabaseActivityTest {
             val day = Random.nextInt(28) + 1
             val month = Random.nextInt(11) + 1
             val datePosted = "$day - $month - 2023"
-            val contents = Random.nextBytes(5)
-            testPostList.add(PostEntity(i, postCaption, postDescription, datePosted, contents))
+            val url = "test_url"
+            testPostList.add(PostEntity(i, postCaption, postDescription, datePosted, url))
         }
         return testPostList
     }
