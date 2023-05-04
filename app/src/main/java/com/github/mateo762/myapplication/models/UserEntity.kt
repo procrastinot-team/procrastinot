@@ -3,7 +3,6 @@ package com.github.mateo762.myapplication.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.mateo762.myapplication.room.HabitImageEntity
 import com.google.firebase.database.IgnoreExtraProperties
 
 @Entity

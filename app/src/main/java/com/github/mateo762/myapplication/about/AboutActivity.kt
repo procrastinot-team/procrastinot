@@ -7,7 +7,6 @@ import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 
 class AboutActivity : BaseActivity() {

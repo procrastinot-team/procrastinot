@@ -2,6 +2,7 @@ package com.github.mateo762.myapplication.profile
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -14,11 +15,12 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.github.mateo762.myapplication.followers.UserRepository
-import com.github.mateo762.myapplication.room.HabitImageEntity
+import com.github.mateo762.myapplication.models.HabitImageEntity
 import com.github.mateo762.myapplication.upload_gallery.ImageAdapter
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseAuth
@@ -29,11 +31,14 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Activity for displaying the profile information.
@@ -48,6 +53,8 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
     private lateinit var emailTextView: TextView
     private lateinit var nameEditText: EditText
     private lateinit var emailEditText: EditText
+    private lateinit var usernameTextView: TextView
+    private var imageUri: Uri? = null
     private lateinit var btnEdit: ImageButton
     private lateinit var btnSave: ImageButton
     private lateinit var btnFollow: ImageButton
@@ -78,8 +85,11 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
 
         val db: DatabaseReference = Firebase.database.reference
         profileImage = findViewById(R.id.profileImage)
-        nameEditText = findViewById(R.id.editTextUserName)
+        nameEditText = findViewById(R.id.editTextName)
         emailEditText = findViewById(R.id.editTextEmail)
+        nameTextView = findViewById(R.id.textViewName)
+        emailTextView = findViewById(R.id.textViewEmail)
+        usernameTextView = findViewById(R.id.textViewUsername)
         btnEdit = findViewById(R.id.btnEdit)
         btnSave = findViewById(R.id.btnSave)
         btnFollow = findViewById(R.id.btnFollow)
@@ -93,9 +103,11 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
         nameEditText.isEnabled = false
         nameEditText.isClickable = false
         nameEditText.background = null
+        nameEditText.visibility = View.GONE
         emailEditText.isEnabled = false
         emailEditText.isClickable = false
         emailEditText.background = null
+        emailEditText.visibility = View.GONE
         btnSave.visibility = View.GONE
 
         val uid = intent.getStringExtra("userId") ?: user!!.uid
@@ -136,8 +148,15 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
             // We enable the name and email edit texts such that they can be edited
             nameEditText.isEnabled = true
             nameEditText.isClickable = true
+            nameEditText.visibility = View.VISIBLE
+            nameEditText.setText(nameTextView.text)
+            nameTextView.visibility = View.GONE
             emailEditText.isEnabled = true
             emailEditText.isClickable = true
+            emailEditText.visibility = View.VISIBLE
+            emailEditText.setText(emailTextView.text)
+            emailTextView.visibility = View.GONE
+            usernameTextView.visibility = View.GONE
 
             // We hide the edit button and show the save button
             btnEdit.visibility = View.GONE
@@ -155,10 +174,17 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
             val newEmail = emailEditText.text.toString()
 
             // We change the EditText's properties back to make it non-editable
+            nameTextView.visibility = View.VISIBLE
             nameEditText.isEnabled = false
             nameEditText.isClickable = false
+            nameEditText.visibility = View.GONE
+            nameTextView.text = newName
+            emailTextView.visibility = View.VISIBLE
             emailEditText.isEnabled = false
             emailEditText.isClickable = false
+            emailEditText.visibility = View.GONE
+            emailTextView.text = newEmail
+            usernameTextView.visibility = View.VISIBLE
 
             // We hide the save button and show the edit button
             btnEdit.visibility = View.VISIBLE
@@ -169,6 +195,14 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
             db.child("users").child(uid).child("name").setValue(newName)
             db.child("users").child(uid).child("email").setValue(newEmail)
 
+            val storageRef = Firebase.storage.reference
+            val imagesRef = storageRef.child("users/${uid}/images/${UUID.randomUUID()}.jpg")
+            if (imageUri != null) {
+                val uploadTask = imagesRef.putFile(imageUri!!)
+                uploadTask.addOnSuccessListener { uri ->
+                    db.child("users").child(uid).child("name").setValue(uri.toString())
+                }
+            }
 
             val profileUpdates = UserProfileChangeRequest.Builder()
                 .setDisplayName(newName)
@@ -177,14 +211,25 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
             user?.updateProfile(profileUpdates)
         }
 
-        //nameEditText.setText(user?.displayName ?: "unknown")
-        db.child("users").child(uid).child("name").get().addOnSuccessListener { it ->
-            nameEditText.setText(it.getValue(String::class.java))
-        }
-        db.child("users").child(uid).child("email").get().addOnSuccessListener { it ->
-            emailEditText.setText(it.getValue(String::class.java))
+
+
+
+        db.child("users").child(uid).child("url").get().addOnSuccessListener { it ->
+            val url = it.getValue(String::class.java)
+            Glide.with(this@ProfileActivity)
+                .load(url)
+                .into(profileImage)
         }
 
+        db.child("users").child(uid).child("name").get().addOnSuccessListener { it ->
+            nameTextView.text = it.getValue(String::class.java)
+        }
+        db.child("users").child(uid).child("email").get().addOnSuccessListener { it ->
+            emailTextView.text = it.getValue(String::class.java)
+        }
+        db.child("users").child(uid).child("username").get().addOnSuccessListener { it ->
+            usernameTextView.text = it.getValue(String::class.java)
+        }
 
         // We create a list of names, ids, starts, ends, daysList and textViews, where we store habits data
         // and we set the value listener
@@ -382,7 +427,7 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1000) {
             if (resultCode == Activity.RESULT_OK) {
-                val imageUri = data?.data
+                imageUri = data?.data!!
                 profileImage.setImageURI(imageUri)
             }
         }
