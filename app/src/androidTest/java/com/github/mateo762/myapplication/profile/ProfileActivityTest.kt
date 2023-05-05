@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -16,9 +17,12 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.R
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase.assertTrue
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.core.IsNot.not
 import org.junit.After
 import org.junit.Assert.*
@@ -32,6 +36,7 @@ import org.junit.runner.RunWith
 @HiltAndroidTest
 class ProfileActivityTest {
 
+
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
@@ -42,8 +47,13 @@ class ProfileActivityTest {
 
     private lateinit var context: Context
 
+    private lateinit var username: String
+
+    private lateinit var UID: String
+
     @Before
     fun setUp() {
+        // Build up the test
         hiltRule.inject()
         Intents.init()
         context = ApplicationProvider.getApplicationContext()
@@ -63,9 +73,7 @@ class ProfileActivityTest {
     @Test
     fun onToolbarBackButtonClicked() {
         onView(withContentDescription("Navigate up")).perform(click())
-
         Thread.sleep(500)
-
         assertTrue(activityRule.scenario.state == Lifecycle.State.DESTROYED)
     }
 
@@ -74,6 +82,42 @@ class ProfileActivityTest {
         onView(withId(R.id.profileGalleryTitle)).check(matches(withText(context.getString(R.string.profile_progress_gallery_title))))
     }
 
+    @Test
+    fun testUserHabitCount() {
+        Thread.sleep(500)
+        onView(withId(R.id.habit_count)).check(matches(withText(containsString("Posted habits:"))))
+    }
+
+    @Test
+    fun testUserAvgHabitPerWeek() {
+        Thread.sleep(500)
+        onView(withId(R.id.avg_per_week)).check(matches(withText(containsString("Avg. Days in Week:"))))
+    }
+
+
+    @Test
+    fun testUserEarliestTask() {
+        Thread.sleep(500)
+        onView(withId(R.id.earliest)).check(matches(withText(containsString("Earliest start:"))))
+    }
+
+    @Test
+    fun testUserLatestTask() {
+        Thread.sleep(500)
+        onView(withId(R.id.latest)).check(matches(withText(containsString("Latest end:"))))
+    }
+
+    @Test
+    fun testUserFollowingCount() {
+        Thread.sleep(500)
+        onView(withId(R.id.following)).check(matches(withText(containsString("Following:"))))
+    }
+
+    @Test
+    fun testUserFollowersCount() {
+        Thread.sleep(500)
+        onView(withId(R.id.followers)).check(matches(withText(containsString("Followers:"))))
+    }
 
 
     // todo Mockito cannot mock this class: class com.google.firebase.auth.FirebaseUser.
