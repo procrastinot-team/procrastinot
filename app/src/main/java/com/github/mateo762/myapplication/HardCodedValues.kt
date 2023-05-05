@@ -3,11 +3,59 @@ package com.github.mateo762.myapplication
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.mateo762.myapplication.models.HabitEntity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.time.DayOfWeek
 import java.util.*
 
 
 // TODO: This class should be deleted ASAP
+// TODO: This class should be deleted ASAP
+
+private val user = FirebaseAuth.getInstance().currentUser
+
+@RequiresApi(Build.VERSION_CODES.O)
+//TODO: Integrate the getHabits properly
+fun getHabits(callback: (List<HabitEntity>) -> Unit) {
+    val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+    val habitListRef = FirebaseDatabase.getInstance().getReference("users/$currentUserId/habit_list")
+
+    habitListRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            val habitList = mutableListOf<HabitEntity>()
+            for (habitSnapshot in snapshot.children) {
+                val id = habitSnapshot.child("id").value as String
+                val name = habitSnapshot.child("name").value as String
+                val days = habitSnapshot.child("days").children.mapNotNull { dayOfWeek ->
+                    when (dayOfWeek.getValue(String::class.java)) {
+                        "MONDAY" -> DayOfWeek.MONDAY
+                        "TUESDAY" -> DayOfWeek.TUESDAY
+                        "WEDNESDAY" -> DayOfWeek.WEDNESDAY
+                        "THURSDAY" -> DayOfWeek.THURSDAY
+                        "FRIDAY" -> DayOfWeek.FRIDAY
+                        "SATURDAY" -> DayOfWeek.SATURDAY
+                        "SUNDAY" -> DayOfWeek.SUNDAY
+                        else -> null
+                    }
+                }
+                val startTime = habitSnapshot.child("startTime").value as String
+                val endTime = habitSnapshot.child("endTime").value as String
+
+                val habit = HabitEntity(id, name, days, startTime, endTime)
+                habitList.add(habit)
+            }
+            callback(habitList)
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            // Handle error here
+            callback(emptyList())
+        }
+    })
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun getHardCodedHabits(): List<HabitEntity> {
