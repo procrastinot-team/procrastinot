@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.github.mateo762.myapplication.habits.HabitsViewModel
 import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.models.HabitImageEntity
 import com.github.mateo762.myapplication.room.*
@@ -30,12 +32,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class TodayFragment : Fragment() {
 
-    private lateinit var imagesRef: DatabaseReference
-    private val imagesState = mutableStateOf(emptyList<HabitImageEntity>())
-    private lateinit var habitsRef: DatabaseReference
-    private val habitsState = mutableStateOf(emptyList<HabitEntity>())
-    private val TAG = TodayFragment::class.java.simpleName
-
+    private lateinit var viewModel: HabitsViewModel
 
     @Inject
     lateinit var habitDao: HabitDao
@@ -62,9 +59,9 @@ class TodayFragment : Fragment() {
         return ComposeView(requireContext()).apply {
             setContent {
                 TodayScreen(
-                    time = dateTime,
-                    habits = habitsState.value,
-                    images = imagesState.value
+                    time = viewModel.date,
+                    habits = viewModel.habits.value,
+                    images = viewModel.images.value
                 )
             }
         }
@@ -72,120 +69,10 @@ class TodayFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Get the connectivityManager to verify network functions
-        val connectivityManager =
-            context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork = connectivityManager.activeNetwork
-        // Verify we have connection -- this way we will at least always run the Listener,
-        // and if Firebase fails, then we run the failed action onCancelled
-        val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
-        val connectionExists =
-            networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
-
-        // Connect to Firebase for real time data
-        if (connectionExists) {
-            val currentUser = FirebaseAuth.getInstance().currentUser
-            if (currentUser != null) {
-                val habitsPath = "/users/${currentUser.uid}/habitsPath"
-                getFirebaseHabitsFromPath(habitsPath)
-                val imagesPath = "/users/${currentUser.uid}/imagesPath"
-                getFirebaseHabitImagesFromPath(imagesPath)
-            }
-        } else {
-            // There is no connection available - (plane mode, no service, wifi...) Use cached data
-            // The Firebase Listener never runs if there is no connection!
-            getLocalHabits()
-            getLocalImages()
-            Toast.makeText(context, "You're offline, using cached data", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    // I tried to refactor this into a single function taking different class types
-    // but it was a huge mess so I split it in two very similar functions for now.
-    private fun getFirebaseHabitsFromPath(path: String) {
-        // Initialize Firebase database reference
-        habitsRef = FirebaseDatabase.getInstance().getReference(path)
-        habitsRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val fetchedHabits = mutableListOf<HabitEntity>()
-                for (childSnapshot in snapshot.children) {
-                    val habit = childSnapshot.getValue(HabitEntity::class.java)
-                    if (habit != null) {
-                        fetchedHabits.add(habit)
-                    }
-                }
-                habitsState.value = fetchedHabits
-                updateHabitsCache(fetchedHabits)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.d(TAG, "Error: ${error.message}")
-                // We have connection, but fetching from Firebase failed
-                // Fetch local data stored
-                getLocalHabits()
-                Toast.makeText(
-                    context,
-                    "Can't reach the server, using cached data",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        })
-    }
-
-    private fun getFirebaseHabitImagesFromPath(path: String) {
-        imagesRef = FirebaseDatabase.getInstance()
-            .getReference(path)
-
-        imagesRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val fetchedImages = mutableListOf<HabitImageEntity>()
-                for (childSnapshot in snapshot.children) {
-                    val image = childSnapshot.getValue(HabitImageEntity::class.java)
-                    if (image != null) {
-                        fetchedImages.add(image)
-                    }
-                }
-                imagesState.value = fetchedImages
-                updateImagesCache(fetchedImages)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.d(TAG, "Error: ${error.message}")
-                // Fetch local images stored
-                getLocalImages()
-                Toast.makeText(
-                    context,
-                    "Can't reach the server, using cached data",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        })
-    }
-
-    private fun getLocalHabits() {
-        GlobalScope.launch {
-            habitsState.value = habitRepository.getAllHabits()
-        }
-    }
-
-    private fun getLocalImages() {
-        GlobalScope.launch {
-            imagesState.value = habitImageRepository.getAllHabitImages()
-        }
+        viewModel = ViewModelProvider(requireActivity()).get(HabitsViewModel::class.java)
     }
 
 
-    fun updateHabitsCache(fetchedHabits: MutableList<HabitEntity>) {
-        GlobalScope.launch {
-            habitRepository.insertAllHabits(fetchedHabits)
-        }
-    }
-
-    private fun updateImagesCache(fetchedImages: MutableList<HabitImageEntity>) {
-        GlobalScope.launch {
-            habitImageRepository.insertAllHabitImages(fetchedImages)
-        }
-    }
 }
 
 

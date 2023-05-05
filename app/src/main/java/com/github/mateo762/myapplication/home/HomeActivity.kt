@@ -1,5 +1,8 @@
 package com.github.mateo762.myapplication.home
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +24,7 @@ import com.github.mateo762.myapplication.room.HabitImageDao
 import com.github.mateo762.myapplication.room.HabitImageRepository
 import com.github.mateo762.myapplication.room.HabitRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
@@ -32,12 +36,11 @@ import javax.inject.Inject
 class HomeActivity : BaseActivity() {
 
     private lateinit var bottomNavView: BottomNavigationView
-    private val habitsViewModel: HabitsViewModel by viewModels()
+    private val viewModel: HabitsViewModel by viewModels()
 
     private lateinit var imagesRef: DatabaseReference
-    private val imagesState = mutableStateOf(emptyList<HabitImageEntity>())
     private lateinit var habitsRef: DatabaseReference
-    private val habitsState = mutableStateOf(emptyList<HabitEntity>())
+
     private val TAG = TodayFragment::class.java.simpleName
 
     @Inject
@@ -63,8 +66,30 @@ class HomeActivity : BaseActivity() {
         bottomNavView = findViewById(R.id.bottomNav)
         bottomNavView.setOnItemSelectedListener(bottomNavListener)
 
-        //TODO: Retrieve the habits here and send to fragments
-        habitsViewModel.data.value
+        val connectivityManager =
+            this@HomeActivity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetwork
+
+        // Verify we have connection -- this way we will at least always run the Listener,
+        // and if Firebase fails, then we run the failed action onCancelled
+        val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
+
+        val connectionExists =
+            networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
+
+        // Connect to Firebase for real time data
+        if (connectionExists) {
+            val currentUser = FirebaseAuth.getInstance().currentUser
+            if (currentUser != null) {
+                val habitsPath = "/users/${currentUser.uid}/habitsPath"
+                getFirebaseHabitsFromPath(habitsPath)
+            }
+        } else {
+            // There is no connection available - (plane mode, no service, wifi...) Use cached data
+            // The Firebase Listener never runs if there is no connection!
+            getLocalHabits()
+            Toast.makeText(this@HomeActivity, "You're offline, using cached data", Toast.LENGTH_LONG).show()
+        }
     }
 
     private val bottomNavListener = BottomNavigationView.OnNavigationItemSelectedListener {
@@ -102,7 +127,7 @@ class HomeActivity : BaseActivity() {
                         fetchedHabits.add(habit)
                     }
                 }
-                habitsState.value = fetchedHabits
+                viewModel.habits.value = fetchedHabits
                 updateHabitsCache(fetchedHabits)
             }
 
@@ -132,7 +157,7 @@ class HomeActivity : BaseActivity() {
                         fetchedImages.add(image)
                     }
                 }
-                imagesState.value = fetchedImages
+                viewModel.images.value = fetchedImages
                 updateImagesCache(fetchedImages)
             }
 
@@ -151,13 +176,13 @@ class HomeActivity : BaseActivity() {
 
     private fun getLocalHabits() {
         GlobalScope.launch {
-            habitsState.value = habitRepository.getAllHabits()
+            viewModel.habits.value = habitRepository.getAllHabits()
         }
     }
 
     private fun getLocalImages() {
         GlobalScope.launch {
-            imagesState.value = habitImageRepository.getAllHabitImages()
+            viewModel.images.value = habitImageRepository.getAllHabitImages()
         }
     }
 
