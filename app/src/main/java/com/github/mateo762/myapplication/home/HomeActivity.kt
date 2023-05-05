@@ -21,6 +21,8 @@ class HomeActivity : BaseActivity() {
         super.onCreateDrawer()
         bottomNavView = findViewById(R.id.bottomNav)
         bottomNavView.setOnItemSelectedListener(bottomNavListener)
+
+        //Retrieve the habits here and send to fragments
     }
 
     private val bottomNavListener = BottomNavigationView.OnNavigationItemSelectedListener {
