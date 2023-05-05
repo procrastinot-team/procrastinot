@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -60,6 +61,12 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
     private lateinit var btnSave: ImageButton
     private lateinit var btnFollow: ImageButton
     private lateinit var btnUnfollow: ImageButton
+    private lateinit var habitCountText: TextView
+    private lateinit var avgPerWeekText: TextView
+    private lateinit var earliestText: TextView
+    private lateinit var latestText: TextView
+    private lateinit var followersText: TextView
+    private lateinit var followingText: TextView
     private lateinit var changeUsernameButton: Button
 
     private val user = FirebaseAuth.getInstance().currentUser
@@ -93,6 +100,12 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
         btnSave = findViewById(R.id.btnSave)
         btnFollow = findViewById(R.id.btnFollow)
         btnUnfollow = findViewById(R.id.btnUnfollow)
+        habitCountText = findViewById(R.id.habit_count)
+        avgPerWeekText = findViewById(R.id.avg_per_week)
+        earliestText = findViewById(R.id.earliest)
+        latestText = findViewById(R.id.latest)
+        followersText = findViewById(R.id.followers)
+        followingText = findViewById(R.id.following)
         nameEditText.isEnabled = false
         nameEditText.isClickable = false
         nameEditText.background = null
@@ -235,13 +248,23 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
         // First, we take the reference of the database
         val ref = db.child("users/${uid}/habitsPath")
 
-
         // Then, we create a list of names, ids and textViews, where we store habits data
         // and we set the value listener
         val names = mutableListOf<String>()
         val ids = mutableListOf<String>()
+        val daysList = mutableListOf<List<DayOfWeek>>()
+        val starts = mutableListOf<String>()
+        val ends = mutableListOf<String>()
         val textViews = mutableListOf<TextView>()
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+        var numberOfhabits: Int = 0
+        var averageRepetitionsPerWeek: Int = 0
+        var numberOfFollowers: Int = 0
+        var numberOfFollowing: Int = 0
+
+        // Retrieval of list of habits
+        // First, we take the reference of the database
+        val refHab = db.child("users/${uid}/habitsPath")
+        refHab.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
                 val params = LinearLayout.LayoutParams(
@@ -250,19 +273,32 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
                 )
                 var top = 0
 
+                // Initialize some variables to calculate the statistics
+                var daysCount: ArrayList<Int> = ArrayList()
+
                 // There, we access the snapshot of the db and for each
                 // habit we take each value into a variable
                 dataSnapshot.children.forEach { childSnapshot ->
+                    // Increment the number of habits
+                    numberOfhabits++
+
                     val id = childSnapshot.child("id").getValue(String::class.java)!!
                     ids.add(id)
                     val name = childSnapshot.child("name").getValue(String::class.java)!!
                     names.add(name)
+                    val startTime = childSnapshot.child("startTime").getValue(String::class.java)!!
+                    starts.add(startTime)
+                    val endTime = childSnapshot.child("endTime").getValue(String::class.java)!!
+                    ends.add(endTime)
+                    // for the days fiel
                     // for the days field, as it's an enum, we have to iterate once again,
                     // and we do it for every not null value, getting back a list of
                     // DayOfWeek object the we wrap as an ArrayList as needed in the Habit.
                     val days = ArrayList(childSnapshot.child("days").children.mapNotNull {
                         enumValueOf<DayOfWeek>(it.value.toString())
                     })
+                    daysCount.add(days.size)
+                    daysList.add(days)
 
                     val textView = TextView(this@ProfileActivity)
                     params.setMargins(16, 16 + top, 8, 8)
@@ -275,7 +311,40 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
                     textViews.add(textView)
                     top += 10
                 }
+
+                // Set the number of habits and the average repetitions per week
+                averageRepetitionsPerWeek = daysCount.sum() / daysCount.size
+                habitCountText.text = getString(R.string.posted_habits) + numberOfhabits.toString()
+                avgPerWeekText.text = getString(R.string.avg_days_week) + averageRepetitionsPerWeek.toString()
+
+                // Get the earliest and latest habit
+                var earliestHour = starts[0].split(":")[0].toInt()
+                var earliestMinute = starts[0].split(":")[1].toInt()
+                for (i in 1 until starts.size) {
+                    val hour = starts[i].split(":")[0].toInt()
+                    val minute = starts[i].split(":")[1].toInt()
+                    if (hour < earliestHour || (hour == earliestHour && minute < earliestMinute)) {
+                        earliestHour = hour
+                        earliestMinute = minute
+                    }
+                }
+                var latestHour = ends[0].split(":")[0].toInt()
+                var latestMinute = ends[0].split(":")[1].toInt()
+                for (i in 1 until ends.size) {
+                    val hour = ends[i].split(":")[0].toInt()
+                    val minute = ends[i].split(":")[1].toInt()
+                    if (hour > latestHour || (hour == latestHour && minute > latestMinute)) {
+                        latestHour = hour
+                        latestMinute = minute
+                    }
+                }
+
+                // Set the earliest and latest habit
+                earliestText.text = getString(R.string.earlystart) + earliestHour.toString() + ":" + earliestMinute.toString()
+                latestText.text = getString(R.string.lateend) + latestHour.toString() + ":" + latestMinute.toString()
             }
+
+
 
             override fun onCancelled(error: DatabaseError) {
                 print("Failed to read value." + error.toException())
@@ -342,6 +411,31 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
                 print("Failed to read value." + error.toException())
             }
         })
+
+        val refFollow = db.child("users/${uid}/followingPath")
+        refFollow.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                numberOfFollowing = dataSnapshot.childrenCount.toInt()
+                followingText.text = getString(R.string.following) + numberOfFollowing.toString()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                print("Failed to read value." + error.toException())
+            }
+        })
+
+        val refFollowers = db.child("users/${uid}/followersPath")
+        refFollowers.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                numberOfFollowers = dataSnapshot.childrenCount.toInt()
+                followersText.text = getString(R.string.followers) + numberOfFollowers.toString()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                print("Failed to read value." + error.toException())
+            }
+        })
+
 
     }
 
