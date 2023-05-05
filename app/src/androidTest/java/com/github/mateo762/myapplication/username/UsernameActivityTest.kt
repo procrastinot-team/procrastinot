@@ -36,7 +36,7 @@ class UsernameActivityTest {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
-    val activityRule = ActivityScenarioRule(UsernameActivity::class.java)
+    val activityRule = ActivityScenarioRule(UsernameActivity.EntryPoint::class.java)
 
     private lateinit var usernameEditText: EditText
     private lateinit var context: Context

@@ -62,7 +62,6 @@ class UsernameViewModel @Inject constructor(
     fun pickUsername(username: String, oldUsername: String? = null) {
         firebaseAuth.currentUser?.let { user ->
             postUsernameLiveData.postValue(State.loading())
-            
             var combined: Flow<List<Unit>>? = null
             try {
                 combined = combine(

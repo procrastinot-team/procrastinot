@@ -24,8 +24,15 @@ import dagger.hilt.android.AndroidEntryPoint
 /**
  * Activity for picking a unique username.
  */
-@AndroidEntryPoint
-class UsernameActivity : BaseActivity() {
+abstract class UsernameActivity : BaseActivity() {
+
+
+    //Hack to solve the jacoco report problem with hilt activity, which still doesn't have a
+    // solution.
+    //
+    // More info can be found: https://issuetracker.google.com/issues/161300933#comment5
+    @AndroidEntryPoint
+    class EntryPoint : UsernameActivity()
 
     private val viewModel: UsernameViewModel by viewModels()
     private lateinit var notificationManager: NotificationManager
@@ -101,6 +108,7 @@ class UsernameActivity : BaseActivity() {
                     false
                 )
             }
+
             is State.Loading -> {
                 setUsernameFeedbackState(
                     R.string.choose_username_feedback_username_loading,
@@ -108,6 +116,7 @@ class UsernameActivity : BaseActivity() {
                     false
                 )
             }
+
             is State.Success -> {
                 val isUsernameTaken = state.data
                 handleIsUsernameTakenSuccessState(isUsernameTaken)
@@ -137,9 +146,11 @@ class UsernameActivity : BaseActivity() {
                 showProgress(false)
                 showToast(R.string.choose_username_pick_username_error)
             }
+
             is State.Loading -> {
                 showProgress(true)
             }
+
             is State.Success -> {
                 handlePostUsernameSuccess()
             }
