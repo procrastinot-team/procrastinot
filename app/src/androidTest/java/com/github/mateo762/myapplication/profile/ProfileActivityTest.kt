@@ -85,38 +85,38 @@ class ProfileActivityTest {
     @Test
     fun testUserHabitCount() {
         Thread.sleep(500)
-        onView(withId(R.id.habit_count)).check(matches(withText(containsString("Posted habits: "))))
+        onView(withId(R.id.habit_count)).check(matches(withText(containsString("Posted habits:"))))
     }
 
     @Test
     fun testUserAvgHabitPerWeek() {
         Thread.sleep(500)
-        onView(withId(R.id.avg_per_week)).check(matches(withText(containsString("Avg. Days in Week: "))))
+        onView(withId(R.id.avg_per_week)).check(matches(withText(containsString("Avg. Days in Week:"))))
     }
 
 
     @Test
     fun testUserEarliestTask() {
         Thread.sleep(500)
-        onView(withId(R.id.earliest)).check(matches(withText(containsString("Earliest start: "))))
+        onView(withId(R.id.earliest)).check(matches(withText(containsString("Earliest start:"))))
     }
 
     @Test
     fun testUserLatestTask() {
         Thread.sleep(500)
-        onView(withId(R.id.latest)).check(matches(withText(containsString("Latest end: "))))
+        onView(withId(R.id.latest)).check(matches(withText(containsString("Latest end:"))))
     }
 
     @Test
     fun testUserFollowingCount() {
         Thread.sleep(500)
-        onView(withId(R.id.following)).check(matches(withText(containsString("Following: "))))
+        onView(withId(R.id.following)).check(matches(withText(containsString("Following:"))))
     }
 
     @Test
     fun testUserFollowersCount() {
         Thread.sleep(500)
-        onView(withId(R.id.followers)).check(matches(withText(containsString("Followers: "))))
+        onView(withId(R.id.followers)).check(matches(withText(containsString("Followers:"))))
     }
 
 
