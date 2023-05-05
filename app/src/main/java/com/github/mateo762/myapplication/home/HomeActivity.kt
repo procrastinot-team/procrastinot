@@ -66,6 +66,7 @@ class HomeActivity : BaseActivity() {
         bottomNavView = findViewById(R.id.bottomNav)
         bottomNavView.setOnItemSelectedListener(bottomNavListener)
 
+        //Created a sharedViewModel with caching
         val connectivityManager =
             this@HomeActivity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = connectivityManager.activeNetwork
