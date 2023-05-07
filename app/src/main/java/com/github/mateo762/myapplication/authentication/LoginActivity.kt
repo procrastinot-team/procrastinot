@@ -47,6 +47,13 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Check if the user is already logged in
+        if (PreferenceHelper.isLoggedIn(this)) {
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+            return
+        }
+
         setContent {
             LoginScreen(signInUser = ::signInUser, googleSignIn = ::googleSignIn)
         }
@@ -83,6 +90,7 @@ class LoginActivity : AppCompatActivity() {
                         ).show()
                         val intent = Intent(this, HomeActivity::class.java)
                         startActivity(intent)
+                        PreferenceHelper.setLoggedIn(this, true)
                     } else {
                         Toast.makeText(
                             baseContext, task.exception!!.message,
@@ -134,6 +142,7 @@ class LoginActivity : AppCompatActivity() {
                             val intent = Intent(this, HomeActivity::class.java)
                             startActivity(intent)
                         }
+                        PreferenceHelper.setLoggedIn(this, true)
                     } else {
                         Toast.makeText(
                             baseContext, task.exception!!.message,
