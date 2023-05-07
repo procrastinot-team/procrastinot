@@ -48,8 +48,14 @@ import kotlin.collections.ArrayList
 /**
  * Activity for displaying the profile information.
  */
-@AndroidEntryPoint
-class ProfileActivity : BaseActivity(), CoroutineScope {
+abstract class ProfileActivity : BaseActivity(), CoroutineScope {
+
+    // Hack to solve the jacoco report problem with hilt activity, which still doesn't have a
+    // solution.
+    //
+    // More info can be found: https://issuetracker.google.com/issues/161300933#comment5
+    @AndroidEntryPoint
+    class EntryPoint: ProfileActivity()
 
     private val coachRatingViewModel: CoachRatingViewModel by viewModels()
 

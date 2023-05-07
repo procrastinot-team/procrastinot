@@ -93,7 +93,7 @@ class SearchActivity : BaseActivity() {
     }
 
     private fun onUserItemClick(userId: String) {
-        val intent = Intent(this, ProfileActivity::class.java)
+        val intent = Intent(this, ProfileActivity.EntryPoint::class.java)
         intent.putExtra("userId", userId)
         startActivity(intent)
     }
