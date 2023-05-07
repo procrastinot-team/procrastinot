@@ -14,11 +14,13 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.coach_rating.CoachRatingViewModel
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.github.mateo762.myapplication.followers.UserRepository
 import com.github.mateo762.myapplication.models.HabitImageEntity
@@ -34,6 +36,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,7 +48,10 @@ import kotlin.collections.ArrayList
 /**
  * Activity for displaying the profile information.
  */
+@AndroidEntryPoint
 class ProfileActivity : BaseActivity(), CoroutineScope {
+
+    private val coachRatingViewModel: CoachRatingViewModel by viewModels()
 
     private val job = Job()
 
@@ -119,6 +125,8 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
 
         uid = intent.getStringExtra("userId") ?: user!!.uid
 
+        binding.coachRatingView.setViewModel(coachRatingViewModel)
+        binding.coachRatingView.getRatingStats()
 
         if (uid == user!!.uid) {
             btnFollow.visibility = View.GONE
@@ -141,7 +149,6 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
                 }
             }
         }
-
 
         btnFollow.setOnClickListener {
             followUser(user!!.uid, uid)
@@ -227,12 +234,9 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
             user?.updateProfile(profileUpdates)
         }
 
-
-
-
         db.child("users").child(uid).child("url").get().addOnSuccessListener { it ->
             val url = it.getValue(String::class.java)
-            Glide.with(this@ProfileActivity)
+            Glide.with(applicationContext)
                 .load(url)
                 .into(profileImage)
         }

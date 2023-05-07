@@ -5,6 +5,9 @@ import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.ProgressBar
+import android.widget.RatingBar
+import androidx.compose.ui.test.hasText
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -22,7 +25,11 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.containsString
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.core.IsNot.not
 import org.junit.After
 import org.junit.Assert.*
@@ -31,11 +38,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
 @RunWith(AndroidJUnit4::class)
+@ExperimentalCoroutinesApi
 @HiltAndroidTest
 class ProfileActivityTest {
-
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
@@ -43,19 +49,35 @@ class ProfileActivityTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(ProfileActivity::class.java)
 
-    private lateinit var activityScenario: ActivityScenario<ProfileActivity>
-
     private lateinit var context: Context
 
     private lateinit var username: String
 
     private lateinit var UID: String
 
+    private lateinit var fiveStarProgress: ProgressBar
+    private lateinit var fourStarProgress: ProgressBar
+    private lateinit var threeStarProgress: ProgressBar
+    private lateinit var twoStarProgress: ProgressBar
+    private lateinit var oneStarProgress: ProgressBar
+    private lateinit var ratingBar: RatingBar
+
     @Before
     fun setUp() {
-        // Build up the test
         hiltRule.inject()
         Intents.init()
+
+        activityRule.scenario.onActivity {
+            it.runOnUiThread {
+                fiveStarProgress = it.findViewById(R.id.fiveStarsProgress)
+                fourStarProgress = it.findViewById(R.id.fourStarsProgress)
+                threeStarProgress = it.findViewById(R.id.threeStarsProgress)
+                twoStarProgress = it.findViewById(R.id.twoStarsProgress)
+                oneStarProgress = it.findViewById(R.id.oneStarsProgress)
+                ratingBar = it.findViewById(R.id.ratingBar)
+            }
+        }
+
         context = ApplicationProvider.getApplicationContext()
     }
     @After
@@ -67,8 +89,6 @@ class ProfileActivityTest {
     fun testProfileActivity_isDisplayed() {
         onView(withId(R.id.profileImage)).check(matches(isDisplayed()))
     }
-
-
 
     @Test
     fun onToolbarBackButtonClicked() {
@@ -119,6 +139,32 @@ class ProfileActivityTest {
         onView(withId(R.id.followers)).check(matches(withText(containsString("Followers:"))))
     }
 
+
+    @Test
+    fun testRatingDisplayed() = runTest {
+        onView(withId(R.id.coachRatingView)).check(matches(isDisplayed()))
+
+        advanceUntilIdle()
+
+        onView(withId(R.id.coachRatingTitle)).check(matches(isDisplayed()))
+        onView(withId(R.id.ratingBar)).check(matches(isDisplayed()))
+        onView(withId(R.id.ratingNumber)).check(matches(isDisplayed()))
+        onView(withId(R.id.ratingNumber)).check(matches(withText("4.5")))
+        onView(withId(R.id.totalRatings)).check(matches(isDisplayed()))
+        onView(withId(R.id.totalRatings)).check(matches(withText(context.getString(R.string.total_number_ratings, 2))))
+        onView(withId(R.id.fiveStarsProgress)).check(matches(isDisplayed()))
+        onView(withId(R.id.fourStarsProgress)).check(matches(isDisplayed()))
+        onView(withId(R.id.threeStarsProgress)).check(matches(isDisplayed()))
+        onView(withId(R.id.twoStarsProgress)).check(matches(isDisplayed()))
+        onView(withId(R.id.oneStarsProgress)).check(matches(isDisplayed()))
+
+        assertEquals(fiveStarProgress.progress, 50)
+        assertEquals(fourStarProgress.progress, 50)
+        assertEquals(threeStarProgress.progress, 0)
+        assertEquals(twoStarProgress.progress, 0)
+        assertEquals(oneStarProgress.progress, 0)
+        assertEquals(ratingBar.rating, 4.5f)
+    }
 
     // todo Mockito cannot mock this class: class com.google.firebase.auth.FirebaseUser.
 //    @Test
