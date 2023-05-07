@@ -63,6 +63,7 @@ class RegisterActivity : AppCompatActivity() {
                             users[uid] = u
                             db.child("users").updateChildren(users as Map<String, Any>)
                                 .addOnSuccessListener {
+                                    PreferenceHelper.setLoggedIn(this@RegisterActivity, true)
                                     Toast.makeText(baseContext, R.string.success_register,
                                     Toast.LENGTH_SHORT).show()
                                     val intent = Intent(this, UsernameActivity.EntryPoint::class.java)
