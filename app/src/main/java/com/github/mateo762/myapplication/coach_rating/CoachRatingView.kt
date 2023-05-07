@@ -60,22 +60,26 @@ class CoachRatingView @JvmOverloads constructor(
             is State.Success -> {
                 val uiModel = state.data
 
-                binding.infoTextView.visibility = View.GONE
-                binding.ratingContainer.visibility = View.VISIBLE
-
-                binding.ratingBar.rating = uiModel.rating
-                binding.ratingNumber.text = uiModel.rating.toString()
-                binding.fiveStarsProgress.progress = uiModel.fiveStarProgress
-                binding.fourStarsProgress.progress = uiModel.fourStarProgress
-                binding.threeStarsProgress.progress = uiModel.threeStarProgress
-                binding.twoStarsProgress.progress = uiModel.twoStarProgress
-                binding.oneStarsProgress.progress = uiModel.oneStarProgress
-                binding.totalRatings.text =
-                    context.getString(
-                        R.string.total_number_ratings,
-                        uiModel.totalNumberRatings.toString()
-                    )
+               setRatingViewSuccess(uiModel)
             }
         }
+    }
+
+    private fun setRatingViewSuccess(uiModel: CoachRatingUiModel) {
+        binding.infoTextView.visibility = View.GONE
+        binding.ratingContainer.visibility = View.VISIBLE
+
+        binding.ratingBar.rating = uiModel.rating
+        binding.ratingNumber.text = uiModel.rating.toString()
+        binding.fiveStarsProgress.progress = uiModel.fiveStarProgress
+        binding.fourStarsProgress.progress = uiModel.fourStarProgress
+        binding.threeStarsProgress.progress = uiModel.threeStarProgress
+        binding.twoStarsProgress.progress = uiModel.twoStarProgress
+        binding.oneStarsProgress.progress = uiModel.oneStarProgress
+        binding.totalRatings.text =
+            context.getString(
+                R.string.total_number_ratings,
+                uiModel.totalNumberRatings.toString()
+            )
     }
 }
