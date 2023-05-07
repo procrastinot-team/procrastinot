@@ -47,7 +47,7 @@ class ProfileActivityTest {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
-    val activityRule = ActivityScenarioRule(ProfileActivity::class.java)
+    val activityRule = ActivityScenarioRule(ProfileActivity.EntryPoint::class.java)
 
     private lateinit var context: Context
 
