@@ -11,7 +11,11 @@ data class HabitEntity(
     @ColumnInfo(name = "habit_name") val name: String = "",
     @ColumnInfo(name = "habit_days") val days: List<DayOfWeek> = emptyList(),
     @ColumnInfo(name = "habit_start_time") val startTime: String = "",
-    @ColumnInfo(name = "habit_end_time") val endTime: String = ""
+    @ColumnInfo(name = "habit_end_time") val endTime: String = "",
+    @ColumnInfo(name = "is_coached") val isCoached: Boolean = false,
+    @ColumnInfo(name = "coach_requested") val coachRequested: Boolean = false,
+    @ColumnInfo(name = "coach_offers") val coachOffers: List<String> = emptyList(),
+    @ColumnInfo(name = "coach") val coach: String = ""
     // Could additionally add new feature such as labels, but the entity is kept same as Firebase
     // NOTE: Room is not compatible with ArrayLists apparently, so only List<Object> can be used
 )

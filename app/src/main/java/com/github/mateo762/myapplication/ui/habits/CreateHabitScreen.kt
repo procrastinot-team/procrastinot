@@ -21,6 +21,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import android.content.Context;
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.github.mateo762.myapplication.models.HabitEntity
@@ -42,6 +43,7 @@ fun CreateHabitScreen() {
     val mMinute = mCalendar[Calendar.MINUTE]
     var habitStartTime = remember { mutableStateOf("00:00") }
     var habitEndTime = remember { mutableStateOf("23:59") }
+    var askingForCoach = remember { mutableStateOf(false) }
     var isChoosingStartTime = true
 
     val mTimePickerDialog = TimePickerDialog(
@@ -151,6 +153,18 @@ fun CreateHabitScreen() {
                     )
                 }
 
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(
+                        checked = askingForCoach.value,
+                        onCheckedChange = {
+                            askingForCoach.value = it
+                        },
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .testTag("checkbox_coach_request")
+                    )
+                    Text(text = stringResource(R.string.coach_request), modifier = Modifier.padding(start = 8.dp))
+                }
                 Button(
                     onClick = {
                         if (habitName.isBlank()) {
@@ -189,7 +203,8 @@ fun CreateHabitScreen() {
                                 habitName,
                                 ArrayList(habitDays),
                                 habitStartTime.value,
-                                habitEndTime.value
+                                habitEndTime.value,
+                                coachRequested = askingForCoach.value
                             )
                             val user = FirebaseAuth.getInstance().currentUser
 
@@ -206,7 +221,8 @@ fun CreateHabitScreen() {
                                     "name" to myHabit.name,
                                     "days" to myHabit.days,
                                     "startTime" to myHabit.startTime,
-                                    "endTime" to myHabit.endTime
+                                    "endTime" to myHabit.endTime,
+                                    "coachRequested" to myHabit.coachRequested
                                 )
 
                                 val habitRef =
