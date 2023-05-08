@@ -1,4 +1,4 @@
-package com.github.mateo762.myapplication
+package com.github.mateo762.myapplication.authentication
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -10,8 +10,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.mateo762.myapplication.authentication.LoginActivity
-import com.github.mateo762.myapplication.authentication.RegisterActivity
+import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.ToastMatcher
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.Matchers
