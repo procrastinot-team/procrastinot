@@ -172,12 +172,16 @@ fun UserCard(caption: String, username: String, assocHabit: String) {
 }
 
 private fun fetchUserId(username: String, onUserIdFetched: (String) -> Unit) {
-    val usernamesRef = FirebaseDatabase.getInstance().getReference("/usernames/$username")
+    val usernamesRef = FirebaseDatabase.getInstance().getReference("usernames")
+    val query = usernamesRef.orderByValue().equalTo(username)
 
-    usernamesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+    query.addListenerForSingleValueEvent(object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
-            val userId = snapshot.getValue(String::class.java) ?: ""
-            onUserIdFetched(userId)
+            if (snapshot.exists()) {
+                val userId = snapshot.child(username).getValue(String::class.java) ?: ""
+                Log.d(TAG, "fetch: ${userId}")
+                onUserIdFetched(userId)
+            }
         }
 
         override fun onCancelled(error: DatabaseError) {

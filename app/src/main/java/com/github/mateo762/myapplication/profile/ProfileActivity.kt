@@ -117,10 +117,16 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
         changeUsernameButton.visibility = View.GONE
         btnSave.visibility = View.GONE
 
-        uid = intent.getStringExtra("userId") ?: user!!.uid
+        uid = "mTFQAS8YmlXK89siWb36PwIe1x82"
+        try {
+            uid = intent.getStringExtra("userId") ?: user!!.uid
+        }catch (e: java.lang.Exception){
 
+        }
 
-        if (uid == user!!.uid) {
+        var currentUserId = user?.uid ?: uid
+
+        if (uid == currentUserId) {
             btnFollow.visibility = View.GONE
             btnUnfollow.visibility = View.GONE
             btnEdit.visibility = View.VISIBLE
@@ -128,7 +134,7 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
             btnEdit.visibility = View.GONE
             // Check if the user is already following the profile
             launch {
-                val isFollowing = userRepository.checkIfUserFollows(user!!.uid, uid)
+                val isFollowing = userRepository.checkIfUserFollows(currentUserId, uid)
                 if (isFollowing) {
 
                     // If the user is following the profile, show the 'btnUnfollow' button
@@ -144,11 +150,11 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
 
 
         btnFollow.setOnClickListener {
-            followUser(user!!.uid, uid)
+            followUser(currentUserId, uid)
         }
 
         btnUnfollow.setOnClickListener {
-            unfollowUser(user!!.uid, uid)
+            unfollowUser(currentUserId, uid)
         }
 
         changeUsernameButton.setOnClickListener {

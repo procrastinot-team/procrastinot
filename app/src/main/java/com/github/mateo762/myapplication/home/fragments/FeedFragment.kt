@@ -162,7 +162,7 @@ class FeedFragment : Fragment() {
         }
     }
 
-    private fun getLocalPosts() {
+    fun getLocalPosts() {
         GlobalScope.launch {
             feedState.value = postRepository.getAllPosts()
         }

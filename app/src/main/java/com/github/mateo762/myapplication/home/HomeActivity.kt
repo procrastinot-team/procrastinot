@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.UploadFragment
 import com.github.mateo762.myapplication.home.fragments.FeedFragment
 import com.github.mateo762.myapplication.home.fragments.SummaryFragment
 import com.github.mateo762.myapplication.home.fragments.TodayFragment

@@ -1,7 +1,11 @@
 package com.github.mateo762.myapplication.ui.home
 
+import android.content.ContentValues.TAG
 import android.content.Context
+import android.content.ContextWrapper
+import android.nfc.Tag
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -69,7 +73,7 @@ fun TodayScreen(time: LocalDateTime, habits: List<HabitEntity>, images: List<Hab
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TodayHabitsSection(todayHabits: List<HabitEntity>, now: LocalTime) {
+private fun TodayHabitsSection(todayHabits: List<HabitEntity>, now: LocalTime) {
     Box(
         modifier = Modifier
             .background(colorResource(R.color.card_background_dark), RoundedCornerShape(8.dp))
@@ -128,7 +132,7 @@ fun TodayHabitsSection(todayHabits: List<HabitEntity>, now: LocalTime) {
 
 
 @Composable
-fun NextUpHabitsSection(nextUpHabit: HabitEntity?, allocatedHours: Long) {
+private fun NextUpHabitsSection(nextUpHabit: HabitEntity?, allocatedHours: Long) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -182,7 +186,7 @@ fun NextUpHabitsSection(nextUpHabit: HabitEntity?, allocatedHours: Long) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ImageRow(images: List<HabitImageEntity>, modifier: Modifier = Modifier, nextUpHabitName: String) {
+private fun ImageRow(images: List<HabitImageEntity>, modifier: Modifier = Modifier, nextUpHabitName: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -199,7 +203,7 @@ fun ImageRow(images: List<HabitImageEntity>, modifier: Modifier = Modifier, next
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DisplayImage(
+private fun DisplayImage(
     painter: Painter,
     image: HabitImageEntity,
     nextUpHabitName: String,
@@ -230,9 +234,11 @@ fun DisplayImage(
 }
 
 @Composable
-fun GoToUploadButton(context: Context) {
+private fun GoToUploadButton(context: Context) {
     Button(onClick = {
-        val fragmentManager = (context as? FragmentActivity)?.supportFragmentManager
+        val fragmentManager = context.findFragmentActivity()?.supportFragmentManager
+        Log.d(TAG, "hello??????  $fragmentManager, $context")
+
         fragmentManager?.beginTransaction()?.replace(
             R.id.navHostFragment,
             UploadFragment()
@@ -243,7 +249,7 @@ fun GoToUploadButton(context: Context) {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun filterAndSortHabits(
+private fun filterAndSortHabits(
     habits: List<HabitEntity>,
     time: LocalDateTime
 ): Triple<List<HabitEntity>, HabitEntity?, DayOfWeek?> {
@@ -273,7 +279,7 @@ fun filterAndSortHabits(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun filterImagesForNextUpHabit(images: List<HabitImageEntity>, nextUpHabit: HabitEntity?): List<HabitImageEntity> {
+private fun filterImagesForNextUpHabit(images: List<HabitImageEntity>, nextUpHabit: HabitEntity?): List<HabitImageEntity> {
     return images
         .sortedByDescending { it.date }
         .filter { it.habitId == nextUpHabit?.id }
@@ -281,7 +287,7 @@ fun filterImagesForNextUpHabit(images: List<HabitImageEntity>, nextUpHabit: Habi
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun getNextUpLocalDateTime(
+private fun getNextUpLocalDateTime(
     time: LocalDateTime,
     nextUpHabit: HabitEntity?,
     nextUpHabitDay: DayOfWeek?
@@ -306,14 +312,25 @@ fun getNextUpLocalDateTime(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun parseTime(timeString: String): LocalTime {
+private fun parseTime(timeString: String): LocalTime {
     val components = timeString.split(":").map { it.toInt() }
     return LocalTime.of(components[0], components[1])
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun minutesUntilStartTime(startTime: String, now: LocalTime): Long {
+private fun minutesUntilStartTime(startTime: String, now: LocalTime): Long {
     val start = parseTime(startTime)
     val duration = Duration.between(now, start)
     return duration.toMinutes()
+}
+
+private fun Context.findFragmentActivity(): FragmentActivity? {
+    var currentContext = this
+    while (currentContext is ContextWrapper) {
+        if (currentContext is FragmentActivity) {
+            return currentContext
+        }
+        currentContext = currentContext.baseContext
+    }
+    return null
 }
