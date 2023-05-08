@@ -222,7 +222,7 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
             if (imageUri != null) {
                 val uploadTask = imagesRef.putFile(imageUri!!)
                 uploadTask.addOnSuccessListener { uri ->
-                    db.child("users").child(uid).child("name").setValue(uri.toString())
+                    db.child("users").child(uid).child("url").setValue(uri.toString())
                 }
             }
 
