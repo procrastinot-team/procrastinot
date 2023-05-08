@@ -66,6 +66,11 @@ class CreateHabitActivityTest {
                 .performClick()
         }
 
+        // Check checkboxes for coach request
+        composeTestRule.onNodeWithTag("checkbox_coach_request")
+            .performScrollTo()
+            .performClick()
+
         // Click save button
         composeTestRule.onNodeWithTag("btn_save")
             .performScrollTo()
@@ -141,6 +146,15 @@ class CreateHabitActivityTest {
     @Test
     fun clickSaveButton_noNameInput_noIntentSent() {
         habitName = ""
+        createHabit()
+        composeTestRule.onNodeWithTag("btn_save")
+            .performScrollTo()
+            .assertIsDisplayed()
+    }
+
+
+    @Test
+    fun clickSaveButton_askingForCoach() {
         createHabit()
         composeTestRule.onNodeWithTag("btn_save")
             .performScrollTo()
