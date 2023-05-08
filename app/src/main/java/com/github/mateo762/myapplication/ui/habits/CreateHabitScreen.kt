@@ -21,6 +21,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import android.content.Context;
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.github.mateo762.myapplication.models.HabitEntity
@@ -33,7 +34,6 @@ import java.util.*
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CreateHabitScreen() {
-    val TAG = "CreateHabitScreen"
     val context = LocalContext.current
     var habitName by remember { mutableStateOf("") }
     var habitDays by remember { mutableStateOf(emptyList<DayOfWeek>()) }
@@ -42,6 +42,7 @@ fun CreateHabitScreen() {
     val mMinute = mCalendar[Calendar.MINUTE]
     var habitStartTime = remember { mutableStateOf("00:00") }
     var habitEndTime = remember { mutableStateOf("23:59") }
+    var askingForCoach = remember { mutableStateOf(false) }
     var isChoosingStartTime = true
 
     val mTimePickerDialog = TimePickerDialog(
@@ -151,76 +152,21 @@ fun CreateHabitScreen() {
                     )
                 }
 
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(
+                        checked = askingForCoach.value,
+                        onCheckedChange = {
+                            askingForCoach.value = it
+                        },
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .testTag("checkbox_coach_request")
+                    )
+                    Text(text = stringResource(R.string.coach_request), modifier = Modifier.padding(start = 8.dp))
+                }
                 Button(
                     onClick = {
-                        if (habitName.isBlank()) {
-                            Toast.makeText(
-                                context,
-                                "Please enter a habit name",
-                                Toast.LENGTH_LONG
-                            )
-                                .show()
-                        } else if (habitDays.isEmpty()) {
-                            Toast.makeText(
-                                context,
-                                "Please select at least one day",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else if (!isValidTime(habitStartTime.value) || !isValidTime(
-                                habitEndTime.value
-                            )
-                        ) {
-                            Toast.makeText(
-                                context, R.string.invalid_time_error, Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            // This intent would now save into a DB / Firebase
-                            // For now, it returns to the calling activity
-                            val intent =
-                                Intent(context, HabitsActivity::class.java)
-                            intent.putExtra("habitName", habitName)
-                            intent.putExtra("habitDays", ArrayList(habitDays))
-                            intent.putExtra("habitStartTime", habitStartTime.value)
-                            intent.putExtra("habitEndTime", habitEndTime.value)
-                            context.startActivity(intent)
-
-                            val myHabit = HabitEntity(
-                                UUID.randomUUID().toString(),
-                                habitName,
-                                ArrayList(habitDays),
-                                habitStartTime.value,
-                                habitEndTime.value
-                            )
-                            val user = FirebaseAuth.getInstance().currentUser
-
-                            val uid = user?.uid
-                            if (uid == null) {
-                                Toast.makeText(
-                                    context, R.string.user_data_error, Toast.LENGTH_SHORT
-                                ).show()
-                            } else {
-                                val db = Firebase.database.reference
-
-                                val habitData = hashMapOf(
-                                    "id" to myHabit.id,
-                                    "name" to myHabit.name,
-                                    "days" to myHabit.days,
-                                    "startTime" to myHabit.startTime,
-                                    "endTime" to myHabit.endTime
-                                )
-
-                                val habitRef =
-                                    db.child("users").child(uid).child("habitsPath").push()
-
-                                habitRef.setValue(habitData)
-                                    .addOnSuccessListener {
-                                        Log.d(TAG, "Habit added with ID: ${habitRef.key}")
-                                    }
-                                    .addOnFailureListener { e ->
-                                        Log.w(TAG, "Error adding habit", e)
-                                    }
-                            }
-                        }
+                        saveHabit(context,habitName,habitDays,habitStartTime,habitEndTime,askingForCoach)
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = colorResource(R.color.bottom_highlight),
@@ -237,6 +183,81 @@ fun CreateHabitScreen() {
     }
 }
 
+private fun saveHabit(context:Context, habitName:String, habitDays:List<DayOfWeek>,
+                      habitStartTime:MutableState<String>, habitEndTime:MutableState<String>,
+                    askingForCoach:MutableState<Boolean>) {
+    val TAG = "CreateHabitScreen"
+    if (habitName.isBlank()) {
+        Toast.makeText(
+            context,
+            "Please enter a habit name",
+            Toast.LENGTH_LONG
+        )
+            .show()
+    } else if (habitDays.isEmpty()) {
+        Toast.makeText(
+            context,
+            "Please select at least one day",
+            Toast.LENGTH_SHORT
+        ).show()
+    } else if (!isValidTime(habitStartTime.value) || !isValidTime(
+            habitEndTime.value
+        )
+    ) {
+        Toast.makeText(
+            context, R.string.invalid_time_error, Toast.LENGTH_SHORT
+        ).show()
+    } else {
+        // This intent would now save into a DB / Firebase
+        // For now, it returns to the calling activity
+        val intent =
+            Intent(context, HabitsActivity::class.java)
+        intent.putExtra("habitName", habitName)
+        intent.putExtra("habitDays", ArrayList(habitDays))
+        intent.putExtra("habitStartTime", habitStartTime.value)
+        intent.putExtra("habitEndTime", habitEndTime.value)
+        context.startActivity(intent)
+
+        val myHabit = HabitEntity(
+            UUID.randomUUID().toString(),
+            habitName,
+            ArrayList(habitDays),
+            habitStartTime.value,
+            habitEndTime.value,
+            coachRequested = askingForCoach.value
+        )
+        val user = FirebaseAuth.getInstance().currentUser
+
+        val uid = user?.uid
+        if (uid == null) {
+            Toast.makeText(
+                context, R.string.user_data_error, Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            val db = Firebase.database.reference
+
+            val habitData = hashMapOf(
+                "id" to myHabit.id,
+                "name" to myHabit.name,
+                "days" to myHabit.days,
+                "startTime" to myHabit.startTime,
+                "endTime" to myHabit.endTime,
+                "coachRequested" to myHabit.coachRequested
+            )
+
+            val habitRef =
+                db.child("users").child(uid).child("habitsPath").push()
+
+            habitRef.setValue(habitData)
+                .addOnSuccessListener {
+                    Log.d(TAG, "Habit added with ID: ${habitRef.key}")
+                }
+                .addOnFailureListener { e ->
+                    Log.w(TAG, "Error adding habit", e)
+                }
+        }
+    }
+}
 private fun isValidTime(time: String): Boolean {
     val pattern = Regex(pattern = "^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])\$")
     return pattern.matches(time)
