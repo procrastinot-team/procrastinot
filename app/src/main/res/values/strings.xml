@@ -121,4 +121,9 @@
     <string name="following">Following:</string>
     <string name="followers">Followers:</string>
     <string name="change_username_button_text">Change username</string>
+    <string name="coaching">Coaching</string>
+    <string name="requests">Requests</string>
+    <string name="offers">Offers</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

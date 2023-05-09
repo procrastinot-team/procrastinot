@@ -46,6 +46,12 @@
             android:textColor="@color/dark_text"
             android:title="@string/settings" />
         <item
+            android:id="@+id/nav_coaching"
+            android:icon="@drawable/baseline_co_present_24"
+            android:iconTint="@color/dark_text"
+            android:textColor="@color/dark_text"
+            android:title="@string/coaching" />
+        <item
             android:id="@+id/nav_log_out"
             android:icon="@drawable/logout_24"
             android:iconTint="@color/dark_text"

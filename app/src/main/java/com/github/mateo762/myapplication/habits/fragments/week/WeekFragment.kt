@@ -25,7 +25,7 @@ open class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.Even
     WeekView.EmptyViewLongPressListener, MonthLoader.MonthChangeListener {
 
     private lateinit var weekView: CustomWeekView
-    public var isTest = false
+    var isTest = false
 
     @RequiresApi(Build.VERSION_CODES.O)
     var habits = getHardCodedHabits()
@@ -57,7 +57,7 @@ open class WeekFragment : Fragment(), WeekView.EventClickListener, WeekView.Even
                 val weekday = weekdayNameFormat.format(date.time)
                 val format = SimpleDateFormat(" M/d", Locale.getDefault())
 
-                return weekday.toUpperCase()
+                return weekday.uppercase(Locale.getDefault())
             }
 
             override fun interpretTime(hour: Int, minutes: Int): String {

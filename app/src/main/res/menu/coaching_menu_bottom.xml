@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/requestsFragment"
+        android:icon="@drawable/baseline_add_reaction_24"
+        android:iconTint="@color/dark_text"
+        android:textColor="@color/dark_text"
+        android:title="@string/requests" />
+
+    <item
+        android:id="@+id/feedFragment"
+        android:icon="@drawable/baseline_add_task_24"
+        android:iconTint="@color/dark_text"
+        android:textColor="@color/dark_text"
+        android:title="@string/offers" />
+</menu>

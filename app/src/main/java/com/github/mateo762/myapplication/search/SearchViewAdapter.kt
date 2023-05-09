@@ -30,7 +30,7 @@ class SearchViewAdapter(
     }
 
     override fun getItemCount(): Int {
-        return filteredItems.size ?: 0
+        return filteredItems.size
     }
 
     override fun onBindViewHolder(holder: SearchItemViewHolder, position: Int) {
