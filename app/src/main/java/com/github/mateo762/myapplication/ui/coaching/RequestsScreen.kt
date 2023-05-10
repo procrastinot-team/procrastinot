@@ -26,7 +26,7 @@ fun RequestsScreen() {
     ) {
         Column {
             Text(
-                text = "TODO Offers",
+                text = "TODO: Requests",
                 style = MaterialTheme.typography.h1,
                 modifier = Modifier.testTag("placeholder_text")
             )

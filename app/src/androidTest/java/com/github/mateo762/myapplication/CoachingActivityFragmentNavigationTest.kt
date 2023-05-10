@@ -53,7 +53,7 @@ class CoachingActivityFragmentNavigationTest {
 
 
     @Test
-    fun switchToHomeFragment() {
+    fun switchToRequestsFragment() {
         Espresso.onView(withId(R.id.offersFragment)).perform(ViewActions.click())
         // Go to feedFragment and back to test todayFragment
         Espresso.onView(withId(R.id.requestsFragment)).perform(ViewActions.click())

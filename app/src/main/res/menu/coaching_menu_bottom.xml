@@ -9,7 +9,7 @@
         android:title="@string/requests" />
 
     <item
-        android:id="@+id/feedFragment"
+        android:id="@+id/offersFragment"
         android:icon="@drawable/baseline_add_task_24"
         android:iconTint="@color/dark_text"
         android:textColor="@color/dark_text"

@@ -6,12 +6,11 @@
     <fragment
         android:id="@+id/requestsFragment"
         android:name="com.github.mateo762.myapplication.coaching.fragments.RequestsFragment"
-        android:label="fragment_requests"
-        />
+        android:label="fragment_requests"/>
+
     <fragment
         android:id="@+id/offersFragment"
         android:name="com.github.mateo762.myapplication.coaching.fragments.OffersFragment"
-        android:label="fragment_offers"
-        />
+        android:label="fragment_offers"/>
 
 </navigation>

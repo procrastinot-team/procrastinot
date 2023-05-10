@@ -26,7 +26,7 @@ fun OffersScreen() {
     ) {
         Column {
             Text(
-                text = "TODO: Requests",
+                text = "TODO: Offers",
                 style = MaterialTheme.typography.h1,
                 modifier = Modifier.testTag("placeholder_text")
             )
