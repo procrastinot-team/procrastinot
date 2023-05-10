@@ -9,7 +9,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,20 +28,28 @@ import com.github.mateo762.myapplication.models.HabitEntity
 @Composable
 fun RequestsScreen(coachableHabits: List<HabitEntity>) {
     // coachableHabits: list of habits created with the "Request coach" option
+
+    var uncoachedHabits by remember { mutableStateOf(coachableHabits.filter { !it.isCoached }) }
+
     Column(
         modifier = Modifier
             .background(colorResource(R.color.white))
             .verticalScroll(rememberScrollState())
             .fillMaxSize()
     ) {
-        for (habit in coachableHabits) {
-            DisplayCoachSelection(habit)
+        for (habit in uncoachedHabits) {
+            DisplayCoachSelection(habit){ coachUsername ->
+                habit.isCoached = true
+                uncoachedHabits = uncoachedHabits.filter { it != habit }
+                //HabitDatabase.updateHabit(updatedHabit)
+                // NOTE: Remmeber the change to var in HabitEntity isCoached
+            }
         }
     }
 }
 
 @Composable
-fun DisplayCoachSelection(habit: HabitEntity) {
+fun DisplayCoachSelection(habit: HabitEntity, onCoachSelected: (String) -> Unit) {
     val candidateUsernames = habit.coachOffers
     val rating = 4.7
     // TODO: FETCH USER-ENTITIES OF EACH USERNAME HERE
@@ -68,7 +76,10 @@ fun DisplayCoachSelection(habit: HabitEntity) {
                     "candidate.name",
                     "candidate.username",
                     rating,
-                    "candidate.email"
+                    "candidate.email",
+                    onSelected = {
+                        onCoachSelected(candidate)
+                    }
                 )
             }
         }
@@ -77,7 +88,8 @@ fun DisplayCoachSelection(habit: HabitEntity) {
 }
 
 @Composable
-fun CandidateCard(name: String, username: String, rating: Any, email: String) {
+fun CandidateCard(name: String, username: String, rating: Any, email: String,
+                  onSelected: () -> Unit) {
     val context = LocalContext.current
     Row(modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp)) {
         Image(
@@ -130,6 +142,7 @@ fun CandidateCard(name: String, username: String, rating: Any, email: String) {
         Spacer(modifier = Modifier.weight(1f))
         Button(
             onClick = {
+                onSelected()
                 Toast.makeText(
                     context,
                     "Selected as coach",
