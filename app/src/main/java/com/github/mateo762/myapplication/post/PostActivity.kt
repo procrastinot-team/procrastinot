@@ -22,8 +22,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle.Companion.Italic
 import androidx.compose.ui.unit.dp
+import coil.compose.LocalImageLoader
+import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.github.mateo762.myapplication.R
-import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.imageloading.LoadPainterDefaults
 
 class PostActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +68,14 @@ class PostActivity : AppCompatActivity() {
                     PostUserCard(username = postUsername)
                     Spacer(modifier = Modifier.height(10.dp))
                     Image(
-                        painter = rememberCoilPainter(request = postImageUrl, fadeIn = true),
+                        painter = rememberImagePainter(
+                            data = postImageUrl,
+                            imageLoader = LocalImageLoader.current,
+                            builder = {
+                                this.crossfade(LoadPainterDefaults.FadeInTransitionDuration)
+                                placeholder(0)
+                            }
+                        ),
                         contentDescription = stringResource(id = R.string.sample_post_content),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier

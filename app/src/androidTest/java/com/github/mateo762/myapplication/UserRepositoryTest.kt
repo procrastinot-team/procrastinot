@@ -9,10 +9,7 @@ import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.*
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.any
@@ -24,7 +21,8 @@ import java.util.concurrent.TimeUnit
 class UserRepositoryTest {
 
     private val testCoroutineDispatcher = TestCoroutineDispatcher()
-    private val testCoroutineScope = TestCoroutineScope(testCoroutineDispatcher)
+    private val testCoroutineScope =
+        createTestCoroutineScope(TestCoroutineDispatcher() + TestCoroutineExceptionHandler() + testCoroutineDispatcher)
 
 
     private lateinit var userRepository: UserRepository
@@ -56,7 +54,6 @@ class UserRepositoryTest {
         doAnswer { invocation ->
             val listener = invocation.getArgument<ValueEventListener>(0)
             listener.onDataChange(dataSnapshot)
-            Unit
         }.`when`(childReference).addListenerForSingleValueEvent(any())
 
         val result = userRepository.getUser(testUserId)

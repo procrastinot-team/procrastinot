@@ -35,7 +35,7 @@ data class PostEntity(
 
     override fun hashCode(): Int {
         var result = uid
-        result = 31 * result + (datePosted.hashCode() ?: 0)
+        result = 31 * result + datePosted.hashCode()
         return result
     }
 }

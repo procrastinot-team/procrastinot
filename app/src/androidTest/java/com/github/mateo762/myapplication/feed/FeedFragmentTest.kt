@@ -37,7 +37,7 @@ class FeedFragmentTest {
     val composeTestRule = createComposeRule()
 
     @get:Rule(order = 0)
-    val hiltRule = HiltAndroidRule(this);
+    val hiltRule = HiltAndroidRule(this)
 
     @Before
     fun setUp() {
@@ -97,7 +97,7 @@ class FeedFragmentTest {
 
     private fun getCurrentActivity(): Activity? {
         var currentActivity: Activity? = null
-        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+        getInstrumentation().runOnMainSync {
             run {
                 currentActivity =
                     ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(

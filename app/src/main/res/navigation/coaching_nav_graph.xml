@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/requestsFragment">
+
+    <fragment
+        android:id="@+id/requestsFragment"
+        android:name="com.github.mateo762.myapplication.coaching.fragments.RequestsFragment"
+        android:label="fragment_requests"/>
+
+    <fragment
+        android:id="@+id/offersFragment"
+        android:name="com.github.mateo762.myapplication.coaching.fragments.OffersFragment"
+        android:label="fragment_offers"/>
+
+</navigation>

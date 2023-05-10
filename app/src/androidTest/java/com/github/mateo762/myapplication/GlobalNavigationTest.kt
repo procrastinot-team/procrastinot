@@ -13,6 +13,7 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import com.github.mateo762.myapplication.*
+import com.github.mateo762.myapplication.coaching.CoachingActivity
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.github.mateo762.myapplication.home.HomeActivity
 import com.github.mateo762.myapplication.profile.ProfileActivity
@@ -99,6 +100,18 @@ class NavigationActivityTest {
         assertTrue(currentActivity is SettingsActivity)
     }
 
+    @Test
+    fun navigateToCoachingActivity() {
+        onView(withId(R.id.drawerLayout)).perform(DrawerActions.open())
+        onView(withId(R.id.navView)).check(matches(isDisplayed()))
+        onView(withId(R.id.nav_coaching)).perform(click())
+
+        // Get a reference to the current activity
+        val currentActivity = getCurrentActivity()
+
+        // Check if the current activity is a ProfileActivity
+        assertTrue(currentActivity is CoachingActivity)
+    }
 
     // User icon tests
     @Test
@@ -139,6 +152,18 @@ class NavigationActivityTest {
         onView(withId(R.id.drawerLayout)).perform(DrawerActions.open())
         onView(withId(R.id.navView)).check(matches(isDisplayed()))
         onView(withId(R.id.nav_settings)).perform(click())
+        onView(withId(R.id.circle_imageView)).perform(click())
+        // Get a reference to the current activity
+        val currentActivity = getCurrentActivity()
+        // Check if the current activity is a ProfileActivity
+        assertTrue(currentActivity is ProfileActivity)
+    }
+
+    @Test
+    fun clickUserIconFromCoaching() {
+        onView(withId(R.id.drawerLayout)).perform(DrawerActions.open())
+        onView(withId(R.id.navView)).check(matches(isDisplayed()))
+        onView(withId(R.id.nav_coaching)).perform(click())
         onView(withId(R.id.circle_imageView)).perform(click())
         // Get a reference to the current activity
         val currentActivity = getCurrentActivity()
