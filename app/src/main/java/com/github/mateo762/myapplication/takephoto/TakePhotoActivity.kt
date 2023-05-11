@@ -48,7 +48,7 @@ class TakePhotoActivity : BaseActivity() {
             currentUser = firebaseUser.toString()
         }
         if(BuildConfig.DEBUG){
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
         setContentView(R.layout.activity_takephoto)
         imageView = findViewById(R.id.imageView)

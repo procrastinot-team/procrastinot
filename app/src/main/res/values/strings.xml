@@ -129,4 +129,9 @@
     <string name="coach_rating_3_star_indicator">3:</string>
     <string name="coach_rating_2_star_indicator">2:</string>
     <string name="coach_rating_1_star_indicator">1:</string>
+    <string name="coaching">Coaching</string>
+    <string name="requests">Requests</string>
+    <string name="offers">Offers</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

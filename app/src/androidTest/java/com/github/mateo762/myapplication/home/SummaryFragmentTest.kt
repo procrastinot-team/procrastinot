@@ -65,7 +65,7 @@ class SummaryFragmentTest {
         // Get a reference to the current fragment
         val fragment = getCurrentFragment()
         // Check if the current fragment is a SummaryFragment
-        TestCase.assertTrue(fragment is SummaryFragment)
+        assertTrue(fragment is SummaryFragment)
 //
 //        composeTestRule.onNodeWithTag("Habit 1").assertExists()
 //        composeTestRule.onNodeWithTag("Habit 2").assertExists()

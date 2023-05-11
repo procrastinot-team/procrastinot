@@ -28,11 +28,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
+import coil.compose.LocalImageLoader
+import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.models.HabitImageEntity
 import com.github.mateo762.myapplication.UploadFragment
-import com.google.accompanist.coil.rememberCoilPainter
+import com.google.accompanist.imageloading.LoadPainterDefaults
 import java.time.*
 
 
@@ -194,7 +197,14 @@ private fun ImageRow(images: List<HabitImageEntity>, modifier: Modifier = Modifi
     ) {
         Row(modifier = modifier) {
             for (image in images) {
-                val painter = rememberCoilPainter(request = image.url, fadeIn = true)
+                val painter = rememberImagePainter(
+                    data = image.url,
+                    imageLoader = LocalImageLoader.current,
+                    builder = {
+                        this.crossfade(LoadPainterDefaults.FadeInTransitionDuration)
+                        placeholder(0)
+                    }
+                )
                 DisplayImage(painter, image, nextUpHabitName, Modifier.weight(1f))
             }
         }

@@ -12,8 +12,4 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class ProcrastinotApplication : Application() {
 
-    override fun onCreate() {
-        super.onCreate()
-    }
-
 }
