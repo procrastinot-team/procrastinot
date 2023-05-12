@@ -26,13 +26,10 @@ class SearchActivity : BaseActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
         super.onCreateDrawer()
-        setupToolbar()
 
         val layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         binding.recyclerView.layoutManager = layoutManager
-
-        println("Loaded the Search Activity")
 
         //TODO: Retrieve a list of users from Firebase
         val database = FirebaseDatabase.getInstance()
@@ -72,12 +69,6 @@ class SearchActivity : BaseActivity() {
         binding.searchEditText.doOnTextChanged { text, _, _, _ ->
             adapter.filter(text.toString())
         }
-    }
-    private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar)
-        title = "" // the title is not set directly on the xml, avoid having two titles per screen
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
     private fun onUserItemClick(userId: String) {
