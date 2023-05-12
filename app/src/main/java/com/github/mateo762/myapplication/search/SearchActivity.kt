@@ -1,21 +1,19 @@
 package com.github.mateo762.myapplication.search
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mateo762.myapplication.BaseActivity
-import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.github.mateo762.myapplication.databinding.ActivitySearchBinding
-import com.github.mateo762.myapplication.profile.*
+import com.github.mateo762.myapplication.profile.ProfileActivity
+import com.github.mateo762.myapplication.profile.SearchItem
+import com.github.mateo762.myapplication.profile.SearchViewAdapter
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
-
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class SearchActivity : BaseActivity() {
 
@@ -80,16 +78,6 @@ class SearchActivity : BaseActivity() {
         title = "" // the title is not set directly on the xml, avoid having two titles per screen
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     private fun onUserItemClick(userId: String) {
