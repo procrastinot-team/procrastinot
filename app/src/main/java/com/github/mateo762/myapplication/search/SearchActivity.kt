@@ -50,7 +50,7 @@ class SearchActivity : BaseActivity() {
 
                 for (childSnapshot in dataSnapshot.children) {
                     val username = childSnapshot.key
-                    val userId = childSnapshot.getValue(String::class.java)!!
+                    val userId = childSnapshot.getValue(String::class.java)
                     if (username != null && userId != null) {
                         users.add(SearchItem(userId, username, "Some description (figure out later"))
                     }
