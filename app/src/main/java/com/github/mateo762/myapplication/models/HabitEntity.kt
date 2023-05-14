@@ -12,7 +12,6 @@ data class HabitEntity(
     @ColumnInfo(name = "habit_days") val days: List<DayOfWeek> = emptyList(),
     @ColumnInfo(name = "habit_start_time") val startTime: String = "",
     @ColumnInfo(name = "habit_end_time") val endTime: String = "",
-    // VAR!
     @ColumnInfo(name = "is_coached") var isCoached: Boolean = false,
     @ColumnInfo(name = "coach_requested") val coachRequested: Boolean = false,
     @ColumnInfo(name = "coach_offers") val coachOffers: List<String> = emptyList(),
