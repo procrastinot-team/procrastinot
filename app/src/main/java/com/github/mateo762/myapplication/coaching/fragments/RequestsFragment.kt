@@ -1,28 +1,25 @@
 package com.github.mateo762.myapplication.coaching.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.home.fragments.TodayFragment
+import androidx.lifecycle.lifecycleScope
+import com.github.mateo762.myapplication.followers.UserRepository
 import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.models.UserEntity
-import com.github.mateo762.myapplication.room.HabitRepository
 import com.github.mateo762.myapplication.ui.coaching.RequestsScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class RequestsFragment : Fragment() {
@@ -30,13 +27,49 @@ class RequestsFragment : Fragment() {
     private lateinit var habitsRef: DatabaseReference
     private val habitsState = mutableStateOf(emptyList<HabitEntity>())
 
+    // A list with each habit with coachRequested and !isCoached, with the coaches offered
+    private val coachableHabits =
+        mutableStateOf(mutableListOf<Map<HabitEntity, List<UserEntity>>>())
+
+    // A list with each habit with isCoached, with the coach selected
+    private val coachedHabits = mutableStateOf(mutableListOf<Map<HabitEntity, UserEntity>>())
+
+    @SuppressLint("StateFlowValueCalledInComposition")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                RequestsScreen(habitsState.value)
+                RequestsScreen(coachableHabits.value, coachedHabits.value) { coach, habit ->
+                    habitsRef.orderByChild("id").equalTo(habit.id)
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+                                snapshot.children.forEach { childSnapshot ->
+                                        val habitSnapshot = childSnapshot.getValue(HabitEntity::class.java)
+                                        if (habitSnapshot != null && !habitSnapshot.isCoached && habitSnapshot.id == habit.id) {
+                                            // Update the child with the matching ID
+                                            childSnapshot.ref.updateChildren(
+                                                mapOf(
+                                                    "isCoached" to true,
+                                                    "coach" to coach.uid
+                                                )
+                                            )
+                                            val currentUser = FirebaseAuth.getInstance().currentUser
+                                            getFirebaseCoachableHabitsFromPath("/users/${currentUser?.uid}/habitsPath")
+                                        }
+                                }
+                                // Remove the habit from the list
+                                //val tuple = mapOf(habit to coach)
+                                //coachableHabits.value.remove(tuple)
+                                // Shouldn't this update automatically?
+                            }
+
+                            override fun onCancelled(error: DatabaseError) {
+                                // Handle cancellation
+                            }
+                        })
+                }
             }
         }
     }
@@ -60,16 +93,34 @@ class RequestsFragment : Fragment() {
             val currentUser = FirebaseAuth.getInstance().currentUser
             if (currentUser != null) {
                 val habitsPath = "/users/${currentUser.uid}/habitsPath"
-                getFirebaseHabitsFromPath(habitsPath)
+                lifecycleScope.launch {
+                    getFirebaseCoachableHabitsFromPath(habitsPath)
+                }
             }
-        } else {
-            // There is no connection available - (plane mode, no service, wifi...) Use cached data
-            // The Firebase Listener never runs if there is no connection!
-            Toast.makeText(context, "You're offline", Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun getFirebaseHabitsFromPath(path: String) {
+    private suspend fun getCoachableAndCoachedHabits() {
+        val coachedHabitsState: MutableList<Map<HabitEntity, UserEntity>> = mutableListOf()
+        val coachableHabitsState: MutableList<Map<HabitEntity, List<UserEntity>>> = mutableListOf()
+        for (coachableHabit in habitsState.value) {
+            if (coachableHabit.isCoached) {
+                val coach = UserRepository().getUser(coachableHabit.coach)
+                if (coach != null) {
+                    coachedHabitsState.add(mapOf(coachableHabit to coach))
+                }
+            } else {
+                val requestedCandidates =
+                    coachableHabit.coachOffers.mapNotNull { UserRepository().getUser(it) }
+                coachableHabitsState.add(mapOf(coachableHabit to requestedCandidates))
+            }
+        }
+        this@RequestsFragment.coachedHabits.value = coachedHabitsState
+        this@RequestsFragment.coachableHabits.value = coachableHabitsState
+
+    }
+
+    private fun getFirebaseCoachableHabitsFromPath(path: String) {
         // Initialize Firebase database reference
         habitsRef = FirebaseDatabase.getInstance().getReference(path)
         habitsRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -81,7 +132,9 @@ class RequestsFragment : Fragment() {
                     if (habit != null && habit.coachRequested) {
                         if (childSnapshot.hasChild("isCoached")) {
                             // If the snapshot contains a value for isCoached, use it
-                            habit.isCoached = childSnapshot.child("isCoached").getValue(Boolean::class.java) ?: false
+                            habit.isCoached =
+                                childSnapshot.child("isCoached").getValue(Boolean::class.java)
+                                    ?: false
                         } else {
                             // Otherwise, set it to false
                             habit.isCoached = false
@@ -89,7 +142,10 @@ class RequestsFragment : Fragment() {
                         coachableHabits.add(habit)
                     }
                 }
-                habitsState.value = coachableHabits
+                lifecycleScope.launch {
+                    habitsState.value = coachableHabits
+                    getCoachableAndCoachedHabits()
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
