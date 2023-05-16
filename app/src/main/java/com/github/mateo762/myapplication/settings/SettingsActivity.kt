@@ -5,14 +5,11 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.MenuItem
 import android.widget.Button
-import androidx.appcompat.widget.Toolbar
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.notifications.HabitNotificationService
 import com.github.mateo762.myapplication.util.showToast
-
 
 class SettingsActivity : BaseActivity() {
     companion object {
@@ -84,16 +81,6 @@ class SettingsActivity : BaseActivity() {
                 arrayOf(POST_NOTIFICATIONS),
                 NOTIFICATION_PERMISSION_REQUEST_CODE
             )
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 }
