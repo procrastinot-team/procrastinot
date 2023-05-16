@@ -162,7 +162,7 @@
                     android:layout_width="277dp"
                     android:layout_height="45dp"
                     android:layout_gravity="center"
-                    android:text="Go back to home"
+                    android:text="@string/go_back_to_home"
                     android:textColor="@color/white"
                     android:visibility="gone"
                     android:enabled="false"
