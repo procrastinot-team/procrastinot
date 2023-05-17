@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("MutableCollectionMutableState")
 class RequestsFragment : Fragment() {
 
-    lateinit var habitsRef: DatabaseReference
+    private lateinit var habitsRef: DatabaseReference
     val habitsState = mutableStateOf(emptyList<HabitEntity>())
 
     // A list with each habit with coachRequested and !isCoached, with the coaches offered
@@ -118,7 +118,7 @@ class RequestsFragment : Fragment() {
 
     }
 
-    fun getFirebaseCoachableHabitsFromPath(path: String) {
+    private fun getFirebaseCoachableHabitsFromPath(path: String) {
         // Initialize Firebase database reference
         habitsRef = FirebaseDatabase.getInstance().getReference(path)
         habitsRef.addListenerForSingleValueEvent(object : ValueEventListener {

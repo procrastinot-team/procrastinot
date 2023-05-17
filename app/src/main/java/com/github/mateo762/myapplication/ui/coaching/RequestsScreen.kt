@@ -207,11 +207,6 @@ fun CandidateCard(
         Button(
             onClick = {
                 onSelected()
-                /*Toast.makeText(
-                    context,
-                    "Selected as coach",
-                    Toast.LENGTH_LONG
-                ).show()*/
             },
             modifier = Modifier
                 .align(Alignment.CenterVertically)
