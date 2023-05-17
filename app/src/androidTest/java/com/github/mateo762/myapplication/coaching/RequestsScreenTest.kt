@@ -14,14 +14,11 @@ import org.junit.runner.RunWith
 import java.time.DayOfWeek
 
 @RunWith(AndroidJUnit4::class)
-@HiltAndroidTest
 class RequestsScreenTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    @get:Rule
-    val hiltRule = HiltAndroidRule(this)
 
     private val coach1 = UserEntity(
         "9i3402934ojfssmfoiwjeoi293",

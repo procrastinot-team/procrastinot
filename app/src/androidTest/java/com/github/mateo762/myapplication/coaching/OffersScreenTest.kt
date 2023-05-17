@@ -13,20 +13,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-@HiltAndroidTest
 class OffersScreenTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
-
-    @get:Rule
-    val hiltRule = HiltAndroidRule(this)
-
-
-    @Before
-    fun setUp() {
-        hiltRule.inject()
-    }
 
 
     @Test

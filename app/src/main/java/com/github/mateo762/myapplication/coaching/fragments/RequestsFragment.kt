@@ -18,10 +18,8 @@ import com.github.mateo762.myapplication.models.UserEntity
 import com.github.mateo762.myapplication.ui.coaching.RequestsScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-@AndroidEntryPoint
 @SuppressLint("MutableCollectionMutableState")
 class RequestsFragment : Fragment() {
 
@@ -69,7 +67,9 @@ class RequestsFragment : Fragment() {
             childSnapshot.ref.updateChildren(
                 mapOf(
                     "isCoached" to true,
-                    "coach" to coach.uid))
+                    "coach" to coach.uid
+                )
+            )
             val currentUser = FirebaseAuth.getInstance().currentUser
             getFirebaseCoachableHabitsFromPath("/users/${currentUser?.uid}/habitsPath")
         }
@@ -130,15 +130,22 @@ class RequestsFragment : Fragment() {
                     if (habit != null && habit.coachRequested) {
                         if (childSnapshot.hasChild("isCoached")) {
                             // If the snapshot contains a value for isCoached, use it
-                            habit.isCoached = childSnapshot.child("isCoached").getValue(Boolean::class.java) ?: false
+                            habit.isCoached =
+                                childSnapshot.child("isCoached").getValue(Boolean::class.java)
+                                    ?: false
                             // Otherwise, set it to false
-                        } else { habit.isCoached = false }
-                        coachableHabits.add(habit) }
+                        } else {
+                            habit.isCoached = false
+                        }
+                        coachableHabits.add(habit)
+                    }
                 }
                 lifecycleScope.launch {
                     habitsState.value = coachableHabits
                     getCoachableAndCoachedHabits()
-                } }
+                }
+            }
+
             override fun onCancelled(error: DatabaseError) {}
         })
     }

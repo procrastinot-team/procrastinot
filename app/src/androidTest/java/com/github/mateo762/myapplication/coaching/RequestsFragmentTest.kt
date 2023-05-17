@@ -8,8 +8,6 @@ import com.github.mateo762.myapplication.models.UserEntity
 import com.github.mateo762.myapplication.ui.coaching.RequestsScreen
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -19,14 +17,11 @@ import org.mockito.MockitoAnnotations
 import java.time.DayOfWeek
 
 @RunWith(AndroidJUnit4::class)
-@HiltAndroidTest
 class RequestsFragmentTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    @get:Rule
-    val hiltRule = HiltAndroidRule(this)
 
     @Before
     fun setup() {
@@ -96,5 +91,6 @@ class RequestsFragmentTest {
             )
         )
     }
+
 
 }

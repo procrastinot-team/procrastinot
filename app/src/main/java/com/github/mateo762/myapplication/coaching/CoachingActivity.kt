@@ -13,8 +13,8 @@ import com.github.mateo762.myapplication.ui.coaching.OffersScreen
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
-class CoachingActivity : BaseActivity() {
+
+open class CoachingActivity : BaseActivity() {
 
     private lateinit var bottomNavView: BottomNavigationView
 
