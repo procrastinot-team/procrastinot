@@ -135,4 +135,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="go_back_to_home">Go back to home</string>
+    <string name="no_habit_found">No habits found</string>
+    <string name="select_a_habit">Please select a habit</string>
+    <string name="done">Done!</string>
+    <string name="hint_select_a_habit">Select a habit</string>
+    <string name="rank">\"Rank \"</string>
+    <string name="as_a_trainer">\" as a trainer\"</string>
+    <string name="there_was_an_error">There was an error</string>
 </resources>

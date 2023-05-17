@@ -51,23 +51,7 @@ class TakePhotoActivity : BaseActivity() {
     private lateinit var backHomeButton: Button
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-
-        super.onCreate(savedInstanceState)
-        getCameraPermission()
-        var firebaseUser = Firebase.auth.currentUser?.uid
-        if (firebaseUser == null) {
-            currentUser = "testUser"
-        } else {
-            currentUser = firebaseUser.toString()
-        }
-        if(BuildConfig.DEBUG){
-            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        }
-
-
-
-        setContentView(R.layout.activity_takephoto)
+    fun startPage() {
         backHomeButton = findViewById(R.id.backHomeButton)
         backHomeButton.setOnClickListener {
             val intent = Intent(this, HomeActivity::class.java)
@@ -87,11 +71,10 @@ class TakePhotoActivity : BaseActivity() {
                 for (child in children) {
                     // write child value to object
                     var habitName = child.child("name").value.toString()
-                    var trainer = child.child("coach").value.toString()
-                    Log.d("habitName", habitName)
-                    Log.d("trainer", trainer)
+                    var trainer = child.child("coach").value
                     habitNames += habitName
-                    if (trainer != "null") {
+                    if (trainer != null) {
+                        trainer = trainer.toString()
                         ref2.get().addOnSuccessListener {
                             var children = it.children
                             for (child in children) {
@@ -99,11 +82,11 @@ class TakePhotoActivity : BaseActivity() {
                                 var id = child.value.toString()
                                 Log.d("username", username)
                                 Log.d("id", id)
-                                if (id == trainer) {
+                                if (id == trainer.toString()) {
                                     Log.d("FOUND", username)
                                     trainer = username
                                     habitTrainerId += id
-                                    habitTrainer += trainer
+                                    habitTrainer += trainer.toString()
                                 }
                             }
                         }
@@ -122,7 +105,7 @@ class TakePhotoActivity : BaseActivity() {
                 textInputLayout.visibility = View.GONE
                 takePhotoButton = findViewById<Button>(R.id.takePhotoButton)
                 takePhotoButton.isEnabled = false
-                takePhotoButton.text = "No habits found"
+                takePhotoButton.text = getString(R.string.no_habit_found)
             }
         }.addOnFailureListener {
             // go to home
@@ -144,6 +127,26 @@ class TakePhotoActivity : BaseActivity() {
         takePhotoButton.setOnClickListener {
             dispatchTakePictureIntent()
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+
+        super.onCreate(savedInstanceState)
+        getCameraPermission()
+        var firebaseUser = Firebase.auth.currentUser?.uid
+        if (firebaseUser == null) {
+            currentUser = "testUser"
+        } else {
+            currentUser = firebaseUser.toString()
+        }
+        if(BuildConfig.DEBUG){
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+
+
+
+        setContentView(R.layout.activity_takephoto)
+        startPage()
         super.onCreateDrawer()
     }
 
@@ -155,7 +158,7 @@ class TakePhotoActivity : BaseActivity() {
 
     private fun dispatchTakePictureIntent() {
         if (selectedHabit == null) {
-            Toast.makeText(this,"Please select a habit", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,getString(R.string.select_a_habit), Toast.LENGTH_SHORT).show()
             return
         }
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -210,22 +213,30 @@ class TakePhotoActivity : BaseActivity() {
                 var imageUrl = it.toString()
                 // show floating action button
                 if (selectedTrainer == "No trainer" || selectedTrainer == null) {
-                    takePhotoText.text = "Done!"
+                    takePhotoText.text = getString(R.string.done)
                     Thread.sleep(1000)
                     backHomeButton.visibility = View.VISIBLE
                     backHomeButton.isEnabled = true
                 } else {
-                    takePhotoText.text = "Rank " + selectedTrainer + " as a trainer"
+                    takePhotoText.text = getString(R.string.rank) + selectedTrainer + getString(R.string.as_a_trainer)
                     ratingBar.visibility = View.VISIBLE
                     // listen for rating bar changes
                     var db = Firebase.database.reference
                     var rate = 0.0f
                     ratingBar.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
                         rate = rating
-                        var refBar = db.child("ratings").child(selectedTrainerId!!).child(currentUser).setValue(rating)
-                        takePhotoText.text = "Done!"
-                        backHomeButton.visibility = View.VISIBLE
-                        backHomeButton.isEnabled = true
+                        if (selectedTrainerId != null) {
+                            var refBar = db.child("ratings").child(selectedTrainerId!!).child(currentUser).setValue(rating)
+                            takePhotoText.text = getString(R.string.done)
+                            backHomeButton.visibility = View.VISIBLE
+                            backHomeButton.isEnabled = true
+                        } else
+                        {
+                            Toast.makeText(this, getString(R.string.there_was_an_error), Toast.LENGTH_SHORT).show()
+                            // go to home
+                            val intent = Intent(this, HomeActivity::class.java)
+                            startActivity(intent)
+                        }
                     }
                 }
 
@@ -235,9 +246,6 @@ class TakePhotoActivity : BaseActivity() {
             }
 
         }
-        // go to home
-        //val intent = Intent(this, HomeActivity::class.java)
-        //startActivity(intent)
     }
 
 }
