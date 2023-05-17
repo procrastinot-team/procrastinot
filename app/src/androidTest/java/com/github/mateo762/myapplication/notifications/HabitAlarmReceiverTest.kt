@@ -22,13 +22,10 @@ class HabitAlarmReceiverTest {
             putExtra("habit_id", "1234")
             putExtra("habit_name", "Test Habit")
         }
-        
+
         val receiver = HabitAlarmReceiver()
 
         // Act
         receiver.onReceive(context, intent)
-
-        // Assert
-        assertTrue(true)
     }
 }

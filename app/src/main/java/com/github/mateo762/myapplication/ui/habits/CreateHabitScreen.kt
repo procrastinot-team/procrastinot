@@ -284,8 +284,7 @@ private fun scheduleHabit(context: Context, habit: HabitEntity) {
     for (day in habit.days) {
         val calendar = Calendar.getInstance().apply {
             timeInMillis = System.currentTimeMillis()
-            Log.d(TAG, "Day value: ${day.value}   hour: $hour   minute: $minute")
-            set(Calendar.DAY_OF_WEEK, 4)
+            set(Calendar.DAY_OF_WEEK, convertDayOfWeekToInt(day))
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
@@ -305,5 +304,18 @@ private fun scheduleHabit(context: Context, habit: HabitEntity) {
         // Cancel any existing alarm for this habit
         alarmManager.cancel(pendingIntent)
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun convertDayOfWeekToInt(day: DayOfWeek): Int {
+    return when (day) {
+        DayOfWeek.MONDAY -> 2
+        DayOfWeek.TUESDAY -> 3
+        DayOfWeek.WEDNESDAY -> 4
+        DayOfWeek.THURSDAY -> 5
+        DayOfWeek.FRIDAY -> 6
+        DayOfWeek.SATURDAY -> 7
+        DayOfWeek.SUNDAY -> 1
     }
 }

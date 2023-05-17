@@ -10,7 +10,6 @@ class HabitAlarmReceiver : BroadcastReceiver() {
 
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d("HabitAlarmReceiver", "Alarm received!")
         val habitId = intent.getStringExtra("habit_id")
         val habitName = intent.getStringExtra("habit_name")
 
