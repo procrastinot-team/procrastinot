@@ -1,5 +1,4 @@
 package com.github.mateo762.myapplication
-/*
 
 import android.app.Activity
 import android.graphics.Point
@@ -10,9 +9,9 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -71,8 +70,18 @@ class TakePictureTest {
         }
     }
 
+    @Test
+    fun checkIfTakePhotoButtonIsDisplayed() {
+        onView(withId(R.id.takePhotoButton)).check(matches(isDisplayed()))
+    }
 
-@Test
+    @Test
+    fun checkIfDropdownIsDisplayed() {
+        onView(withId(R.id.textInputLayout)).check(matches(isDisplayed()))
+    }
+
+
+/*@Test
     fun clickTheButton() {
         onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
 
@@ -141,10 +150,9 @@ class TakePictureTest {
         }
         // Go back to the app
         uiDevice.pressBack()
-    }
+    }*/
 
 
 
 
 }
-*/
