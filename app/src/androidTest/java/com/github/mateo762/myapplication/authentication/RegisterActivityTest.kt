@@ -21,7 +21,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class RegisterActivityTest {
-    /*
 
     private val name = "Louca"
     private val surname = "Zacharie"
@@ -228,6 +227,4 @@ class RegisterActivityTest {
 //            )
 //        )
     }
-
-     */
 }
