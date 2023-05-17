@@ -5,11 +5,9 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.models.UserEntity
-import com.github.mateo762.myapplication.ui.coaching.CandidateCard
-import com.github.mateo762.myapplication.ui.coaching.RequestsScreen
+import com.github.mateo762.myapplication.ui.coaching.*
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,83 +22,6 @@ class RequestsScreenTest {
 
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
-
-    private var noCoachableHabits = mutableListOf<HabitEntity>()
-    private var coachableWithCoachSelected = mutableListOf<HabitEntity>()
-    private var coachableWithCoachRequested = mutableListOf<HabitEntity>()
-
-    @Before
-    fun setUp() {
-        hiltRule.inject()
-        setupHabitLists()
-    }
-
-    @Test
-    fun testNoHabits() {
-        // Assert the nothing to see here for now message is displayed
-        setUpRequestsScreen(emptyList())
-        composeTestRule.onNodeWithTag("nothing_to_see_box").assertExists()
-        composeTestRule.onNodeWithTag("nothing_to_see_box").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("nothing_to_see_text").assertExists()
-        composeTestRule.onNodeWithTag("nothing_to_see_text").assertIsDisplayed()
-    }
-
-    @Test
-    // No active requests open
-    fun testNoCoachableHabits() {
-        setUpRequestsScreen(noCoachableHabits)
-        composeTestRule.onNodeWithTag("habit_selection_box").assertExists()
-        composeTestRule.onNodeWithTag("habit_selection_box").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("habit_name").assertExists()
-        composeTestRule.onNodeWithTag("habit_name").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("habit_name")
-            .assertTextContains(noCoachableHabits.first().name)
-        composeTestRule.onNodeWithTag("no_candidates_text").assertExists()
-        composeTestRule.onNodeWithTag("no_candidates_text").assertIsDisplayed()
-    }
-
-    @Test
-    fun testCandidateCard() {
-        setUpCandidateCard(coach1)
-        composeTestRule.onNodeWithTag("candidate_card_name_${coach1.name}").assertExists()
-        composeTestRule.onNodeWithTag("candidate_card_name_${coach1.name}").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("candidate_card_name_${coach1.name}")
-            .assertTextContains(coach1.name!!)
-        composeTestRule.onNodeWithTag("candidate_card_username_${coach1.username}").assertExists()
-        composeTestRule.onNodeWithTag("candidate_card_username_${coach1.username}")
-            .assertIsDisplayed()
-        composeTestRule.onNodeWithTag("candidate_card_username_${coach1.username}")
-            .assertTextContains(coach1.username!!)
-        composeTestRule.onNodeWithTag("candidate_card_email_${coach1.email}").assertExists()
-        composeTestRule.onNodeWithTag("candidate_card_email_${coach1.email}").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("candidate_card_email_${coach1.email}")
-            .assertTextContains(coach1.email!!)
-        composeTestRule.onNodeWithTag("candidate_card_rating").assertTextContains(4.45.toString())
-    }
-
-    private fun setUpRequestsScreen(habits: List<HabitEntity>) {
-        composeTestRule.setContent {
-            RequestsScreen(habits)
-        }
-    }
-
-    private fun setUpCandidateCard(coach: UserEntity) {
-        composeTestRule.setContent {
-            coach.name?.let {
-                coach.username?.let { it1 ->
-                    coach.email?.let { it2 ->
-                        CandidateCard(name = it, username = it1, rating = 4.45, email = it2) {}
-                    }
-                }
-            }
-        }
-    }
-
-    private fun setupHabitLists() {
-        noCoachableHabits.add(habitWithoutCoachRequested)
-        coachableWithCoachSelected.add(habitWithCoachAlreadySelected)
-        coachableWithCoachRequested.add(habitWithCoachRequested)
-    }
 
     private val coach1 = UserEntity(
         "9i3402934ojfssmfoiwjeoi293",
@@ -129,19 +50,105 @@ class RequestsScreenTest {
         isCoached = false, coachRequested = true,
         listOf(coach1.uid, coach2.uid), ""
     )
-    private val habitWithCoachAlreadySelected = HabitEntity(
-        "1", "Selected 1",
+
+    private val habitWithCoachRequested2 = HabitEntity(
+        "1", "Requested 2",
         listOf(DayOfWeek.MONDAY, DayOfWeek.TUESDAY),
         "9:00", "12:00",
-        isCoached = true, coachRequested = true,
-        listOf(coach1.uid, coach2.uid), coach1.uid
-    )
-    private val habitWithoutCoachRequested = HabitEntity(
-        "2", "Not requested",
-        listOf(DayOfWeek.MONDAY, DayOfWeek.TUESDAY),
-        "9:00", "12:00",
-        isCoached = false, coachRequested = false,
+        isCoached = false, coachRequested = true,
         emptyList(), ""
     )
 
+    @Test
+    fun testDisplayNothing() {
+        composeTestRule.setContent {
+            DisplayNothing()
+        }
+
+        composeTestRule.onNodeWithTag("nothing_to_see_box")
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithTag("nothing_to_see_text")
+            .assertTextEquals("Nothing to see here for now...")
+    }
+
+    @Test
+    fun testDisplayCoachSelection() {
+        val habitMap = mapOf(
+            habitWithCoachRequested to listOf(
+                coach1,
+                coach2
+            ),
+        )
+        composeTestRule.setContent {
+            DisplayCoachSelection(habitMap) { _, _ -> }
+        }
+
+        composeTestRule.onAllNodesWithTag("habit_selection_box")
+            .assertCountEquals(1)
+
+        for (habit in habitMap) {
+            composeTestRule.onNodeWithTag("habit_name_${habit.key.name}")
+                .assertTextEquals(habit.key.name)
+            composeTestRule.onNodeWithTag("candidate_card_name_${habit.value[0].name}")
+                .assertTextEquals(coach1.name!!)
+            composeTestRule.onNodeWithTag("candidate_card_name_${habit.value[1].name}")
+                .assertTextEquals(coach2.name!!)
+            composeTestRule.onNodeWithTag("candidate_card_username_${habit.value[0].username}")
+                .assertTextEquals(coach1.username!!)
+            composeTestRule.onNodeWithTag("candidate_card_username_${habit.value[1].username}")
+                .assertTextEquals(coach2.username!!)
+            composeTestRule.onNodeWithTag("candidate_card_email_${habit.value[0].email}")
+                .assertTextEquals(coach1.email!!)
+            composeTestRule.onNodeWithTag("candidate_card_email_${habit.value[1].email}")
+                .assertTextEquals(coach2.email!!)
+        }
+
+        composeTestRule.onAllNodesWithTag("habit_spacer")
+            .assertCountEquals(1)
+
+        composeTestRule.onAllNodesWithTag("candidate_card_button")
+            .assertCountEquals(2)
+
+        val nodes = composeTestRule.onAllNodesWithTag("candidate_card_button")
+            .assertCountEquals(2)
+
+        nodes[0].assertTextEquals("Select")
+        nodes[1].assertTextEquals("Select")
+
+        composeTestRule.onAllNodesWithTag("candidate_card_image")
+            .assertCountEquals(2)
+    }
+
+    @Test
+    fun testEmptyCandidateCard() {
+        composeTestRule.setContent {
+            EmptyCandidateCard()
+        }
+
+        composeTestRule.onNodeWithTag("no_candidates_text")
+            .assertTextEquals("No candidates applied yet!")
+    }
+
+    @Test
+    fun testEmptyMaps() {
+        composeTestRule.setContent {
+            RequestsScreen(
+                coachableHabits = emptyList(),
+                coachedHabits = emptyList()
+            ) { _: UserEntity, _: HabitEntity -> }
+        }
+        composeTestRule.onNodeWithTag("nothing_to_see_box")
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithTag("nothing_to_see_text")
+            .assertTextEquals("Nothing to see here for now...")
+    }
+
+    @Test
+    fun testNoCandidatesForHabit() {
+        composeTestRule.setContent {
+            DisplayCoachSelection(mapOf(habitWithCoachRequested2 to emptyList())) { _: UserEntity, _: HabitEntity -> }
+        }
+        composeTestRule.onNodeWithTag("no_candidates_text")
+            .assertTextEquals("No candidates applied yet!")
+    }
 }

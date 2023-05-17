@@ -115,7 +115,6 @@ fun DisplayCoachSelection(
                     EmptyCandidateCard()
                 } else {
                     for (candidate in habitMap[habit]!!) {
-                        if (candidate.name != null && candidate.username != null && candidate.email != null) {
                             CandidateCard(
                                 candidate.name!!,
                                 candidate.username!!,
@@ -124,12 +123,11 @@ fun DisplayCoachSelection(
                             ) {
                                 onCoachSelected(candidate, habit)
                             }
-                        }
                     }
                 }
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp).testTag("habit_spacer"))
     }
 }
 
@@ -249,15 +247,11 @@ fun DisplayCurrentCoach(habitMap: Map<HabitEntity, UserEntity>) {
                     style = MaterialTheme.typography.h4,
                     fontWeight = FontWeight.SemiBold
                 )
-                if (habitMap[habit]?.name != null &&
-                    habitMap[habit]?.username != null &&
-                    habitMap[habit]?.email != null
+                CoachCard(
+                    habitMap[habit]!!.name!!,
+                    habitMap[habit]!!.username!!,
+                    habitMap[habit]!!.email!!,
                 )
-                    CoachCard(
-                        habitMap[habit]?.name!!,
-                        habitMap[habit]?.username!!,
-                        habitMap[habit]?.email!!,
-                    )
             }
         }
         Spacer(modifier = Modifier.height(16.dp))

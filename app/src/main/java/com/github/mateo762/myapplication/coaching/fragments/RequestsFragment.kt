@@ -100,7 +100,7 @@ class RequestsFragment : Fragment() {
         }
     }
 
-    private suspend fun getCoachableAndCoachedHabits() {
+    suspend fun getCoachableAndCoachedHabits() {
         val coachedHabitsState: MutableList<Map<HabitEntity, UserEntity>> = mutableListOf()
         val coachableHabitsState: MutableList<Map<HabitEntity, List<UserEntity>>> = mutableListOf()
         for (coachableHabit in habitsState.value) {
