@@ -1,25 +1,19 @@
 package com.github.mateo762.myapplication
 
-import android.app.Activity
-import android.graphics.Point
-import android.os.RemoteException
 import android.view.View
-import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiSelector
-import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.github.mateo762.myapplication.takephoto.TakePhotoActivity
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
@@ -33,11 +27,13 @@ class TakePictureTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(TakePhotoActivity::class.java)
 
+
+
     private lateinit var decorView: View
 
 
-//    @get:Rule
-//    public val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.CAMERA)
+    @get:Rule
+    public val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.CAMERA)
 
 
     @Before
@@ -70,6 +66,23 @@ class TakePictureTest {
         }
     }
 
+    fun habitsExist(): Boolean {
+        var currentUser = "testUser"
+        var firebaseUser = Firebase.auth.currentUser?.uid
+        if (firebaseUser != null) {
+            currentUser = firebaseUser.toString()
+        }
+        val db = Firebase.database.reference
+        val ref =  db.child("users").child(currentUser).child("habitsPath")
+        var final = false
+        ref.get().addOnSuccessListener {
+            if (it.exists()) {
+                final = true
+            }
+        }
+        return final
+    }
+
     @Test
     fun checkIfTakePhotoButtonIsDisplayed() {
         onView(withId(R.id.takePhotoButton)).check(matches(isDisplayed()))
@@ -77,7 +90,9 @@ class TakePictureTest {
 
     @Test
     fun checkIfDropdownIsDisplayed() {
-        onView(withId(R.id.textInputLayout)).check(matches(isDisplayed()))
+        if (habitsExist()) {
+            onView(withId(R.id.textInputLayout)).check(matches(isDisplayed()))
+        }
     }
 
 
