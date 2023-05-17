@@ -121,6 +121,14 @@
     <string name="following">Following:</string>
     <string name="followers">Followers:</string>
     <string name="change_username_button_text">Change username</string>
+    <string name="total_number_ratings">(%s ratings)</string>
+    <string name="coach_ratings_title">Coach ratings</string>
+    <string name="fetch_coach_rating_error">Error occurred while fetching rating, we are sorry for the inconvenience!</string>
+    <string name="coach_rating_5_star_indicator">5:</string>
+    <string name="coach_rating_4_star_indicator">4:</string>
+    <string name="coach_rating_3_star_indicator">3:</string>
+    <string name="coach_rating_2_star_indicator">2:</string>
+    <string name="coach_rating_1_star_indicator">1:</string>
     <string name="coaching">Coaching</string>
     <string name="requests">Requests</string>
     <string name="offers">Offers</string>

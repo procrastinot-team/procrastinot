@@ -191,7 +191,7 @@ private fun fetchUserId(username: String, onUserIdFetched: (String) -> Unit) {
 }
 
 private fun onUserItemClick(context: Context, userId: String) {
-    val intent = Intent(context, ProfileActivity::class.java)
+    val intent = Intent(context, ProfileActivity.EntryPoint::class.java)
     intent.putExtra("userId", userId)
     startActivity(context, intent, null)
 }

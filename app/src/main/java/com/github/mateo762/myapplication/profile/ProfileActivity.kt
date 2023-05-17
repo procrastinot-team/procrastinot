@@ -14,11 +14,13 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
+import com.github.mateo762.myapplication.coach_rating.CoachRatingViewModel
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.github.mateo762.myapplication.followers.UserRepository
 import com.github.mateo762.myapplication.models.HabitImageEntity
@@ -34,6 +36,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,7 +48,16 @@ import kotlin.collections.ArrayList
 /**
  * Activity for displaying the profile information.
  */
-class ProfileActivity : BaseActivity(), CoroutineScope {
+abstract class ProfileActivity : BaseActivity(), CoroutineScope {
+
+    // Hack to solve the jacoco report problem with hilt activity, which still doesn't have a
+    // solution.
+    //
+    // More info can be found: https://issuetracker.google.com/issues/161300933#comment5
+    @AndroidEntryPoint
+    class EntryPoint: ProfileActivity()
+
+    private val coachRatingViewModel: CoachRatingViewModel by viewModels()
 
     private val job = Job()
 
@@ -116,12 +128,15 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
         emailEditText.visibility = View.GONE
         changeUsernameButton.visibility = View.GONE
         btnSave.visibility = View.GONE
+        
+        binding.coachRatingView.setViewModel(coachRatingViewModel)
+        binding.coachRatingView.getRatingStats()
 
         uid = "mTFQAS8YmlXK89siWb36PwIe1x82"
         try {
             uid = intent.getStringExtra("userId") ?: user!!.uid
-        }catch (e: java.lang.Exception){
-
+        } catch (e: java.lang.Exception){
+        
         }
 
         var currentUserId = user?.uid ?: uid
@@ -147,7 +162,6 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
                 }
             }
         }
-
 
         btnFollow.setOnClickListener {
             followUser(currentUserId, uid)
@@ -233,12 +247,9 @@ class ProfileActivity : BaseActivity(), CoroutineScope {
             user?.updateProfile(profileUpdates)
         }
 
-
-
-
         db.child("users").child(uid).child("url").get().addOnSuccessListener { it ->
             val url = it.getValue(String::class.java)
-            Glide.with(this@ProfileActivity)
+            Glide.with(applicationContext)
                 .load(url)
                 .into(profileImage)
         }

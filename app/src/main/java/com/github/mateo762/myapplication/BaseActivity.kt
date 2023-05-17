@@ -49,7 +49,7 @@ abstract class BaseActivity : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener(navListener)
         // Enable clicking the profile picture -- go to profile activity
         val profileIcon: ImageView = findViewById(R.id.circle_imageView)
-        profileIcon.setOnClickListener { openActivitySelected(ProfileActivity()) }
+        profileIcon.setOnClickListener { openActivitySelected(ProfileActivity.EntryPoint()) }
     }
 
     private fun openActivitySelected(activity: Activity) {
@@ -69,7 +69,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 openActivitySelected(SearchActivity())
             }
             R.id.nav_profile -> {
-                openActivitySelected(ProfileActivity())
+                openActivitySelected(ProfileActivity.EntryPoint())
                 drawer.closeDrawer(GravityCompat.START)
             }
             R.id.nav_settings -> {
