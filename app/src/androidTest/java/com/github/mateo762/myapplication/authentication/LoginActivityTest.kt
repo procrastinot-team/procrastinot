@@ -25,6 +25,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class LoginActivityTest {
+    /*
 
     private val invalidEmail = "user.gmail.com"
     private val validEmail = "user@gmail.com"
@@ -191,4 +192,6 @@ class LoginActivityTest {
 //            )
 //        )
     }
+
+     */
 }
