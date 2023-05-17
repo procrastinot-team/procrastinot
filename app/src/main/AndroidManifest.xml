@@ -47,7 +47,7 @@
             android:name=".settings.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".profile.ProfileActivity"
+            android:name=".profile.ProfileActivity$EntryPoint"
             android:exported="false" />
         <activity
             android:name=".search.SearchActivity"

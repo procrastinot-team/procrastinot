@@ -27,7 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 abstract class UsernameActivity : BaseActivity() {
 
 
-    //Hack to solve the jacoco report problem with hilt activity, which still doesn't have a
+    // Hack to solve the jacoco report problem with hilt activity, which still doesn't have a
     // solution.
     //
     // More info can be found: https://issuetracker.google.com/issues/161300933#comment5
