@@ -22,6 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
+@SuppressLint("MutableCollectionMutableState")
 class RequestsFragment : Fragment() {
 
     private lateinit var habitsRef: DatabaseReference
@@ -46,31 +47,31 @@ class RequestsFragment : Fragment() {
                         .addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 snapshot.children.forEach { childSnapshot ->
-                                        val habitSnapshot = childSnapshot.getValue(HabitEntity::class.java)
-                                        if (habitSnapshot != null && !habitSnapshot.isCoached && habitSnapshot.id == habit.id) {
-                                            // Update the child with the matching ID
-                                            childSnapshot.ref.updateChildren(
-                                                mapOf(
-                                                    "isCoached" to true,
-                                                    "coach" to coach.uid
-                                                )
-                                            )
-                                            val currentUser = FirebaseAuth.getInstance().currentUser
-                                            getFirebaseCoachableHabitsFromPath("/users/${currentUser?.uid}/habitsPath")
-                                        }
+                                    updateCoachStateCallback(childSnapshot, habit, coach)
                                 }
-                                // Remove the habit from the list
-                                //val tuple = mapOf(habit to coach)
-                                //coachableHabits.value.remove(tuple)
-                                // Shouldn't this update automatically?
                             }
 
-                            override fun onCancelled(error: DatabaseError) {
-                                // Handle cancellation
-                            }
+                            override fun onCancelled(error: DatabaseError) {}
                         })
                 }
             }
+        }
+    }
+
+    private fun updateCoachStateCallback(
+        childSnapshot: DataSnapshot,
+        habit: HabitEntity,
+        coach: UserEntity
+    ) {
+        val habitSnapshot = childSnapshot.getValue(HabitEntity::class.java)
+        if (habitSnapshot != null && !habitSnapshot.isCoached && habitSnapshot.id == habit.id) {
+            // Update the child with the matching ID
+            childSnapshot.ref.updateChildren(
+                mapOf(
+                    "isCoached" to true,
+                    "coach" to coach.uid))
+            val currentUser = FirebaseAuth.getInstance().currentUser
+            getFirebaseCoachableHabitsFromPath("/users/${currentUser?.uid}/habitsPath")
         }
     }
 
@@ -80,14 +81,11 @@ class RequestsFragment : Fragment() {
         val connectivityManager =
             context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = connectivityManager.activeNetwork
-
         // Verify we have connection -- this way we will at least always run the Listener,
         // and if Firebase fails, then we run the failed action onCancelled
         val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
-
         val connectionExists =
             networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
-
         // Connect to Firebase for real time data
         if (connectionExists) {
             val currentUser = FirebaseAuth.getInstance().currentUser
@@ -132,24 +130,16 @@ class RequestsFragment : Fragment() {
                     if (habit != null && habit.coachRequested) {
                         if (childSnapshot.hasChild("isCoached")) {
                             // If the snapshot contains a value for isCoached, use it
-                            habit.isCoached =
-                                childSnapshot.child("isCoached").getValue(Boolean::class.java)
-                                    ?: false
-                        } else {
+                            habit.isCoached = childSnapshot.child("isCoached").getValue(Boolean::class.java) ?: false
                             // Otherwise, set it to false
-                            habit.isCoached = false
-                        }
-                        coachableHabits.add(habit)
-                    }
+                        } else { habit.isCoached = false }
+                        coachableHabits.add(habit) }
                 }
                 lifecycleScope.launch {
                     habitsState.value = coachableHabits
                     getCoachableAndCoachedHabits()
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-            }
+                } }
+            override fun onCancelled(error: DatabaseError) {}
         })
     }
 
