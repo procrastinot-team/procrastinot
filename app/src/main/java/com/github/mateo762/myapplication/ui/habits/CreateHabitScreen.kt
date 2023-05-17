@@ -1,6 +1,9 @@
 package com.github.mateo762.myapplication.ui.habits
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.app.TimePickerDialog
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Build
 import android.util.Log
@@ -22,9 +25,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import android.content.Context
+import androidx.core.content.ContextCompat.getSystemService
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.github.mateo762.myapplication.models.HabitEntity
+import com.github.mateo762.myapplication.notifications.HabitAlarmReceiver
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -183,9 +188,10 @@ fun CreateHabitScreen() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 private fun saveHabit(context:Context, habitName:String, habitDays:List<DayOfWeek>,
                       habitStartTime:MutableState<String>, habitEndTime:MutableState<String>,
-                    askingForCoach:MutableState<Boolean>) {
+                      askingForCoach:MutableState<Boolean>) {
     val TAG = "CreateHabitScreen"
     if (habitName.isBlank()) {
         Toast.makeText(
@@ -251,6 +257,7 @@ private fun saveHabit(context:Context, habitName:String, habitDays:List<DayOfWee
             habitRef.setValue(habitData)
                 .addOnSuccessListener {
                     Log.d(TAG, "Habit added with ID: ${habitRef.key}")
+                    scheduleHabit(context, myHabit)
                 }
                 .addOnFailureListener { e ->
                     Log.w(TAG, "Error adding habit", e)
@@ -261,4 +268,42 @@ private fun saveHabit(context:Context, habitName:String, habitDays:List<DayOfWee
 private fun isValidTime(time: String): Boolean {
     val pattern = Regex(pattern = "^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])\$")
     return pattern.matches(time)
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun scheduleHabit(context: Context, habit: HabitEntity) {
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    val intent = Intent(context, HabitAlarmReceiver::class.java)
+    intent.putExtra("habit_id", habit.id)
+    intent.putExtra("habit_name", habit.name)
+
+    val endTimeParts = habit.endTime.split(":")
+    val hour = endTimeParts[0].toInt()
+    val minute = endTimeParts[1].toInt()
+
+    for (day in habit.days) {
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            Log.d(TAG, "Day value: ${day.value}   hour: $hour   minute: $minute")
+            set(Calendar.DAY_OF_WEEK, 4)
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+        }
+
+        // If the alarm time has already passed today, schedule for next week
+        if (calendar.timeInMillis <= System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_YEAR, 7)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            UUID.randomUUID().hashCode(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        // Cancel any existing alarm for this habit
+        alarmManager.cancel(pendingIntent)
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+    }
 }

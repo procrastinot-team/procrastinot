@@ -51,7 +51,7 @@ class TodayFragment : Fragment() {
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private val dateTime = LocalDateTime.of(2023, 4, 15, 17, 0)
+    private val dateTime = LocalDateTime.now()
 
 
     @RequiresApi(Build.VERSION_CODES.O)
