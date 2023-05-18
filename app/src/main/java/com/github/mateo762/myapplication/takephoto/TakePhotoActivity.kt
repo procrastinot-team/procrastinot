@@ -55,7 +55,6 @@ class TakePhotoActivity : BaseActivity() {
     private var selectedTrainerId: String? = null
     private lateinit var backHomeButton: Button
 
-
     fun startPage() {
         backHomeButton = findViewById(R.id.backHomeButton)
         backHomeButton.setOnClickListener {

@@ -25,6 +25,8 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
@@ -34,6 +36,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
 class TakePictureTest {
 
@@ -41,9 +44,14 @@ class TakePictureTest {
     val activityRule = ActivityScenarioRule(TakePhotoActivity::class.java)
 
 
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
+
+
 
     private lateinit var decorView: View
     private var habitsCollected: ArrayList<String> = ArrayList()
+    private var habitsCoaches: ArrayList<String> = ArrayList()
 
 
     @get:Rule
@@ -71,7 +79,10 @@ class TakePictureTest {
                 for (child in children) {
                     // write child value to object
                     var habitName = child.child("name").value.toString()
+                    var coach = child.child("coach").value.toString()
+
                     habitsCollected += habitName
+                    habitsCoaches += coach
                 }
             }
         }
@@ -156,6 +167,60 @@ class TakePictureTest {
             }
             // Go back to the app
             uiDevice.pressBack()
+        }
+    }
+
+    @Test
+    fun takePhotoAndShutterAndDone() {
+        if (habitsCollected.size > 0) {
+            onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
+            Log.d("TakePictureTest", habitsCollected.toString())
+            onData(Matchers.equalTo(habitsCollected[0])).inRoot(isPlatformPopup()).perform(ViewActions.click())
+            onView(ViewMatchers.withId(R.id.auto_complete_txt)).check(ViewAssertions.matches(withText(habitsCollected[0])))
+            onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
+            Thread.sleep(2000)
+            // go back
+            var uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+            var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
+            // If the device has a physical shutter button, use it
+            if (uiShutter.exists()) {
+                uiShutter.click()
+            }
+            // accept the image
+            var uiAccept = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
+            if (uiAccept.exists()) {
+                uiAccept.click()
+            }
+        }
+    }
+
+    @Test
+    fun takePhotoAndShutterAndDoneAndSave() {
+        Log.d("TakePictureTest", habitsCoaches.toString())
+        if (habitsCollected.size > 0) {
+            onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
+            Log.d("TakePictureTest", habitsCollected.toString())
+            onData(Matchers.equalTo(habitsCollected[0])).inRoot(isPlatformPopup()).perform(ViewActions.click())
+            onView(ViewMatchers.withId(R.id.auto_complete_txt)).check(ViewAssertions.matches(withText(habitsCollected[0])))
+            onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
+            Thread.sleep(2000)
+            // go back
+            var uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+            var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
+            // If the device has a physical shutter button, use it
+            if (uiShutter.exists()) {
+                uiShutter.click()
+            }
+            // accept the image
+            var uiAccept = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
+            if (uiAccept.exists()) {
+                uiAccept.click()
+            }
+            // Wait for the image to be saved takes a while
+            if (habitsCoaches[0] == "null") {
+                Thread.sleep(3000)
+                onView(withId(R.id.backHomeButton)).perform(ViewActions.click())
+            }
         }
     }
 
