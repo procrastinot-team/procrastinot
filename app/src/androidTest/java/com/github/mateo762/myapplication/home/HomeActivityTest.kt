@@ -15,6 +15,7 @@ import com.github.mateo762.myapplication.home.fragments.TodayFragment
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,6 +36,12 @@ class HomeActivityTest {
         hiltRule.inject()
     }
 
+    @Test
+    fun activityLaunchesSuccessfully() {
+        activityScenarioRule.scenario.onActivity { activity ->
+            assertNotNull(activity)
+        }
+    }
     @Test
     fun bottomNav_todayFragment_displaysTodayFragment() {
         onView(withId(R.id.todayFragment)).perform(click())
