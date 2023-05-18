@@ -6,12 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.github.mateo762.myapplication.BaseActivity
@@ -172,6 +174,7 @@ class TakePhotoActivity : BaseActivity() {
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
@@ -188,6 +191,7 @@ class TakePhotoActivity : BaseActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun onImageCaptured() {
         takePhotoButton.visibility = View.GONE
         takePhotoText.visibility = View.VISIBLE
@@ -196,6 +200,7 @@ class TakePhotoActivity : BaseActivity() {
         uploadImage()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun uploadImage() {
         // write to firebase storage
         //Generate a file name based on the upload time
