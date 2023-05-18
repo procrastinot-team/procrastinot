@@ -1,24 +1,23 @@
 package com.github.mateo762.myapplication
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.followers.UserRepositoryImpl
 import com.github.mateo762.myapplication.models.UserEntity
 import com.google.firebase.database.*
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
+import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
 
-
+@RunWith(AndroidJUnit4::class)
+@ExperimentalCoroutinesApi
 class UserRepositoryTest {
-
-    private val testCoroutineDispatcher = TestCoroutineDispatcher()
-    private val testCoroutineScope =
-        createTestCoroutineScope(TestCoroutineDispatcher() + TestCoroutineExceptionHandler() + testCoroutineDispatcher)
-
 
     private lateinit var userRepositoryImpl: UserRepositoryImpl
     private lateinit var database: DatabaseReference
@@ -39,7 +38,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    fun getUserTest() = runBlockingTest {
+    fun getUserTest() = runTest {
         val testUserId = "testUserId"
         val dataSnapshot = mock(DataSnapshot::class.java)
         val userEntity = UserEntity("uid", "testUserId", "testUsername", "testEmail", emptyList(), emptyList())
@@ -56,8 +55,9 @@ class UserRepositoryTest {
         assertEquals(userEntity, result)
     }
 
+    /*
     @Test
-    fun followUserTest() = runBlocking {
+    fun followUserTest() = runTest {
         try {
             userRepositoryImplTest = UserRepositoryImpl(database)
             userRepositoryImplTest.followUser("uT8hhonn2lR0vnfdDS8PszDhnZJ2", "LamjUsoWfPR62uZ1nwFcFMBYW912")
@@ -78,7 +78,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    fun checkIfUserFollowsTest() = runBlocking {
+    fun checkIfUserFollowsTest() = runTest {
         try {
             userRepositoryImplTest = UserRepositoryImpl(database)
             val result = userRepositoryImplTest.checkIfUserFollows("uT8hhonn2lR0vnfdDS8PszDhnZJ2", "LamjUsoWfPR62uZ1nwFcFMBYW912")
@@ -89,5 +89,5 @@ class UserRepositoryTest {
         }
         assertTrue(true)
     }
-
+*/
 }

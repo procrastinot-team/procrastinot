@@ -1,9 +1,11 @@
 package com.github.mateo762.myapplication.authentication
 
+import android.content.Context
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -12,6 +14,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.ToastMatcher
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.Matchers
@@ -45,6 +48,8 @@ class LoginActivityTest {
         hiltRule.inject()
         // Initialize the Intents framework
         Intents.init()
+
+        //PreferenceHelper.setLoggedIn(ApplicationProvider.getApplicationContext(), false)
     }
 
     @After
