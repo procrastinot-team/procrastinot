@@ -26,13 +26,6 @@ class RequestsFragmentTest {
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
-        val habitEntity = HabitEntity(id = "1", coachRequested = true)
-        val habitSnapshot = mock(DataSnapshot::class.java)
-        `when`(habitSnapshot.getValue(HabitEntity::class.java)).thenReturn(habitEntity)
-
-        val childSnapshot = mock(DataSnapshot::class.java)
-        `when`(childSnapshot.getValue(HabitEntity::class.java)).thenReturn(habitEntity)
-
         composeTestRule.setContent {
             RequestsScreen(emptyList(), emptyList()) { _, _ -> }
         }

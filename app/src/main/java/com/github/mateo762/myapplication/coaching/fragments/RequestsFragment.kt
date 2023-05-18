@@ -56,6 +56,12 @@ class RequestsFragment : Fragment() {
         }
     }
 
+    /*
+    This method is a propagated callback from the @Composable in the RequestsScreen UI
+    component. The habit and coach are taken from the selection done by the user via
+    the button and the childSnapshot is the corresponding Firebase entity that will
+    be updated to reflect the user's choice.
+     */
     fun updateCoachStateCallback(
         childSnapshot: DataSnapshot,
         habit: HabitEntity,
