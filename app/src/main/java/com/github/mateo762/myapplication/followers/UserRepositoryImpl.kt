@@ -128,12 +128,7 @@ class UserRepositoryImpl @Inject constructor(private val db: DatabaseReference) 
                     for (child in snapshot.children) {
                         child?.let {
                             var childList = it.getValue(object : GenericTypeIndicator<List<String?>>() {})
-                            childList?.let {
-                                for (value in childList)
-                                    value?.let {
-                                        list.add(value)
-                                    }
-                            }
+                            list.addAll(childList as ArrayList<String>)
                         }
                     }
                     continuation.resume(list)
@@ -155,12 +150,7 @@ class UserRepositoryImpl @Inject constructor(private val db: DatabaseReference) 
                     for (child in snapshot.children) {
                         child?.let {
                             var childList = it.getValue(object : GenericTypeIndicator<List<String?>>() {})
-                            childList?.let {
-                                for (value in childList)
-                                    value?.let {
-                                        list.add(value)
-                                    }
-                            }
+                            list.addAll(childList as ArrayList<String>)
                         }
                     }
                     continuation.resume(list)

@@ -108,17 +108,16 @@ class ProfileViewModel @Inject constructor(
 
         averageRepetitionsPerWeek = daysCount.sum() / daysCount.size
 
-        // Get the earliest and latest habit
-        var earliestHour = starts[0].split(":")[0].toInt()
-        var earliestMinute = starts[0].split(":")[1].toInt()
-        for (i in 1 until starts.size) {
-            val hour = starts[i].split(":")[0].toInt()
-            val minute = starts[i].split(":")[1].toInt()
-            if (hour < earliestHour || (hour == earliestHour && minute < earliestMinute)) {
-                earliestHour = hour
-                earliestMinute = minute
-            }
-        }
+        val statsUiModel = ProfileStatsUiModel(
+            totalNumberOfHabits = habits.size,
+            averageDaysInWeek = averageRepetitionsPerWeek,
+            earliestStart = getEarliestStart(),
+            latestEnd = getLatestEnd()
+        )
+        statsLiveData.postValue(statsUiModel)
+    }
+
+    private fun getLatestEnd(): String {
         var latestHour = ends[0].split(":")[0].toInt()
         var latestMinute = ends[0].split(":")[1].toInt()
         for (i in 1 until ends.size) {
@@ -129,13 +128,20 @@ class ProfileViewModel @Inject constructor(
                 latestMinute = minute
             }
         }
+        return "${latestHour}:${latestMinute}"
+    }
 
-        val statsUiModel = ProfileStatsUiModel(
-            totalNumberOfHabits = habits.size,
-            averageDaysInWeek = averageRepetitionsPerWeek,
-            earliestStart = "${earliestHour}:${earliestMinute}",
-            latestEnd = "${latestHour}:${latestMinute}"
-        )
-        statsLiveData.postValue(statsUiModel)
+    private fun getEarliestStart(): String {
+        var earliestHour = starts[0].split(":")[0].toInt()
+        var earliestMinute = starts[0].split(":")[1].toInt()
+        for (i in 1 until starts.size) {
+            val hour = starts[i].split(":")[0].toInt()
+            val minute = starts[i].split(":")[1].toInt()
+            if (hour < earliestHour || (hour == earliestHour && minute < earliestMinute)) {
+                earliestHour = hour
+                earliestMinute = minute
+            }
+        }
+        return "${earliestHour}:${earliestMinute}"
     }
 }
