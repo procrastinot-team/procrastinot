@@ -1,5 +1,6 @@
 package com.github.mateo762.myapplication
 
+import android.content.Context
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.espresso.intent.Intents
@@ -9,8 +10,12 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.habits.HabitsActivity
+import com.github.mateo762.myapplication.models.HabitEntity
+import com.github.mateo762.myapplication.ui.habits.convertDayOfWeekToInt
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import org.hamcrest.Matchers.*
 import org.junit.After
 import org.junit.Before
@@ -160,4 +165,16 @@ class CreateHabitActivityTest {
             .performScrollTo()
             .assertIsDisplayed()
     }
+
+    @Test
+    fun convertDayOfWeekToInt_isCorrect() {
+        assertEquals(2, convertDayOfWeekToInt(DayOfWeek.MONDAY))
+        assertEquals(3, convertDayOfWeekToInt(DayOfWeek.TUESDAY))
+        assertEquals(4, convertDayOfWeekToInt(DayOfWeek.WEDNESDAY))
+        assertEquals(5, convertDayOfWeekToInt(DayOfWeek.THURSDAY))
+        assertEquals(6, convertDayOfWeekToInt(DayOfWeek.FRIDAY))
+        assertEquals(7, convertDayOfWeekToInt(DayOfWeek.SATURDAY))
+        assertEquals(1, convertDayOfWeekToInt(DayOfWeek.SUNDAY))
+    }
+
 }

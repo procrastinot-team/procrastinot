@@ -34,7 +34,7 @@ class HabitNotificationService(
     /**
      * Method that displays a notification.
      */
-    fun displayNotification() {
+    fun displayNotification(habitName: String) {
         val activityIntent = Intent(context, TakePhotoActivity::class.java)
         val pendingActivityIntent = PendingIntent.getActivity(
             context,
@@ -45,7 +45,7 @@ class HabitNotificationService(
         val notification = NotificationCompat.Builder(context, HABIT_CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(context.getString(R.string.notification_content_title))
-            .setContentText(context.getString(R.string.notification_content_text))
+            .setContentText("Have you completed $habitName? Take a picture quick")
             .setContentIntent(pendingActivityIntent)
             .build()
 
