@@ -53,7 +53,7 @@ class SettingsActivity : BaseActivity() {
                 if ((grantResults.isNotEmpty() &&
                             grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 ) {
-                    notificationService.displayNotification()
+                    notificationService.displayNotification(habitName = "Test habit")
                 } else {
                     //no-op
                 }
@@ -67,7 +67,7 @@ class SettingsActivity : BaseActivity() {
 
     private fun onNotificationButtonClicked(context: Context) {
         if (notificationManager.areNotificationsEnabled()) {
-            notificationService.displayNotification()
+            notificationService.displayNotification("Test habit")
         } else {
             context.showToast(R.string.notification_permission_not_granted)
         }
