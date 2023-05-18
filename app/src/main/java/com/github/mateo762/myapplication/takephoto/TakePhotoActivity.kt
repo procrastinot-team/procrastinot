@@ -18,6 +18,7 @@ import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.BuildConfig
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.home.HomeActivity
+import com.github.mateo762.myapplication.models.HabitImageEntity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.ktx.auth
@@ -26,6 +27,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -46,6 +48,7 @@ class TakePhotoActivity : BaseActivity() {
     private lateinit var autoCompleteTextView: AutoCompleteTextView
     private lateinit var dropdownAdapter: ArrayAdapter<String>
     private var selectedHabit: String? = null
+    private var selectedHabitId: String? = null
     private var selectedTrainer: String? = null
     private var selectedTrainerId: String? = null
     private lateinit var backHomeButton: Button
@@ -60,6 +63,7 @@ class TakePhotoActivity : BaseActivity() {
         textInputLayout = findViewById(R.id.textInputLayout)
         autoCompleteTextView = findViewById(R.id.auto_complete_txt)
         var habitNames = ArrayList<String>()
+        var habitIds = ArrayList<String>()
         var habitTrainer = ArrayList<String>()
         var habitTrainerId = ArrayList<String>()
         var db = Firebase.database.reference
@@ -70,9 +74,11 @@ class TakePhotoActivity : BaseActivity() {
                 var children = it.children
                 for (child in children) {
                     // write child value to object
+                    var habitId = child.key.toString()
                     var habitName = child.child("name").value.toString()
                     var trainer = child.child("coach").value
                     habitNames += habitName
+                    habitIds += habitId
                     if (trainer != null) {
                         trainer = trainer.toString()
                         ref2.get().addOnSuccessListener {
@@ -115,9 +121,10 @@ class TakePhotoActivity : BaseActivity() {
 
         autoCompleteTextView.setOnItemClickListener() { parent, view, position, id ->
             selectedHabit = parent.getItemAtPosition(position).toString()
+            selectedHabitId = habitIds[position]
             selectedTrainer = habitTrainer[position]
             selectedTrainerId = habitTrainerId[position]
-            Toast.makeText(this, selectedHabit + " - " + selectedTrainer, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, selectedHabit + " - " + selectedHabitId, Toast.LENGTH_SHORT).show()
         }
         imageView = findViewById(R.id.imageView)
         takePhotoText = findViewById(R.id.textView)
@@ -211,10 +218,20 @@ class TakePhotoActivity : BaseActivity() {
             // get the image url
             storage.downloadUrl.addOnSuccessListener {
                 var imageUrl = it.toString()
-                // show floating action button
+                // write to firebase database
+                var db = Firebase.database.reference
+                if (selectedTrainerId != null) {
+                    val habitImage = HabitImageEntity(
+                        id = UUID.randomUUID().toString(),
+                        userId = currentUser,
+                        habitId = selectedHabitId!!,
+                        url = imageUrl,
+                        date = LocalDateTime.now().toString()
+                    )
+                    db.child("users").child(currentUser).child("imagesPath").push().setValue(habitImage)
+                }
                 if (selectedTrainer == "No trainer" || selectedTrainer == null) {
                     takePhotoText.text = getString(R.string.done)
-                    Thread.sleep(1000)
                     backHomeButton.visibility = View.VISIBLE
                     backHomeButton.isEnabled = true
                 } else {

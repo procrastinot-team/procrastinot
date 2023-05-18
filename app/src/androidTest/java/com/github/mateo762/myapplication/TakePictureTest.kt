@@ -1,20 +1,30 @@
 package com.github.mateo762.myapplication
 
+import android.util.Log
 import android.view.View
+import android.widget.AdapterView
+import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.RootMatchers.isPlatformPopup
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
 import com.github.mateo762.myapplication.takephoto.TakePhotoActivity
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -30,6 +40,7 @@ class TakePictureTest {
 
 
     private lateinit var decorView: View
+    private var habitsCollected: ArrayList<String> = ArrayList()
 
 
     @get:Rule
@@ -42,6 +53,26 @@ class TakePictureTest {
         activityRule.scenario.onActivity {
             decorView = it.window.decorView
         }
+        var currentUser = "testUser"
+        var firebaseUser = Firebase.auth.currentUser?.uid
+        if (firebaseUser != null) {
+            currentUser = firebaseUser.toString()
+        }
+        val db = Firebase.database.reference
+        val ref =  db.child("users").child(currentUser).child("habitsPath")
+        ref.get().addOnSuccessListener {
+            if (it.exists()) {
+                Log.d("TakePictureTest", "Habits exist")
+                Log.d("TakePictureTest", it.toString())
+                var children = it.children
+                for (child in children) {
+                    // write child value to object
+                    var habitName = child.child("name").value.toString()
+                    habitsCollected += habitName
+                }
+            }
+        }
+        Thread.sleep(500)
         Intents.init()
     }
 
@@ -66,32 +97,26 @@ class TakePictureTest {
         }
     }
 
-    fun habitsExist(): Boolean {
-        var currentUser = "testUser"
-        var firebaseUser = Firebase.auth.currentUser?.uid
-        if (firebaseUser != null) {
-            currentUser = firebaseUser.toString()
-        }
-        val db = Firebase.database.reference
-        val ref =  db.child("users").child(currentUser).child("habitsPath")
-        var final = false
-        ref.get().addOnSuccessListener {
-            if (it.exists()) {
-                final = true
-            }
-        }
-        return final
-    }
-
     @Test
     fun checkIfTakePhotoButtonIsDisplayed() {
         onView(withId(R.id.takePhotoButton)).check(matches(isDisplayed()))
     }
 
+    // If disabled it will fail to click
     @Test
     fun checkIfDropdownIsDisplayed() {
-        if (habitsExist()) {
-            onView(withId(R.id.textInputLayout)).check(matches(isDisplayed()))
+       if (habitsCollected.size > 0) {
+           onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
+       }
+    }
+
+    @Test
+    fun testDropdown() {
+        if (habitsCollected.size > 0) {
+            onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
+            Log.d("TakePictureTest", habitsCollected.toString())
+            onData(Matchers.equalTo(habitsCollected[0])).inRoot(isPlatformPopup()).perform(ViewActions.click())
+            onView(ViewMatchers.withId(R.id.auto_complete_txt)).check(ViewAssertions.matches(withText(habitsCollected[0])))
         }
     }
 
