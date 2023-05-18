@@ -9,7 +9,6 @@ import androidx.compose.ui.platform.ComposeView
 import com.github.mateo762.myapplication.ui.coaching.OffersScreen
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class OffersFragment : Fragment() {
 
 
