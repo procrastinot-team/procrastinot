@@ -237,6 +237,9 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
     }
 
     private fun handleProfileInfoChange(isEditCLicked: Boolean) {
+        binding.btnEdit.visibility = if (isEditCLicked) View.GONE else View.VISIBLE
+        binding.btnSave.visibility = if (isEditCLicked) View.VISIBLE else View.GONE
+        
         binding.nameTextView.visibility = if (isEditCLicked) View.GONE else View.VISIBLE
         binding.nameEditText.isEnabled = isEditCLicked
         binding.nameEditText.isClickable = isEditCLicked
@@ -247,9 +250,6 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
         binding.emailEditText.visibility = if (isEditCLicked) View.VISIBLE else View.GONE
         binding.usernameTextView.visibility = if (isEditCLicked) View.GONE else View.VISIBLE
         binding.changeUsernameButton.visibility = if (isEditCLicked) View.VISIBLE else View.GONE
-
-        binding.btnEdit.visibility = if (isEditCLicked) View.GONE else View.VISIBLE
-        binding.btnSave.visibility = if (isEditCLicked) View.VISIBLE else View.GONE
     }
 
     private fun setLiveDataObservers() {

@@ -160,7 +160,9 @@ class ProfileActivityTest {
             }
         }
 
+        onView(withId(R.id.btnEdit)).check(matches(isDisplayed()))
         onView(withId(R.id.btnEdit)).perform(click())
+        onView(withId(R.id.btnSave)).check(matches(isDisplayed()))
         onView(withId(R.id.btnSave)).perform(click())
 
         onView(withId(R.id.nameTextView)).check(matches(isDisplayed()))
