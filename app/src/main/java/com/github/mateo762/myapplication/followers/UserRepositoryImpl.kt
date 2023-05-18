@@ -2,6 +2,7 @@ package com.github.mateo762.myapplication.followers
 
 import android.util.Log
 import com.github.mateo762.myapplication.models.UserEntity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
@@ -9,13 +10,16 @@ import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-class UserRepositoryImpl @Inject constructor(private val db: DatabaseReference) : UserRepository {
+class UserRepositoryImpl @Inject constructor(private val db: DatabaseReference, private val auth: FirebaseAuth) : UserRepository {
 
     companion object {
         private val TAG = UserRepositoryImpl::class.java.simpleName
     }
 
     private var usersReference: DatabaseReference = db.child("users")
+    override fun getUserUid(): String {
+        return auth.currentUser?.uid ?: ""
+    }
 
     override suspend fun getUser(uid: String): UserEntity? {
         return suspendCancellableCoroutine { continuation ->

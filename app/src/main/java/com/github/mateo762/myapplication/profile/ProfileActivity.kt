@@ -16,6 +16,7 @@ import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.github.mateo762.myapplication.followers.UserRepository
 import com.github.mateo762.myapplication.username.UsernameActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
@@ -79,9 +80,9 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
         binding.coachRatingView.setViewModel(coachRatingViewModel)
         binding.coachRatingView.getRatingStats()
 
-        uid = intent.getStringExtra(USER_ID_EXTRA) ?: user!!.uid
+        uid = intent.getStringExtra(USER_ID_EXTRA) ?: userRepository.getUserUid()
 
-        var currentUserId = user?.uid ?: uid
+        var currentUserId = userRepository.getUserUid() ?: uid
 
         if (uid == currentUserId) {
             binding.btnFollow.visibility = View.GONE

@@ -3,12 +3,11 @@ package com.github.mateo762.myapplication
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.followers.UserRepositoryImpl
 import com.github.mateo762.myapplication.models.UserEntity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
-import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,12 +20,14 @@ class UserRepositoryTest {
 
     private lateinit var userRepositoryImpl: UserRepositoryImpl
     private lateinit var database: DatabaseReference
+    private lateinit var auth: FirebaseAuth
     private lateinit var usersReference: DatabaseReference
     private lateinit var childReference: DatabaseReference
     private lateinit var userRepositoryImplTest: UserRepositoryImpl
 
     @Before
     fun setup() {
+        auth = mock(FirebaseAuth::class.java)
         database = mock(DatabaseReference::class.java)
         usersReference = mock(DatabaseReference::class.java)
         childReference = mock(DatabaseReference::class.java)
@@ -34,7 +35,7 @@ class UserRepositoryTest {
         `when`(database.child("users")).thenReturn(usersReference)
         `when`(usersReference.child(anyString())).thenReturn(childReference)
 
-        userRepositoryImpl = UserRepositoryImpl(database)
+        userRepositoryImpl = UserRepositoryImpl(database, auth)
     }
 
     @Test

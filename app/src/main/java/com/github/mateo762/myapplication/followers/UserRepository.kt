@@ -3,6 +3,9 @@ package com.github.mateo762.myapplication.followers
 import com.github.mateo762.myapplication.models.UserEntity
 
 interface UserRepository {
+
+    fun getUserUid(): String
+
     suspend fun getUser(uid: String): UserEntity?
 
     suspend fun followUser(currentUserId: String, targetUserId: String)

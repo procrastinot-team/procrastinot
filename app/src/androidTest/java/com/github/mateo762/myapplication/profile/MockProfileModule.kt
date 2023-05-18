@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.time.DayOfWeek
+import java.util.UUID
 import javax.inject.Singleton
 
 @Module
@@ -82,6 +83,10 @@ class MockProfileModule {
     }
 
     class MockUserRepository(): UserRepository {
+        override fun getUserUid(): String {
+            return "IWJEASmqowjoIAJi"
+        }
+
         override suspend fun getUser(uid: String): UserEntity? {
             return UserEntity()
         }
