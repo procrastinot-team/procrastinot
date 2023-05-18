@@ -16,7 +16,10 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiSelector
 import com.github.mateo762.myapplication.takephoto.TakePhotoActivity
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.ktx.auth
@@ -117,6 +120,42 @@ class TakePictureTest {
             Log.d("TakePictureTest", habitsCollected.toString())
             onData(Matchers.equalTo(habitsCollected[0])).inRoot(isPlatformPopup()).perform(ViewActions.click())
             onView(ViewMatchers.withId(R.id.auto_complete_txt)).check(ViewAssertions.matches(withText(habitsCollected[0])))
+        }
+    }
+
+    @Test
+    fun selectAndClick() {
+        if (habitsCollected.size > 0) {
+            onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
+            Log.d("TakePictureTest", habitsCollected.toString())
+            onData(Matchers.equalTo(habitsCollected[0])).inRoot(isPlatformPopup()).perform(ViewActions.click())
+            onView(ViewMatchers.withId(R.id.auto_complete_txt)).check(ViewAssertions.matches(withText(habitsCollected[0])))
+            onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
+            Thread.sleep(2000)
+            // go back
+            var uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+            uiDevice.pressBack()
+        }
+    }
+
+    @Test
+    fun selectAndClickAndTakePicture() {
+        if (habitsCollected.size > 0) {
+            onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
+            Log.d("TakePictureTest", habitsCollected.toString())
+            onData(Matchers.equalTo(habitsCollected[0])).inRoot(isPlatformPopup()).perform(ViewActions.click())
+            onView(ViewMatchers.withId(R.id.auto_complete_txt)).check(ViewAssertions.matches(withText(habitsCollected[0])))
+            onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
+            Thread.sleep(2000)
+            // go back
+            var uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+            var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
+            // If the device has a physical shutter button, use it
+            if (uiShutter.exists()) {
+                uiShutter.click()
+            }
+            // Go back to the app
+            uiDevice.pressBack()
         }
     }
 
