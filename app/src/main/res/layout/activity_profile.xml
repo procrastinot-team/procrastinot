@@ -34,7 +34,7 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
-                android:layout_width="379dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
@@ -43,17 +43,18 @@
                 app:cardElevation="3dp">
 
                 <LinearLayout
-                    android:layout_width="380dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/card_background_dark"
                     android:orientation="horizontal"
                     android:paddingTop="24dp"
-                    android:paddingBottom="24dp">
+                    android:paddingBottom="24dp"
+                    android:weightSum="8">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:gravity="center">
 
                         <com.google.android.material.imageview.ShapeableImageView
@@ -66,15 +67,15 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="244dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="3"
+                        android:layout_weight="5"
                         android:orientation="vertical">
 
                         <EditText
                             android:id="@+id/nameEditText"
-                            android:layout_width="244dp"
-                            android:layout_height="50dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:autofillHints="@string/user_name_editable"
                             android:ems="10"
                             android:hint="@string/user_name_editable"
@@ -83,8 +84,8 @@
 
                         <EditText
                             android:id="@+id/emailEditText"
-                            android:layout_width="244dp"
-                            android:layout_height="50dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:autofillHints="@string/user_email_editable"
                             android:ems="10"
                             android:hint="@string/user_email_editable"
@@ -93,33 +94,36 @@
 
                         <TextView
                             android:id="@+id/nameTextView"
-                            android:layout_width="242dp"
-                            android:layout_height="35dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:gravity="start"
+                            android:layout_margin="4dp"
                             android:text="@string/user_name"
                             android:textColor="@color/dark_text"
-                            android:textSize="14sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/emailTextView"
-                            android:layout_width="242dp"
-                            android:layout_height="35dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:gravity="start"
+                            android:layout_margin="4dp"
                             android:text="@string/user_email"
                             android:textColor="@color/dark_text"
-                            android:textSize="14sp" />
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/usernameTextView"
-                            android:layout_width="242dp"
-                            android:layout_height="35dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:gravity="start"
+                            android:layout_margin="4dp"
                             android:text="@string/user_username"
                             android:textColor="@color/dark_text"
-                            android:textSize="14sp" />
+                            android:textSize="18sp" />
 
                         <Button
                             android:id="@+id/changeUsernameButton"
@@ -196,36 +200,38 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="3"
+                        android:layout_gravity="end"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <ImageButton
                             android:id="@+id/btnEdit"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:contentDescription="@string/edit_icon"
                             app:srcCompat="@android:drawable/ic_menu_edit" />
 
                         <ImageButton
                             android:id="@+id/btnSave"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:contentDescription="@string/save_icon"
                             app:srcCompat="@android:drawable/ic_menu_save" />
 
                         <ImageButton
                             android:id="@+id/btnFollow"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:contentDescription="@string/edit_icon"
                             app:srcCompat="@drawable/ic_follow" />
 
                         <ImageButton
                             android:id="@+id/btnUnfollow"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:contentDescription="@string/edit_icon"
                             app:srcCompat="@drawable/ic_unfollow" />
 
