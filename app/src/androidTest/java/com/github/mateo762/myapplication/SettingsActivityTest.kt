@@ -71,7 +71,7 @@ class SettingsActivityTest {
         }
 
         val expectedTitle = context.getString(R.string.notification_content_title)
-        val expectedContent = context.getString(R.string.notification_content_text)
+        val expectedContent = "Have you completed Test habit? Take a picture quick"
 
         onView(withId(R.id.notificationButton)).perform(ViewActions.click())
 
