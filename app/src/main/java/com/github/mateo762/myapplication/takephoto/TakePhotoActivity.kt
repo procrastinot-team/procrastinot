@@ -124,7 +124,7 @@ class TakePhotoActivity : BaseActivity() {
             selectedHabitId = habitIds[position]
             selectedTrainer = habitTrainer[position]
             selectedTrainerId = habitTrainerId[position]
-            Toast.makeText(this, selectedHabit + " - " + selectedHabitId, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, selectedHabit + " - " + selectedTrainer, Toast.LENGTH_SHORT).show()
         }
         imageView = findViewById(R.id.imageView)
         takePhotoText = findViewById(R.id.textView)

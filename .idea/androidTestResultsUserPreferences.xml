@@ -498,7 +498,9 @@
                 <map>
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_6_Pro_API_33" value="120" />
+                  <entry key="RFCN306CBRN" value="120" />
                   <entry key="Tests" value="360" />
+                  <entry key="samsung&#10; SM-G981B" value="120" />
                 </map>
               </option>
             </AndroidTestResultsTableState>
