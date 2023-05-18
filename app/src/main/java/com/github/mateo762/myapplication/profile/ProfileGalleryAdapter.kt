@@ -4,13 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mateo762.myapplication.databinding.ItemProfileGalleryBinding
+import com.github.mateo762.myapplication.models.HabitImageEntity
 
 /**
  * Recycler view adapter for the profile gallery.
  */
 class ProfileGalleryAdapter : RecyclerView.Adapter<ProfileGalleryItemViewHolder>() {
 
-    var galleryItems: ArrayList<ProfileGalleryItem>? = null
+    var galleryItems: ArrayList<HabitImageEntity>? = null
         set(value) {
             field = value
             notifyDataSetChanged()

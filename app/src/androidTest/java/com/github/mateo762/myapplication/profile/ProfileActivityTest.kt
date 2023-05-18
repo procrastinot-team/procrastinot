@@ -1,35 +1,28 @@
 package com.github.mateo762.myapplication.profile
 
-import android.app.Activity
-import android.app.Instrumentation
 import android.content.Context
-import android.content.Intent
-import android.util.Log
 import android.widget.ProgressBar
 import android.widget.RatingBar
-import androidx.compose.ui.test.hasText
+import android.widget.TextView
 import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.R
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import com.github.mateo762.myapplication.atPosition
+import com.github.mateo762.myapplication.username.UsernameActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.containsString
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.core.IsNot.not
 import org.junit.After
 import org.junit.Assert.*
@@ -80,6 +73,7 @@ class ProfileActivityTest {
 
         context = ApplicationProvider.getApplicationContext()
     }
+
     @After
     fun tearDown() {
         Intents.release()
@@ -103,42 +97,180 @@ class ProfileActivityTest {
     }
 
     @Test
-    fun testUserHabitCount() {
-        Thread.sleep(500)
-        onView(withId(R.id.habit_count)).check(matches(withText(containsString("Posted habits:"))))
+    fun testInitialUserDataComponents() {
+        activityRule.scenario.onActivity {
+            it.runOnUiThread {
+                it.findViewById<TextView>(R.id.nameTextView).text = "Joe"
+                it.findViewById<TextView>(R.id.emailTextView).text = "Joe@test.com"
+                it.findViewById<TextView>(R.id.usernameTextView).text = "Joe"
+            }
+        }
+        onView(withId(R.id.nameTextView)).check(matches(isDisplayed()))
+        onView(withId(R.id.nameEditText)).check(matches(not(isEnabled())))
+        onView(withId(R.id.nameEditText)).check(matches(not(isClickable())))
+        onView(withId(R.id.nameEditText)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.emailTextView)).check(matches(isDisplayed()))
+        onView(withId(R.id.emailEditText)).check(matches(not(isEnabled())))
+        onView(withId(R.id.emailEditText)).check(matches(not(isClickable())))
+        onView(withId(R.id.emailEditText)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.usernameTextView)).check(matches(isDisplayed()))
+        onView(withId(R.id.changeUsernameButton)).check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.btnEdit)).check(matches(isDisplayed()))
+        onView(withId(R.id.btnSave)).check(matches(not(isDisplayed())))
     }
 
     @Test
-    fun testUserAvgHabitPerWeek() {
-        Thread.sleep(500)
-        onView(withId(R.id.avg_per_week)).check(matches(withText(containsString("Avg. Days in Week:"))))
-    }
+    fun testOnEditButtonClicked() {
+        activityRule.scenario.onActivity {
+            it.runOnUiThread {
+                it.findViewById<TextView>(R.id.nameTextView).text = "Joe"
+                it.findViewById<TextView>(R.id.emailTextView).text = "Joe@test.com"
+                it.findViewById<TextView>(R.id.usernameTextView).text = "Joe"
+            }
+        }
 
+        onView(withId(R.id.btnEdit)).perform(click())
+
+        onView(withId(R.id.nameTextView)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.nameEditText)).check(matches(isEnabled()))
+        onView(withId(R.id.nameEditText)).check(matches(isClickable()))
+        onView(withId(R.id.nameEditText)).check(matches(isDisplayed()))
+        onView(withId(R.id.emailTextView)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.emailEditText)).check(matches(isEnabled()))
+        onView(withId(R.id.emailEditText)).check(matches(isClickable()))
+        onView(withId(R.id.emailEditText)).check(matches(isDisplayed()))
+        onView(withId(R.id.usernameTextView)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.changeUsernameButton)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.btnEdit)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.btnSave)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.nameEditText)).check(matches(withText("Joe")))
+        onView(withId(R.id.emailEditText)).check(matches(withText("Joe@test.com")))
+    }
 
     @Test
-    fun testUserEarliestTask() {
-        Thread.sleep(500)
-        onView(withId(R.id.earliest)).check(matches(withText(containsString("Earliest start:"))))
+    fun testOnSaveButtonClicked() {
+        activityRule.scenario.onActivity {
+            it.runOnUiThread {
+                it.findViewById<TextView>(R.id.nameTextView).text = "Joe"
+                it.findViewById<TextView>(R.id.emailTextView).text = "Joe@test.com"
+                it.findViewById<TextView>(R.id.usernameTextView).text = "Joe"
+            }
+        }
+
+        onView(withId(R.id.btnEdit)).perform(click())
+        onView(withId(R.id.btnSave)).perform(click())
+
+        onView(withId(R.id.nameTextView)).check(matches(isDisplayed()))
+        onView(withId(R.id.nameEditText)).check(matches(not(isEnabled())))
+        onView(withId(R.id.nameEditText)).check(matches(not(isClickable())))
+        onView(withId(R.id.nameEditText)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.emailTextView)).check(matches(isDisplayed()))
+        onView(withId(R.id.emailEditText)).check(matches(not(isEnabled())))
+        onView(withId(R.id.emailEditText)).check(matches(not(isClickable())))
+        onView(withId(R.id.emailEditText)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.usernameTextView)).check(matches(isDisplayed()))
+        onView(withId(R.id.changeUsernameButton)).check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.btnEdit)).check(matches(isDisplayed()))
+        onView(withId(R.id.btnSave)).check(matches(not(isDisplayed())))
     }
 
     @Test
-    fun testUserLatestTask() {
-        Thread.sleep(500)
-        onView(withId(R.id.latest)).check(matches(withText(containsString("Latest end:"))))
+    fun testOnChangeUsernameButtonClicked() {
+        onView(withId(R.id.btnEdit)).perform(click())
+        onView(withId(R.id.changeUsernameButton)).perform(click())
+
+        Intents.intended(IntentMatchers.hasComponent(UsernameActivity.EntryPoint::class.java.name))
     }
 
     @Test
-    fun testUserFollowingCount() {
-        Thread.sleep(500)
-        onView(withId(R.id.following)).check(matches(withText(containsString("Following:"))))
+    fun testUserStats() = runTest {
+        onView(withId(R.id.habitCountText)).check(matches(isDisplayed()))
+        onView(withId(R.id.habitCountText)).check(
+            matches(
+                withText(
+                    context.getString(
+                        R.string.posted_habits,
+                        2
+                    )
+                )
+            )
+        )
+        onView(withId(R.id.avgPerWeekText)).check(matches(isDisplayed()))
+        onView(withId(R.id.avgPerWeekText)).check(
+            matches(
+                withText(
+                    context.getString(
+                        R.string.avg_days_week,
+                        2
+                    )
+                )
+            )
+        )
+        onView(withId(R.id.earliestTextView)).check(matches(isDisplayed()))
+        onView(withId(R.id.earliestTextView)).check(
+            matches(
+                withText(
+                    context.getString(
+                        R.string.earlystart,
+                        "0:0"
+                    )
+                )
+            )
+        )
+        onView(withId(R.id.latestTextView)).check(matches(isDisplayed()))
+        onView(withId(R.id.latestTextView)).check(
+            matches(
+                withText(
+                    context.getString(
+                        R.string.lateend,
+                        "23:59"
+                    )
+                )
+            )
+        )
     }
 
     @Test
-    fun testUserFollowersCount() {
-        Thread.sleep(500)
-        onView(withId(R.id.followers)).check(matches(withText(containsString("Followers:"))))
+    fun testFollowingStats() = runTest {
+        onView(withId(R.id.followingTextView)).check(matches(isDisplayed()))
+        onView(withId(R.id.followingTextView)).check(
+            matches(
+                withText(
+                    context.getString(
+                        R.string.following,
+                        3
+                    )
+                )
+            )
+        )
+        onView(withId(R.id.followersTextView)).check(matches(isDisplayed()))
+        onView(withId(R.id.followersTextView)).check(
+            matches(
+                withText(
+                    context.getString(
+                        R.string.followers,
+                        2
+                    )
+                )
+            )
+        )
     }
 
+    @Test
+    fun testHabitsRecyclerView() = runTest {
+        onView(withId(R.id.habitsRecyclerView)).check(matches(atPosition(0, hasDescendant(withText("Play guitar: MONDAY, FRIDAY")))))
+        onView(withId(R.id.habitsRecyclerView)).check(matches(atPosition(1, hasDescendant(withText("Sing: MONDAY, FRIDAY")))))
+    }
+
+    @Test
+    fun testHabitsImageRecyclerView() = runTest {
+        onView(withId(R.id.galleryRecyclerView)).check(matches(atPosition(0, isDisplayed())))
+        onView(withId(R.id.galleryRecyclerView)).check(matches(atPosition(1, isDisplayed())))
+    }
 
     @Test
     fun testRatingDisplayed() = runTest {
@@ -197,21 +329,5 @@ class ProfileActivityTest {
 //
 //        // Clean up the database
 //        ref.removeValue()
-//    }
-
-    // TODO: fix the test to pass on Cirrus CI
-//    @Test
-//    fun testEditAndSaveButtons() {
-        // First, we switch to edit mode and check if we can edit and if we see the save button
-//        onView(withId(R.id.btnEdit)).perform(click()).check(matches(not(isDisplayed())))
-//        onView(withId(R.id.btnSave)).check(matches(isDisplayed()))
-//        onView(withId(R.id.editTextEmail)).check(matches(isClickable()))
-//        onView(withId(R.id.editTextUserName)).check(matches(isClickable()))
-
-        // Then we save and check that the displaying is set back properly
-//        onView(withId(R.id.btnSave)).perform(click()).check(matches(not(isDisplayed())))
-//        onView(withId(R.id.btnEdit)).check(matches(isDisplayed()))
-//        onView(withId(R.id.editTextEmail)).check(matches(not(isClickable())))
-//        onView(withId(R.id.editTextUserName)).check(matches(not(isClickable())))
 //    }
 }

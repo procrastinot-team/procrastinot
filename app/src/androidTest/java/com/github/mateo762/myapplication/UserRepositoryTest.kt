@@ -1,21 +1,16 @@
 package com.github.mateo762.myapplication
 
-import com.github.mateo762.myapplication.followers.UserRepository
+import com.github.mateo762.myapplication.followers.UserRepositoryImpl
 import com.github.mateo762.myapplication.models.UserEntity
-import com.google.android.gms.tasks.Task
 import com.google.firebase.database.*
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.*
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
 
 
 class UserRepositoryTest {
@@ -25,22 +20,22 @@ class UserRepositoryTest {
         createTestCoroutineScope(TestCoroutineDispatcher() + TestCoroutineExceptionHandler() + testCoroutineDispatcher)
 
 
-    private lateinit var userRepository: UserRepository
-    private lateinit var database: FirebaseDatabase
+    private lateinit var userRepositoryImpl: UserRepositoryImpl
+    private lateinit var database: DatabaseReference
     private lateinit var usersReference: DatabaseReference
     private lateinit var childReference: DatabaseReference
-    private lateinit var userRepositoryTest: UserRepository
+    private lateinit var userRepositoryImplTest: UserRepositoryImpl
 
     @Before
     fun setup() {
-        database = mock(FirebaseDatabase::class.java)
+        database = mock(DatabaseReference::class.java)
         usersReference = mock(DatabaseReference::class.java)
         childReference = mock(DatabaseReference::class.java)
 
-        `when`(database.getReference("users")).thenReturn(usersReference)
+        `when`(database.child("users")).thenReturn(usersReference)
         `when`(usersReference.child(anyString())).thenReturn(childReference)
 
-        userRepository = UserRepository(database)
+        userRepositoryImpl = UserRepositoryImpl(database)
     }
 
     @Test
@@ -56,7 +51,7 @@ class UserRepositoryTest {
             listener.onDataChange(dataSnapshot)
         }.`when`(childReference).addListenerForSingleValueEvent(any())
 
-        val result = userRepository.getUser(testUserId)
+        val result = userRepositoryImpl.getUser(testUserId)
         verify(usersReference).child(testUserId)
         assertEquals(userEntity, result)
     }
@@ -64,8 +59,8 @@ class UserRepositoryTest {
     @Test
     fun followUserTest() = runBlocking {
         try {
-            userRepositoryTest = UserRepository()
-            userRepositoryTest.followUser("uT8hhonn2lR0vnfdDS8PszDhnZJ2", "LamjUsoWfPR62uZ1nwFcFMBYW912")
+            userRepositoryImplTest = UserRepositoryImpl(database)
+            userRepositoryImplTest.followUser("uT8hhonn2lR0vnfdDS8PszDhnZJ2", "LamjUsoWfPR62uZ1nwFcFMBYW912")
         } catch (e: Exception) {
             assertTrue(false)
         }
@@ -74,8 +69,8 @@ class UserRepositoryTest {
     @Test
     fun unfollowUserTest() {
         try {
-            userRepositoryTest = UserRepository()
-            userRepositoryTest.unfollowUser("uT8hhonn2lR0vnfdDS8PszDhnZJ2", "LamjUsoWfPR62uZ1nwFcFMBYW912")
+            userRepositoryImplTest = UserRepositoryImpl(database)
+            userRepositoryImplTest.unfollowUser("uT8hhonn2lR0vnfdDS8PszDhnZJ2", "LamjUsoWfPR62uZ1nwFcFMBYW912")
         } catch (e: Exception) {
             assertTrue(false)
         }
@@ -85,8 +80,8 @@ class UserRepositoryTest {
     @Test
     fun checkIfUserFollowsTest() = runBlocking {
         try {
-            userRepositoryTest = UserRepository()
-            val result = userRepositoryTest.checkIfUserFollows("uT8hhonn2lR0vnfdDS8PszDhnZJ2", "LamjUsoWfPR62uZ1nwFcFMBYW912")
+            userRepositoryImplTest = UserRepositoryImpl(database)
+            val result = userRepositoryImplTest.checkIfUserFollows("uT8hhonn2lR0vnfdDS8PszDhnZJ2", "LamjUsoWfPR62uZ1nwFcFMBYW912")
             // Add an assertion to verify the result if needed, e.g.:
             // assertEquals(expectedValue, result)
         } catch (e: Exception) {
