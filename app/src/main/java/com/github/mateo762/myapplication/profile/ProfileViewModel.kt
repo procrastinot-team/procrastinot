@@ -36,62 +36,74 @@ class ProfileViewModel @Inject constructor(
     var habitImagesLiveData = MutableLiveData<ArrayList<HabitImageEntity>>()
     var habitLiveData = MutableLiveData<ArrayList<HabitEntity>>()
     var statsLiveData = MutableLiveData<ProfileStatsUiModel>()
+    var userInfoLiveData = MutableLiveData<ProfileUserInfoUiModel>()
     var followingLiveData = MutableLiveData<Int>()
     var followersLiveData = MutableLiveData<Int>()
 
-    fun getHabitImages() {
+    fun getUserInfo(uid: String) {
         viewModelScope.launch {
-            auth.uid?.let { userId ->
-                try {
-                    service.getHabitsImages(userId)
-                        .collect { habitImages ->
-                            habitImagesLiveData.postValue(habitImages)
-                        }
-                } catch (exception: Exception) {
-                    Log.d(TAG, exception.toString())
+            try {
+                val user = userRepository.getUser(uid)
+                user?.let {
+                    val userInfoUiModel = ProfileUserInfoUiModel(
+                        name = user.name,
+                        username = user.username,
+                        email = user.email,
+                        url = user.url
+                    )
+                    userInfoLiveData.postValue(userInfoUiModel)
                 }
+            } catch (exception: Exception) {
+                Log.d(TAG, exception.toString())
             }
         }
     }
 
-    fun getHabits() {
+    fun getHabitImages(uid: String) {
         viewModelScope.launch {
-            auth.uid?.let { userId ->
-                try {
-                    service.getHabits(userId)
-                        .collect { habits ->
-                            habitLiveData.postValue(habits)
-                            calculateStatistics(habits)
-                        }
-                } catch (exception: Exception) {
-                    Log.d(TAG, exception.toString())
-                }
+            try {
+                service.getHabitsImages(uid)
+                    .collect { habitImages ->
+                        habitImagesLiveData.postValue(habitImages)
+                    }
+            } catch (exception: Exception) {
+                Log.d(TAG, exception.toString())
             }
         }
     }
 
-    fun getFollowingNumber() {
+    fun getHabits(uid: String) {
         viewModelScope.launch {
-            auth.uid?.let {
-                try {
-                    var followingList = userRepository.getFollowing(it)
-                    followingLiveData.postValue(followingList.size)
-                } catch (exception: Exception) {
-                    Log.d(TAG, exception.toString())
-                }
+            try {
+                service.getHabits(uid)
+                    .collect { habits ->
+                        habitLiveData.postValue(habits)
+                        calculateStatistics(habits)
+                    }
+            } catch (exception: Exception) {
+                Log.d(TAG, exception.toString())
             }
         }
     }
 
-    fun getFollowersNumber() {
+    fun getFollowingNumber(uid: String) {
         viewModelScope.launch {
-            auth.uid?.let {
-                try {
-                    var followersList = userRepository.getFollowers(it)
-                    followersLiveData.postValue(followersList.size)
-                } catch (exception: Exception) {
-                    Log.d(TAG, exception.toString())
-                }
+            try {
+                var followingList = userRepository.getFollowing(uid)
+                followingLiveData.postValue(followingList.size)
+            } catch (exception: Exception) {
+                Log.d(TAG, exception.toString())
+            }
+        }
+    }
+
+    fun getFollowersNumber(uid: String) {
+        viewModelScope.launch {
+            try {
+                var followersList = userRepository.getFollowers(uid)
+                followersLiveData.postValue(followersList.size)
+            } catch (exception: Exception) {
+                Log.d(TAG, exception.toString())
             }
         }
     }
