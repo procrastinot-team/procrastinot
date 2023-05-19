@@ -83,26 +83,7 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
 
         var currentUserId = userRepository.getUserUid()
 
-        if (uid == currentUserId) {
-            binding.btnFollow.visibility = View.GONE
-            binding.btnUnfollow.visibility = View.GONE
-            binding.btnEdit.visibility = View.VISIBLE
-        } else {
-            binding.btnEdit.visibility = View.GONE
-            // Check if the user is already following the profile
-            launch {
-                val isFollowing = userRepository.checkIfUserFollows(currentUserId, uid)
-                if (isFollowing) {
-
-                    // If the user is following the profile, show the 'btnUnfollow' button
-                    binding.btnFollow.visibility = View.GONE
-                    binding.btnUnfollow.visibility = View.VISIBLE
-                } else {
-                    binding.btnFollow.visibility = View.VISIBLE
-                    binding.btnUnfollow.visibility = View.GONE
-                }
-            }
-        }
+        checkIfDifferentUser(currentUserId)
 
         binding.btnFollow.setOnClickListener {
             followUser(currentUserId, uid)
@@ -120,39 +101,11 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
         }
 
         binding.btnEdit.setOnClickListener {
-            // We enable the name and email edit texts such that they can be edited
-            handleProfileInfoChange(true)
-            binding.nameEditText.setText(binding.nameTextView.text)
-            binding.emailEditText.setText(binding.emailTextView.text)
-
-            binding.profileImage.setOnClickListener {
-                val openGalleryIntent =
-                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                startActivityForResult(openGalleryIntent, 1000)
-            }
+            onEditButtonClicked()
         }
 
         binding.btnSave.setOnClickListener {
-            // We save the updated value to your database or data storage
-            val newName = binding.nameEditText.text.toString()
-            val newEmail = binding.emailEditText.text.toString()
-            binding.nameTextView.text = newName
-            binding.emailTextView.text = newEmail
-
-            handleProfileInfoChange(false)
-
-            binding.profileImage.setOnClickListener { }
-
-            db.child("users").child(uid).child("name").setValue(newName)
-            db.child("users").child(uid).child("email").setValue(newEmail)
-
-            userImageStorageService.storeImage(currentUserId, imageUri)
-
-            val profileUpdates = UserProfileChangeRequest.Builder()
-                .setDisplayName(newName)
-                .build()
-
-            user?.updateProfile(profileUpdates)
+            onSaveButtonClicked(currentUserId)
         }
 
         habitsAdapter = ProfileHabitsAdapter()
@@ -268,6 +221,64 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
                 .load(userInfo.url)
                 .placeholder(R.mipmap.ic_launcher)
                 .into(binding.profileImage)
+        }
+    }
+
+    private fun onSaveButtonClicked(currentUserId: String) {
+        // We save the updated value to your database or data storage
+        val newName = binding.nameEditText.text.toString()
+        val newEmail = binding.emailEditText.text.toString()
+        binding.nameTextView.text = newName
+        binding.emailTextView.text = newEmail
+
+        handleProfileInfoChange(false)
+
+        binding.profileImage.setOnClickListener { }
+
+        db.child("users").child(uid).child("name").setValue(newName)
+        db.child("users").child(uid).child("email").setValue(newEmail)
+
+        userImageStorageService.storeImage(currentUserId, imageUri)
+
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName(newName)
+            .build()
+
+        user?.updateProfile(profileUpdates)
+    }
+
+    private fun onEditButtonClicked() {
+        // We enable the name and email edit texts such that they can be edited
+        handleProfileInfoChange(true)
+        binding.nameEditText.setText(binding.nameTextView.text)
+        binding.emailEditText.setText(binding.emailTextView.text)
+
+        binding.profileImage.setOnClickListener {
+            val openGalleryIntent =
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(openGalleryIntent, 1000)
+        }
+    }
+
+    private fun checkIfDifferentUser(currentUserId: String) {
+        if (uid == currentUserId) {
+            binding.btnFollow.visibility = View.GONE
+            binding.btnUnfollow.visibility = View.GONE
+            binding.btnEdit.visibility = View.VISIBLE
+        } else {
+            binding.btnEdit.visibility = View.GONE
+            // Check if the user is already following the profile
+            launch {
+                val isFollowing = userRepository.checkIfUserFollows(currentUserId, uid)
+                if (isFollowing) {
+                    // If the user is following the profile, show the 'btnUnfollow' button
+                    binding.btnFollow.visibility = View.GONE
+                    binding.btnUnfollow.visibility = View.VISIBLE
+                } else {
+                    binding.btnFollow.visibility = View.VISIBLE
+                    binding.btnUnfollow.visibility = View.GONE
+                }
+            }
         }
     }
 }

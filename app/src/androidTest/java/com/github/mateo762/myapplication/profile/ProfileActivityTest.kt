@@ -3,7 +3,6 @@ package com.github.mateo762.myapplication.profile
 import android.content.Context
 import android.widget.ProgressBar
 import android.widget.RatingBar
-import android.widget.TextView
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -11,9 +10,14 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
+import androidx.test.espresso.matcher.ViewMatchers.isClickable
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiScrollable
@@ -29,12 +33,10 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.core.IsNot.not
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-
 
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
@@ -119,6 +121,9 @@ class ProfileActivityTest {
 
         onView(withId(R.id.btnEdit)).check(matches(isDisplayed()))
         onView(withId(R.id.btnSave)).check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.btnFollow)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.btnUnfollow)).check(matches(not(isDisplayed())))
     }
 
     @Test
