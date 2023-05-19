@@ -50,10 +50,6 @@ class ProfileActivityTest {
 
     private lateinit var context: Context
 
-    private lateinit var username: String
-
-    private lateinit var UID: String
-
     private lateinit var fiveStarProgress: ProgressBar
     private lateinit var fourStarProgress: ProgressBar
     private lateinit var threeStarProgress: ProgressBar
@@ -181,75 +177,21 @@ class ProfileActivityTest {
     @Test
     fun testUserStats() = runTest {
         onView(withId(R.id.habitCountText)).check(matches(isDisplayed()))
-        onView(withId(R.id.habitCountText)).check(
-            matches(
-                withText(
-                    context.getString(
-                        R.string.posted_habits,
-                        2
-                    )
-                )
-            )
-        )
+        onView(withId(R.id.habitCountText)).check(matches(withText(context.getString(R.string.posted_habits, 2))))
         onView(withId(R.id.avgPerWeekText)).check(matches(isDisplayed()))
-        onView(withId(R.id.avgPerWeekText)).check(
-            matches(
-                withText(
-                    context.getString(
-                        R.string.avg_days_week,
-                        2
-                    )
-                )
-            )
-        )
+        onView(withId(R.id.avgPerWeekText)).check(matches(withText(context.getString(R.string.avg_days_week, 2))))
         onView(withId(R.id.earliestTextView)).check(matches(isDisplayed()))
-        onView(withId(R.id.earliestTextView)).check(
-            matches(
-                withText(
-                    context.getString(
-                        R.string.earlystart,
-                        "0:0"
-                    )
-                )
-            )
-        )
+        onView(withId(R.id.earliestTextView)).check(matches(withText(context.getString(R.string.earlystart, "0:0"))))
         onView(withId(R.id.latestTextView)).check(matches(isDisplayed()))
-        onView(withId(R.id.latestTextView)).check(
-            matches(
-                withText(
-                    context.getString(
-                        R.string.lateend,
-                        "23:59"
-                    )
-                )
-            )
-        )
+        onView(withId(R.id.latestTextView)).check(matches(withText(context.getString(R.string.lateend, "23:59"))))
     }
 
     @Test
     fun testFollowingStats() = runTest {
         onView(withId(R.id.followingTextView)).check(matches(isDisplayed()))
-        onView(withId(R.id.followingTextView)).check(
-            matches(
-                withText(
-                    context.getString(
-                        R.string.following,
-                        3
-                    )
-                )
-            )
-        )
+        onView(withId(R.id.followingTextView)).check(matches(withText(context.getString(R.string.following, 3))))
         onView(withId(R.id.followersTextView)).check(matches(isDisplayed()))
-        onView(withId(R.id.followersTextView)).check(
-            matches(
-                withText(
-                    context.getString(
-                        R.string.followers,
-                        2
-                    )
-                )
-            )
-        )
+        onView(withId(R.id.followersTextView)).check(matches(withText(context.getString(R.string.followers, 2))))
     }
 
     @Test

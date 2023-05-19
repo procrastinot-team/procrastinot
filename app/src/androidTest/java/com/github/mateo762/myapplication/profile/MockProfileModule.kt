@@ -3,20 +3,16 @@ package com.github.mateo762.myapplication.profile
 import android.net.Uri
 import com.github.mateo762.myapplication.di.ProfileModule
 import com.github.mateo762.myapplication.followers.UserRepository
-import com.github.mateo762.myapplication.followers.UserRepositoryImpl
 import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.models.HabitImageEntity
 import com.github.mateo762.myapplication.models.UserEntity
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.suspendCancellableCoroutine
 import java.time.DayOfWeek
-import java.util.UUID
 import javax.inject.Singleton
 
 @Module

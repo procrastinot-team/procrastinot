@@ -16,7 +16,6 @@ import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.github.mateo762.myapplication.followers.UserRepository
 import com.github.mateo762.myapplication.username.UsernameActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
@@ -44,6 +43,10 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
     lateinit var userRepository: UserRepository
     @Inject
     lateinit var userImageStorageService: UserImageStorageService
+    @Inject
+    lateinit var auth: FirebaseAuth
+    @Inject
+    lateinit var db: DatabaseReference
 
     private val coachRatingViewModel: CoachRatingViewModel by viewModels()
     private val profileViewModel: ProfileViewModel by viewModels()
@@ -54,9 +57,8 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
 
     private var imageUri: Uri? = null
 
-    private val user = FirebaseAuth.getInstance().currentUser
+    private val user = auth.currentUser
     lateinit var binding: ActivityProfileBinding
-    private lateinit var db: DatabaseReference
     private lateinit var uid: String
 
     private lateinit var habitsAdapter: ProfileHabitsAdapter
@@ -75,38 +77,14 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
         setupToolbar()
         handleProfileInfoChange(false)
 
-        db = Firebase.database.reference
-
         binding.coachRatingView.setViewModel(coachRatingViewModel)
 
         uid = intent.getStringExtra(USER_ID_EXTRA) ?: userRepository.getUserUid()
-
-        var currentUserId = userRepository.getUserUid()
+        val currentUserId = userRepository.getUserUid()
 
         checkIfDifferentUser(currentUserId)
 
-        binding.btnFollow.setOnClickListener {
-            followUser(currentUserId, uid)
-        }
-
-        binding.btnUnfollow.setOnClickListener {
-            unfollowUser(currentUserId, uid)
-        }
-
-        binding.changeUsernameButton.setOnClickListener {
-            val intent = Intent(this, UsernameActivity.EntryPoint::class.java).apply {
-                putExtra(UsernameActivity.OLD_USERNAME_KEY, binding.usernameTextView.text)
-            }
-            startActivity(intent)
-        }
-
-        binding.btnEdit.setOnClickListener {
-            onEditButtonClicked()
-        }
-
-        binding.btnSave.setOnClickListener {
-            onSaveButtonClicked(currentUserId)
-        }
+        setOnClickListeners(currentUserId)
 
         habitsAdapter = ProfileHabitsAdapter()
         binding.habitsRecyclerView.adapter = habitsAdapter
@@ -257,6 +235,31 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
             val openGalleryIntent =
                 Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(openGalleryIntent, 1000)
+        }
+    }
+
+    private fun onChangeUsernameClicked() {
+        val intent = Intent(this, UsernameActivity.EntryPoint::class.java).apply {
+            putExtra(UsernameActivity.OLD_USERNAME_KEY, binding.usernameTextView.text)
+        }
+        startActivity(intent)
+    }
+
+    private fun setOnClickListeners(currentUserId: String) {
+        binding.btnFollow.setOnClickListener {
+            followUser(currentUserId, uid)
+        }
+        binding.btnUnfollow.setOnClickListener {
+            unfollowUser(currentUserId, uid)
+        }
+        binding.changeUsernameButton.setOnClickListener {
+            onChangeUsernameClicked()
+        }
+        binding.btnEdit.setOnClickListener {
+            onEditButtonClicked()
+        }
+        binding.btnSave.setOnClickListener {
+            onSaveButtonClicked(currentUserId)
         }
     }
 
