@@ -43,10 +43,6 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
     lateinit var userRepository: UserRepository
     @Inject
     lateinit var userImageStorageService: UserImageStorageService
-    @Inject
-    lateinit var auth: FirebaseAuth
-    @Inject
-    lateinit var db: DatabaseReference
 
     private val coachRatingViewModel: CoachRatingViewModel by viewModels()
     private val profileViewModel: ProfileViewModel by viewModels()
@@ -57,7 +53,8 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
 
     private var imageUri: Uri? = null
 
-    private val user = auth.currentUser
+    private val user = FirebaseAuth.getInstance().currentUser
+    private lateinit var db: DatabaseReference
     lateinit var binding: ActivityProfileBinding
     private lateinit var uid: String
 
@@ -73,6 +70,8 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        db = Firebase.database.reference
 
         setupToolbar()
         handleProfileInfoChange(false)
