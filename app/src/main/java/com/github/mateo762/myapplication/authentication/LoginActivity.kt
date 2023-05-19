@@ -9,7 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.home.HomeActivity
+import com.github.mateo762.myapplication.home.HomeActivity.HomeEntryPoint
 import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.models.UserEntity
 import com.github.mateo762.myapplication.username.UsernameActivity
@@ -46,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         // Check if the user is already logged in
         if (PreferenceHelper.isLoggedIn(this)) {
-            startActivity(Intent(this, HomeActivity::class.java))
+            startActivity(Intent(this, HomeEntryPoint::class.java))
             finish()
             return
         }
@@ -80,7 +80,7 @@ class LoginActivity : AppCompatActivity() {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(this) {
                     showToastMessage(R.string.success_login)
-                    val intent = Intent(this, HomeActivity::class.java)
+                    val intent = Intent(this, HomeEntryPoint::class.java)
                     startActivity(intent)
                     PreferenceHelper.setLoggedIn(this, true)
                 }
@@ -119,7 +119,7 @@ class LoginActivity : AppCompatActivity() {
 
                         } else {
                             showToastMessage(R.string.success_login)
-                            val intent = Intent(this, HomeActivity::class.java)
+                            val intent = Intent(this, HomeEntryPoint::class.java)
                             startActivity(intent)
                         }
                         PreferenceHelper.setLoggedIn(this, true)

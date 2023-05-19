@@ -4,15 +4,15 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.UploadFragment
 import com.github.mateo762.myapplication.home.fragments.FeedFragment
 import com.github.mateo762.myapplication.home.fragments.SummaryFragment
 import com.github.mateo762.myapplication.home.fragments.TodayFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
+abstract class HomeActivity : BaseActivity(){
 @AndroidEntryPoint
-class HomeActivity : BaseActivity() {
+class HomeEntryPoint : HomeActivity()
 
     private lateinit var bottomNavView: BottomNavigationView
 

@@ -6,7 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.github.mateo762.myapplication.databinding.ActivityNotificationInfoBinding
-import com.github.mateo762.myapplication.home.HomeActivity
+import com.github.mateo762.myapplication.home.HomeActivity.HomeEntryPoint
 import com.github.mateo762.myapplication.settings.SettingsActivity
 
 /**
@@ -54,7 +54,7 @@ class NotificationInfoActivity : AppCompatActivity() {
     }
 
     private fun navigationToHomeActivity() {
-        val intent = Intent(this, HomeActivity::class.java)
+        val intent = Intent(this, HomeEntryPoint::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }

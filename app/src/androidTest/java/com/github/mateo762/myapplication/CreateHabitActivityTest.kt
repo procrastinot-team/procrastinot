@@ -1,6 +1,5 @@
 package com.github.mateo762.myapplication
 
-import android.content.Context
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.espresso.intent.Intents
@@ -10,12 +9,10 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.habits.HabitsActivity
-import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.ui.habits.convertDayOfWeekToInt
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
 import org.hamcrest.Matchers.*
 import org.junit.After
 import org.junit.Before
@@ -35,7 +32,7 @@ class CreateHabitActivityTest {
     val composeTestRule = createComposeRule()
 
     @get:Rule(order = 2)
-    val activityRule = ActivityScenarioRule(HabitsActivity::class.java)
+    val activityRule = ActivityScenarioRule(HabitsActivity.HabitsEntryPoint::class.java)
 
     private lateinit var habitName: String
     private lateinit var habitDays: List<DayOfWeek>
@@ -130,7 +127,7 @@ class CreateHabitActivityTest {
 
         intended(
             allOf(
-                hasComponent(HabitsActivity::class.java.name),
+                hasComponent(HabitsActivity.HabitsEntryPoint::class.java.name),
                 hasExtra("habitName", habitName),
                 hasExtra("habitDays", habitDays),
                 hasExtra("habitStartTime", habitStartTime),

@@ -29,12 +29,12 @@ class SummaryFragmentTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private lateinit var activityScenario: ActivityScenario<HomeActivity>
+    private lateinit var activityScenario: ActivityScenario<HomeActivity.HomeEntryPoint>
 
     @Before
     fun setUp() {
         hiltRule.inject()
-        activityScenario = ActivityScenario.launch(HomeActivity::class.java)
+        activityScenario = ActivityScenario.launch(HomeActivity.HomeEntryPoint::class.java)
     }
 
     val habits = listOf(
