@@ -2,19 +2,19 @@ exclude_patterns:
   - "**/test/"
   - "**/androidTest/"
   - "**test"
-  - '**/R.class'
-  - '**/R$*.class'
-  - '**/BuildConfig.*'
-  - '**/Manifest*.*'
-  - '**/*Test*.*'
-  - 'android/**/*.*'
-  - '**room/*Dao*.*'
-  - '**room/HabitDao*.*'
-  - '**room/HabitImageDao*.*'
-  - '**room/PostDao*.*'
-  - '**room/UserDao*.*'
-  - '**/*Hilt*.*'
-  - 'hilt_aggregated_deps/**'
-  - '**/*_Factory.class'
-  - '**/*_MembersInjector.class'
-  - '**/di/**'
+  - "**/R.class"
+  - "**/R$*.class"
+  - "**/BuildConfig.*"
+  - "**/Manifest*.*"
+  - "**/*Test*.*"
+  - "android/**/*.*"
+  - "**room/*Dao*.*"
+  - "**room/HabitDao*.*"
+  - "**room/HabitImageDao*.*"
+  - "**room/PostDao*.*"
+  - "**room/UserDao*.*"
+  - "**/*Hilt*.*"
+  - "hilt_aggregated_deps/**"
+  - "**/*_Factory.class"
+  - "**/*_MembersInjector.class"
+  - "**/di/**"
