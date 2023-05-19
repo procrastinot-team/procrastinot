@@ -34,8 +34,7 @@ class RegisterActivity : AppCompatActivity() {
 
         // add null check on text values
         if (name.isEmpty() || surname.isEmpty() || email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(baseContext, R.string.error_empty_register,
-                Toast.LENGTH_SHORT).show()
+            showToastMessage(R.string.error_empty_register)
         } else {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
@@ -47,9 +46,7 @@ class RegisterActivity : AppCompatActivity() {
 
                         val uid = user?.uid
                         if (uid == null) {
-                            Toast.makeText(
-                                this@RegisterActivity, R.string.user_data_error,Toast.LENGTH_SHORT
-                            ).show()
+                            showToastMessage(R.string.user_data_error)
                         } else {
                             val displayName = name.plus(" ").plus(surname)
                             val profileUpdates = UserProfileChangeRequest.Builder()
@@ -63,24 +60,26 @@ class RegisterActivity : AppCompatActivity() {
                             users[uid] = u
                             db.child("users").updateChildren(users as Map<String, Any>)
                                 .addOnSuccessListener {
-                                    PreferenceHelper.setLoggedIn(this@RegisterActivity, true)
-                                    Toast.makeText(baseContext, R.string.success_register,
-                                    Toast.LENGTH_SHORT).show()
+                                    PreferenceHelper.setLoggedIn(baseContext, true)
+                                    showToastMessage(R.string.success_register)
                                     val intent = Intent(this, UsernameActivity.EntryPoint::class.java)
                                     startActivity(intent)
                                 }.addOnFailureListener {
-                                    Toast.makeText(
-                                        this@RegisterActivity, R.string.try_again_error, Toast.LENGTH_SHORT
-                                    ).show()
+                                    showToastMessage(R.string.try_again_error)
                                 }
                         }
                     } else {
-                        Toast.makeText(
-                            baseContext, task.exception!!.message,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        showToastMessage(task.exception!!.message)
                     }
                 }
         }
+    }
+
+    private fun showToastMessage(resId:Int) {
+        Toast.makeText(baseContext, resId, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showToastMessage(message:String?) {
+        Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
     }
 }

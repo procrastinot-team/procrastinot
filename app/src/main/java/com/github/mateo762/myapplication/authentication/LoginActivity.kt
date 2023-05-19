@@ -113,7 +113,7 @@ class LoginActivity : AppCompatActivity() {
                                         val intent = Intent(this, UsernameActivity.EntryPoint::class.java)
                                         startActivity(intent)
                                     }.addOnFailureListener {
-                                        showToastMessage( R.string.try_again_error)
+                                        showToastMessage(R.string.try_again_error)
                                     }
                             }
 
@@ -139,10 +139,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun showToastMessage(resId:Int) {
-        Toast.makeText(this@LoginActivity, resId, Toast.LENGTH_SHORT).show()
+        Toast.makeText(baseContext, resId, Toast.LENGTH_SHORT).show()
     }
 
     private fun showToastMessage(message:String?) {
-        Toast.makeText(this@LoginActivity, message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
     }
 }
