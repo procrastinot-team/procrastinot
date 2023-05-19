@@ -78,11 +78,10 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
         db = Firebase.database.reference
 
         binding.coachRatingView.setViewModel(coachRatingViewModel)
-        binding.coachRatingView.getRatingStats()
 
         uid = intent.getStringExtra(USER_ID_EXTRA) ?: userRepository.getUserUid()
 
-        var currentUserId = userRepository.getUserUid() ?: uid
+        var currentUserId = userRepository.getUserUid()
 
         if (uid == currentUserId) {
             binding.btnFollow.visibility = View.GONE
@@ -156,29 +155,10 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
             user?.updateProfile(profileUpdates)
         }
 
-        db.child("users").child(uid).child("url").get().addOnSuccessListener { it ->
-            val url = it.getValue(String::class.java)
-            Glide.with(applicationContext)
-                .load(url)
-                .into(binding.profileImage)
-        }
-
-        db.child("users").child(uid).child("name").get().addOnSuccessListener { it ->
-            binding.nameTextView.text = it.getValue(String::class.java)
-        }
-        db.child("users").child(uid).child("email").get().addOnSuccessListener { it ->
-            binding.emailTextView.text = it.getValue(String::class.java)
-        }
-
         habitsAdapter = ProfileHabitsAdapter()
         binding.habitsRecyclerView.adapter = habitsAdapter
         galleryAdapter = ProfileGalleryAdapter()
         binding.galleryRecyclerView.adapter = galleryAdapter
-
-        profileViewModel.getHabitImages()
-        profileViewModel.getFollowingNumber()
-        profileViewModel.getFollowersNumber()
-        profileViewModel.getHabits()
 
         setLiveDataObservers()
     }
@@ -186,9 +166,12 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
     override fun onResume() {
         super.onResume()
 
-        db.child("users").child(uid).child("username").get().addOnSuccessListener { it ->
-            binding.usernameTextView.text = it.getValue(String::class.java)
-        }
+        profileViewModel.getUserInfo(uid)
+        profileViewModel.getHabitImages(uid)
+        profileViewModel.getFollowingNumber(uid)
+        profileViewModel.getFollowersNumber(uid)
+        profileViewModel.getHabits(uid)
+        binding.coachRatingView.getRatingStats(uid)
     }
 
     @Override
@@ -275,6 +258,16 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
         }
         profileViewModel.followersLiveData.observe(this) {
             binding.followersTextView.text = getString(R.string.followers, it.toString())
+        }
+        profileViewModel.userInfoLiveData.observe(this) { userInfo ->
+            binding.nameTextView.text = userInfo.name
+            binding.emailTextView.text = userInfo.email
+            binding.usernameTextView.text = userInfo.username
+
+            Glide.with(applicationContext)
+                .load(userInfo.url)
+                .placeholder(R.mipmap.ic_launcher)
+                .into(binding.profileImage)
         }
     }
 }

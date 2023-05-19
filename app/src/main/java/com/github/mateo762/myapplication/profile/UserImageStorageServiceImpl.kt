@@ -15,8 +15,10 @@ class UserImageStorageServiceImpl @Inject constructor(
         if (imageUri != null && uid != null) {
             val imagesRef = storageReference.child("users/${uid}/images/${UUID.randomUUID()}.jpg")
             val uploadTask = imagesRef.putFile(imageUri)
-            uploadTask.addOnSuccessListener { uri ->
-                databaseReference.child("users").child(uid).child("url").setValue(uri.toString())
+            uploadTask.addOnSuccessListener { taskSnapshot ->
+                taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
+                    databaseReference.child("users").child(uid).child("url").setValue(uri.toString())
+                }
             }
         }
     }

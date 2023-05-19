@@ -33,28 +33,26 @@ class CoachRatingViewModel @Inject constructor(
     /**
      * Method that gets the rating stats.
      */
-    fun getRatingStats() {
+    fun getRatingStats(uid: String) {
         resetRatings()
 
         viewModelScope.launch {
-            auth.currentUser?.uid?.let { uid ->
-                uiModelLiveData.postValue(State.loading())
-                try {
-                    service.getRatings(uid)
-                        .collect { ratings ->
-                            if (ratings.isEmpty()) {
-                                uiModelLiveData.postValue(State.failed("Empty ratings array"))
-                            } else {
-                                mapRatings(ratings)
+            uiModelLiveData.postValue(State.loading())
+            try {
+                service.getRatings(uid)
+                    .collect { ratings ->
+                        if (ratings.isEmpty()) {
+                            uiModelLiveData.postValue(State.failed("Empty ratings array"))
+                        } else {
+                            mapRatings(ratings)
 
-                                val uiModel = createUiModel()
-                                uiModelLiveData.postValue(State.success(uiModel))
-                            }
+                            val uiModel = createUiModel()
+                            uiModelLiveData.postValue(State.success(uiModel))
                         }
-                } catch (exception: Exception) {
-                    Log.d(TAG, exception.toString())
-                    uiModelLiveData.postValue(State.failed())
-                }
+                    }
+            } catch (exception: Exception) {
+                Log.d(TAG, exception.toString())
+                uiModelLiveData.postValue(State.failed())
             }
         }
     }

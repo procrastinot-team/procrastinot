@@ -64,8 +64,8 @@ class MockProfileModule {
                 val habit1 = HabitEntity(
                     name = "Play guitar",
                     days = listOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY),
-                    startTime = "00:00",
-                    endTime = "23:59",
+                    startTime = "00:01",
+                    endTime = "23:58",
                 )
                 val habit2 = HabitEntity(
                     name = "Sing",
@@ -87,8 +87,13 @@ class MockProfileModule {
             return "IWJEASmqowjoIAJi"
         }
 
-        override suspend fun getUser(uid: String): UserEntity? {
-            return UserEntity()
+        override suspend fun getUser(uid: String): UserEntity {
+            return UserEntity(
+                name = "Joe",
+                email = "Joe@test.com",
+                username = "johndoe",
+                url = "https://images.pexels.com/photos/10761809/pexels-photo-10761809.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+            )
         }
 
         override suspend fun followUser(currentUserId: String, targetUserId: String) {

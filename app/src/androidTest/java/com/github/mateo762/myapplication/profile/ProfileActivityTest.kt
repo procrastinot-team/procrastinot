@@ -36,7 +36,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 
-@RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
 class ProfileActivityTest {
@@ -107,13 +106,6 @@ class ProfileActivityTest {
 
     @Test
     fun testInitialUserDataComponents() {
-        activityRule.scenario.onActivity {
-            it.runOnUiThread {
-                it.findViewById<TextView>(R.id.nameTextView).text = "Joe"
-                it.findViewById<TextView>(R.id.emailTextView).text = "Joe@test.com"
-                it.findViewById<TextView>(R.id.usernameTextView).text = "Joe"
-            }
-        }
         onView(withId(R.id.nameTextView)).check(matches(isDisplayed()))
         onView(withId(R.id.nameEditText)).check(matches(not(isEnabled())))
         onView(withId(R.id.nameEditText)).check(matches(not(isClickable())))
@@ -131,14 +123,6 @@ class ProfileActivityTest {
 
     @Test
     fun testOnEditButtonClicked() {
-        activityRule.scenario.onActivity {
-            it.runOnUiThread {
-                it.findViewById<TextView>(R.id.nameTextView).text = "Joe"
-                it.findViewById<TextView>(R.id.emailTextView).text = "Joe@test.com"
-                it.findViewById<TextView>(R.id.usernameTextView).text = "Joe"
-            }
-        }
-
         onView(withId(R.id.btnEdit)).perform(click())
 
         onView(withId(R.id.nameTextView)).check(matches(not(isDisplayed())))
@@ -161,14 +145,6 @@ class ProfileActivityTest {
 
     @Test
     fun testOnSaveButtonClicked() {
-        activityRule.scenario.onActivity {
-            it.runOnUiThread {
-                it.findViewById<TextView>(R.id.nameTextView).text = "Joe"
-                it.findViewById<TextView>(R.id.emailTextView).text = "Joe@test.com"
-                it.findViewById<TextView>(R.id.usernameTextView).text = "Joe"
-            }
-        }
-
         onView(withId(R.id.btnEdit)).check(matches(isDisplayed()))
         onView(withId(R.id.btnEdit)).perform(click())
         onView(withId(R.id.btnSave)).check(matches(isDisplayed()))
@@ -318,37 +294,4 @@ class ProfileActivityTest {
         assertEquals(oneStarProgress.progress, 0)
         assertEquals(ratingBar.rating, 4.5f)
     }
-
-    // todo Mockito cannot mock this class: class com.google.firebase.auth.FirebaseUser.
-//    @Test
-//    fun testNumberOfTextViewInProfileActivity() {
-//        // Create a mock FirebaseUser
-//        val mockFirebaseUser = mock(FirebaseUser::class.java)
-//        `when`(mockFirebaseUser.uid).thenReturn("someUserId")
-//
-//        // Mock the FirebaseAuth instance to return the mock FirebaseUser
-//        val mockFirebaseAuth = mock(FirebaseAuth::class.java)
-//        `when`(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser)
-//
-//        val habits = listOf(
-//            Habit("habit1", "Habit 1", listOf(DayOfWeek.MONDAY),"00:00","01:00"),
-//            Habit("habit2", "Habit 2", listOf(DayOfWeek.TUESDAY),"00:00","01:00")
-//        )
-//
-//        // Set up Firebase database and add habits for the user
-//        val db = Firebase.database.reference
-//        val ref = db.child("users/${mockFirebaseUser.uid}/habitsPath")
-//        for (habit in habits) {
-//            ref.child(habit.id).setValue(habit)
-//        }
-//
-//
-//        // Set up the activity under test
-//        val intent = Intent(context, ProfileActivity::class.java).putExtra("USER_ID", mockFirebaseUser.uid)
-//
-//        activityScenario = ActivityScenario.launch(intent)
-//
-//        // Clean up the database
-//        ref.removeValue()
-//    }
 }
