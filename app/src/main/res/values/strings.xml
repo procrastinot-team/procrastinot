@@ -27,6 +27,7 @@
     <string name="invalid_time_error">Please enter a valid time (HH:MM)</string>
     <string name="try_again_error">Try again</string>
     <string name="success_habit">Habit successfully saved!</string>\
+    <string name="error_register">Encountered error while registering with google</string>
     <string name="error_empty_register">No value inserted. Please fill in the email and password to sign up</string>
     <string name="error_empty_login">No value inserted. Please fill in the email and password to sign in</string>
     <string name="success_register">Successfully registered!</string>
