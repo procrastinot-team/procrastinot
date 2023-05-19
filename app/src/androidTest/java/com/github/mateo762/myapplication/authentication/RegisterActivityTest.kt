@@ -4,8 +4,11 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.contrib.DrawerActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -39,6 +42,19 @@ class RegisterActivityTest {
     fun setUp() {
         // Initialize the Intents framework
         Intents.init()
+        // NOTE: When running all the tests together, the app remembers the initial state and thus
+        // we first need to logout to avoid register tests to fail. This is not needed when running
+        // register tests only. Thus, with this hack, we can logout only when a drawerLayout is
+        // available and hence we're not inside the register activity.
+        // Otherwise, it will fail silently as wished on standard behavior
+        try {
+            // First, we logout and go back to the Register Activity
+            Espresso.onView(ViewMatchers.withId(R.id.drawerLayout)).perform(DrawerActions.open())
+            Espresso.onView(ViewMatchers.withId(R.id.nav_log_out)).perform(ViewActions.click())
+            composeTestRule
+                .onNodeWithTag("btn_not_registered")
+                .performClick()
+        } catch (ex:Exception) {}
     }
 
     @After
@@ -49,6 +65,7 @@ class RegisterActivityTest {
 
     @Test
     fun testLogin() {
+        // check if we can go to the Login Activity by clicking the not registered button
         composeTestRule
             .onNodeWithTag("btn_already_login")
             .performClick()

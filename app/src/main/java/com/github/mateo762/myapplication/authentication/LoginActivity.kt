@@ -38,10 +38,7 @@ class LoginActivity : AppCompatActivity() {
             handleResults(task)
         } else {
             // Error in registering
-            Toast.makeText(
-                this, "Encountered error while registering with google",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(this, R.string.error_register, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -78,25 +75,14 @@ class LoginActivity : AppCompatActivity() {
 
         // add null check on text values
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(baseContext, R.string.error_empty_login,
-                Toast.LENGTH_SHORT).show()
+            showToastMessage(R.string.error_empty_login)
         } else {
             auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(
-                            baseContext, R.string.success_login,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        val intent = Intent(this, HomeActivity::class.java)
-                        startActivity(intent)
-                        PreferenceHelper.setLoggedIn(this, true)
-                    } else {
-                        Toast.makeText(
-                            baseContext, task.exception!!.message,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                .addOnSuccessListener(this) {
+                    showToastMessage(R.string.success_login)
+                    val intent = Intent(this, HomeActivity::class.java)
+                    startActivity(intent)
+                    PreferenceHelper.setLoggedIn(this, true)
                 }
         }
     }
@@ -116,51 +102,47 @@ class LoginActivity : AppCompatActivity() {
                             val email = user?.email
                             val displayName = user?.displayName
                             if (uid == null || email == null || displayName == null) {
-                                Toast.makeText(
-                                    this@LoginActivity, R.string.user_data_error,Toast.LENGTH_SHORT
-                                ).show()
+                                showToastMessage( R.string.user_data_error)
                             } else {
                                 val users: MutableMap<String, UserEntity> = HashMap()
                                 val u = UserEntity(uid,displayName,"username", email, ArrayList<HabitEntity>(), listOf(), listOf(), listOf())
                                 users[uid] = u
                                 db.child("users").updateChildren(users as Map<String, Any>)
                                     .addOnSuccessListener {
-                                        Toast.makeText(baseContext, R.string.success_register,
-                                            Toast.LENGTH_SHORT).show()
+                                        showToastMessage(R.string.success_register)
                                         val intent = Intent(this, UsernameActivity.EntryPoint::class.java)
                                         startActivity(intent)
                                     }.addOnFailureListener {
-                                        Toast.makeText(
-                                            this@LoginActivity, R.string.try_again_error, Toast.LENGTH_SHORT
-                                        ).show()
+                                        showToastMessage(R.string.try_again_error)
                                     }
                             }
 
                         } else {
-                              Toast.makeText(baseContext, R.string.success_login,
-                                  Toast.LENGTH_SHORT).show()
+                            showToastMessage(R.string.success_login)
                             val intent = Intent(this, HomeActivity::class.java)
                             startActivity(intent)
                         }
                         PreferenceHelper.setLoggedIn(this, true)
                     } else {
-                        Toast.makeText(
-                            baseContext, task.exception!!.message,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        showToastMessage(task.exception!!.message)
                     }
                 }
             }
         } else {
-            Toast.makeText(
-                baseContext, task.exception!!.message,
-                Toast.LENGTH_SHORT
-            ).show()
+            showToastMessage(task.exception!!.message)
         }
     }
 
     private fun googleSignIn() {
         val signInIntent = googleSignInClient.signInIntent
         signInLauncher.launch(signInIntent)
+    }
+
+    private fun showToastMessage(resId:Int) {
+        Toast.makeText(baseContext, resId, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showToastMessage(message:String?) {
+        Toast.makeText(baseContext, message, Toast.LENGTH_SHORT).show()
     }
 }
