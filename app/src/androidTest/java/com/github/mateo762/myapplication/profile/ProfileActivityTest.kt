@@ -14,6 +14,10 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiScrollable
+import androidx.test.uiautomator.UiSelector
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.atPosition
 import com.github.mateo762.myapplication.username.UsernameActivity
@@ -30,6 +34,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+
 
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
@@ -55,10 +60,14 @@ class ProfileActivityTest {
     private lateinit var oneStarProgress: ProgressBar
     private lateinit var ratingBar: RatingBar
 
+    private lateinit var uiDevice: UiDevice
+
     @Before
     fun setUp() {
         hiltRule.inject()
         Intents.init()
+
+        uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
         activityRule.scenario.onActivity {
             it.runOnUiThread {
@@ -264,12 +273,22 @@ class ProfileActivityTest {
 
     @Test
     fun testHabitsRecyclerView() = runTest {
+        val appViews = UiScrollable(
+            UiSelector().scrollable(true)
+        )
+
+        appViews.scrollForward()
         onView(withId(R.id.habitsRecyclerView)).check(matches(atPosition(0, hasDescendant(withText("Play guitar: MONDAY, FRIDAY")))))
         onView(withId(R.id.habitsRecyclerView)).check(matches(atPosition(1, hasDescendant(withText("Sing: MONDAY, FRIDAY")))))
     }
 
     @Test
     fun testHabitsImageRecyclerView() = runTest {
+        val appViews = UiScrollable(
+            UiSelector().scrollable(true)
+        )
+
+        appViews.scrollForward()
         onView(withId(R.id.galleryRecyclerView)).check(matches(atPosition(0, isDisplayed())))
         onView(withId(R.id.galleryRecyclerView)).check(matches(atPosition(1, isDisplayed())))
     }
