@@ -16,13 +16,13 @@ import androidx.compose.material.*
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.room.HabitRepository
 import com.github.mateo762.myapplication.ui.home.HabitListScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,7 +31,7 @@ class SummaryFragment : Fragment() {
 
     private lateinit var habitsRef: DatabaseReference
     private val habitsState = mutableStateOf(emptyList<HabitEntity>())
-    private val TAG = TodayFragment::class.java.simpleName
+    private val TAG = SummaryFragment::class.java.simpleName
 
     @Inject
     lateinit var habitRepository: HabitRepository
@@ -109,19 +109,19 @@ class SummaryFragment : Fragment() {
     }
 
     private fun getLocalHabits() {
-        GlobalScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             habitsState.value = habitRepository.getAllHabits()
         }
     }
 
     fun updateHabitsCache(fetchedHabits: MutableList<HabitEntity>) {
-        GlobalScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             habitRepository.insertAllHabits(fetchedHabits)
         }
     }
 
     private fun deleteHabit(habit: HabitEntity) {
-        GlobalScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             habitRepository.deleteHabit(habit)
             val currentUser = FirebaseAuth.getInstance().currentUser
             val path = "/users/${currentUser?.uid}/habitsPath"
@@ -136,8 +136,6 @@ class SummaryFragment : Fragment() {
                                 childSnapshot.ref.removeValue()
                                     .addOnCompleteListener { deletionTask ->
                                         if (deletionTask.isSuccessful) {
-                                            val currentUser =
-                                                FirebaseAuth.getInstance().currentUser
                                             getFirebaseHabitsFromPath("/users/${currentUser?.uid}/habitsPath")
                                         } else {
                                             // Handle deletion failure TBC: delete
