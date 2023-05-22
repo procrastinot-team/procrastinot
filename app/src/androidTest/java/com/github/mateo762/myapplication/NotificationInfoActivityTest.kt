@@ -82,7 +82,7 @@ class NotificationInfoActivityTest {
             uiDevice.wait(Until.hasObject(By.textContains("Allow")), timeout)
             uiDevice.findObject(UiSelector().text(("Allow"))).click()
 
-            intended(hasComponent(HomeActivity::class.java.name))
+            intended(hasComponent(HomeActivity.HomeEntryPoint::class.java.name))
         }
     }
 
@@ -90,6 +90,6 @@ class NotificationInfoActivityTest {
     fun onSkipButtonClicked() {
         onView(ViewMatchers.withId(R.id.negativeButton)).perform(click())
 
-        intended(hasComponent(HomeActivity::class.java.name))
+        intended(hasComponent(HomeActivity.HomeEntryPoint::class.java.name))
     }
 }

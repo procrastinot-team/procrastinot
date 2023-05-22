@@ -35,12 +35,12 @@ class NavigationActivityTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    private lateinit var activityScenario: ActivityScenario<HomeActivity>
+    private lateinit var activityScenario: ActivityScenario<HomeActivity.HomeEntryPoint>
 
     @Before
     fun setUp() {
         hiltRule.inject()
-        activityScenario = ActivityScenario.launch(HomeActivity::class.java)
+        activityScenario = ActivityScenario.launch(HomeActivity.HomeEntryPoint::class.java)
     }
 
     @After
@@ -185,7 +185,7 @@ class NavigationActivityTest {
         onView(withId(R.id.navView)).check(matches(isDisplayed()))
         onView(withId(R.id.nav_home)).perform(click())
         currentActivity = getCurrentActivity()
-        assertTrue(currentActivity is HomeActivity)
+        assertTrue(currentActivity is HomeActivity.HomeEntryPoint)
     }
 
     private fun getCurrentActivity(): Activity? {

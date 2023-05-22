@@ -1,5 +1,7 @@
 package com.github.mateo762.myapplication
 
+//import com.github.mateo762.myapplication.upload_gallery.UploadPictureActivity
+
 import android.app.Activity
 import android.content.Intent
 import android.widget.ImageView
@@ -17,12 +19,9 @@ import com.github.mateo762.myapplication.home.HomeActivity
 import com.github.mateo762.myapplication.profile.ProfileActivity
 import com.github.mateo762.myapplication.search.SearchActivity
 import com.github.mateo762.myapplication.settings.SettingsActivity
-//import com.github.mateo762.myapplication.upload_gallery.UploadPictureActivity
 import com.github.mateo762.myapplication.takephoto.TakePhotoActivity
-
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-import dagger.hilt.android.AndroidEntryPoint
 
 abstract class BaseActivity : AppCompatActivity() {
     private lateinit var drawer: DrawerLayout
@@ -60,10 +59,10 @@ abstract class BaseActivity : AppCompatActivity() {
     private val navListener = NavigationView.OnNavigationItemSelectedListener {
         when (it.itemId) {
             R.id.nav_home -> {
-                openActivitySelected(HomeActivity())
+                openActivitySelected(HomeActivity.HomeEntryPoint())
             }
             R.id.nav_habits -> {
-                openActivitySelected(HabitsActivity())
+                openActivitySelected(HabitsActivity.HabitsEntryPoint())
             }
             R.id.nav_search -> {
                 openActivitySelected(SearchActivity())

@@ -54,13 +54,13 @@
             android:name=".search.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".habits.HabitsActivity"
+            android:name=".habits.HabitsActivity$HabitsEntryPoint"
             android:exported="false" />
         <activity
             android:name=".takephoto.TakePhotoActivity"
             android:exported="false" />
         <activity
-            android:name=".home.HomeActivity"
+            android:name=".home.HomeActivity$HomeEntryPoint"
             android:exported="true" />
         <activity
             android:name=".about.AboutActivity"
