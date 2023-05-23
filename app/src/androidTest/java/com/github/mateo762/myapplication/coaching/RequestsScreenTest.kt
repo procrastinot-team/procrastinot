@@ -56,6 +56,14 @@ class RequestsScreenTest {
         emptyList(), ""
     )
 
+    private val habitWithCoachSelected = HabitEntity(
+        "2", "Already coached",
+        listOf(DayOfWeek.MONDAY, DayOfWeek.WEDNESDAY),
+        "13:00", "16:00",
+        isCoached = true, coachRequested = true,
+        listOf(coach1.uid, coach2.uid), coach2.uid
+    )
+
     @Test
     fun testDisplayNothing() {
         composeTestRule.setContent {
@@ -124,6 +132,38 @@ class RequestsScreenTest {
 
         composeTestRule.onNodeWithTag("no_candidates_text")
             .assertTextEquals("No candidates applied yet!")
+    }
+
+    @Test
+    fun testCurrentCoachCard() {
+        val coachedMap = mapOf(habitWithCoachSelected to coach2)
+        composeTestRule.setContent {
+            DisplayCurrentCoach(habitMap = coachedMap)
+        }
+
+        // DisplayCurrentCoach
+        composeTestRule.onNodeWithTag("current_coach_display_box_for_${habitWithCoachSelected.id}")
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithTag("current_coach_habit_name${habitWithCoachSelected.name}")
+            .assertTextEquals("Already coached")
+
+        // CoachCard
+        coach2.name?.let {
+            composeTestRule.onNodeWithTag("coach_card_name")
+                .assertIsDisplayed()
+                .assertTextEquals("Coach: $it")
+        }
+        coach2.username?.let {
+            composeTestRule.onNodeWithTag("coach_card_username")
+                .assertIsDisplayed()
+                .assertTextEquals("@$it")
+        }
+        coach2.email?.let {
+            composeTestRule.onNodeWithTag("coach_card_email")
+                .assertIsDisplayed()
+                .assertTextEquals(it)
+        }
+
     }
 
     @Test
