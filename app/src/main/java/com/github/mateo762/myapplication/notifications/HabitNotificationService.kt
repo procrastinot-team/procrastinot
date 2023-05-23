@@ -9,7 +9,6 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.takephoto.TakePhotoActivity
-import com.github.mateo762.myapplication.home.HomeActivity
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
