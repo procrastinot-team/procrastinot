@@ -71,7 +71,7 @@ class FeedFragment : Fragment() {
             val currentUser = FirebaseAuth.getInstance().currentUser
             if (currentUser != null) {
                 usersRef = FirebaseDatabase.getInstance().getReference("/users/${currentUser.uid}")
-                fetchFollowingUsers()
+                fetchFollowingUsers(usersRef)
             }
         } else {
             // There is no connection available - (plane mode, no service, wifi...) Use cached data
@@ -81,8 +81,8 @@ class FeedFragment : Fragment() {
         }
     }
 
-    private fun fetchFollowingUsers() {
-        usersRef.child("followingPath").addListenerForSingleValueEvent(object : ValueEventListener {
+    fun fetchFollowingUsers(userReference: DatabaseReference) {
+        userReference.child("followingPath").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (childSnapshot in snapshot.children) {
                     val followingUserList =
@@ -156,7 +156,7 @@ class FeedFragment : Fragment() {
         }
     }
 
-    private fun updatePostsCache(feedState: List<PostEntity>) {
+    fun updatePostsCache(feedState: List<PostEntity>) {
         GlobalScope.launch {
             postRepository.insertAllPosts(feedState)
         }
