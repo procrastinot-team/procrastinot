@@ -108,7 +108,7 @@ class FeedFragment : Fragment() {
         })
     }
 
-    private fun fetchUserImages(userId: String) {
+    fun fetchUserImages(userId: String) {
         imagesRef = FirebaseDatabase.getInstance().getReference("/users/$userId/imagesPath")
 
         imagesRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -129,7 +129,7 @@ class FeedFragment : Fragment() {
         })
     }
 
-    private fun generatePosts(fetchedImages: List<HabitImageEntity>) {
+    fun generatePosts(fetchedImages: List<HabitImageEntity>) {
         CoroutineScope(Dispatchers.IO).launch {
             val generatedPosts = mutableListOf<PostEntity>()
 
