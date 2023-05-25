@@ -4,6 +4,8 @@ import android.util.Log
 import android.view.View
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -20,6 +22,7 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.CoreMatchers.*
+import org.hamcrest.Matcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -56,7 +59,6 @@ class TakePictureTest {
 
 
         hiltRule.inject()
-        Thread.sleep(500)
         Intents.init()
     }
 
@@ -78,7 +80,6 @@ class TakePictureTest {
 
     @Test
     fun testDropdown() {
-        Thread.sleep(500)
         // Perform different actions on the view based on what is the text of the button
         if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
             onView(withId(R.id.spinner)).perform(ViewActions.click())
@@ -91,7 +92,6 @@ class TakePictureTest {
 
     @Test
     fun testDropdownSelect() {
-        Thread.sleep(500)
         // Perform different actions on the view based on what is the text of the button
         if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
             onView(withId(R.id.spinner)).perform(ViewActions.click())
@@ -103,21 +103,16 @@ class TakePictureTest {
 
     @Test
     fun testDropdownSelectImageClick() {
-        Thread.sleep(500)
         if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
             onView(withId(R.id.spinner)).perform(ViewActions.click())
             onData(allOf(`is`(instanceOf(String::class.java)))).atPosition(0).perform(ViewActions.click())
             onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
             var uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
             var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
-            Thread.sleep(500)
-
             // If the device has a physical shutter button, use it
             if (uiShutter.exists()) {
                 uiShutter.click()
             }
-            Thread.sleep(500)
-
             // accept the image
             var uiAccept = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
             if (uiAccept.exists()) {
@@ -131,7 +126,6 @@ class TakePictureTest {
 
     @Test
     fun testDropdownSelectToScreenThree() {
-        Thread.sleep(500)
         Log.d("Test", "testDropdownSelectToScreenThree")
         if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
             Log.d("Test", "Passed if statement")
@@ -140,12 +134,10 @@ class TakePictureTest {
             onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
             var uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
             var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
-            Thread.sleep(500)
             // If the device has a physical shutter button, use it
             if (uiShutter.exists()) {
                 uiShutter.click()
             }
-            Thread.sleep(500)
             // accept the image
             var uiAccept = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
             if (uiAccept.exists()) {
@@ -160,7 +152,6 @@ class TakePictureTest {
 
     @Test
     fun testDropdownSelectToScreenThreeDone() {
-        Thread.sleep(500)
         Log.d("Test", "testDropdownSelectToScreenThree")
 
         if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
@@ -172,19 +163,14 @@ class TakePictureTest {
             var uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
             var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
             // If the device has a physical shutter button, use it
-            Thread.sleep(500)
-
             if (uiShutter.exists()) {
                 uiShutter.click()
             }
-            Thread.sleep(500)
-
             // accept the image
             var uiAccept = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
             if (uiAccept.exists()) {
                 uiAccept.click()
             }
-            Thread.sleep(500)
             onView(withId(R.id.textView)).check(matches(withText(containsString("Uploading"))))
         }
         else {
@@ -195,7 +181,6 @@ class TakePictureTest {
 
     @Test
     fun testDropdownSelectToScreenThreeDoneCoach() {
-        Thread.sleep(500)
         Log.d("Test", "testDropdownSelectToScreenThree")
 
         if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
@@ -209,20 +194,16 @@ class TakePictureTest {
             var uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
             var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
             // If the device has a physical shutter button, use it
-            Thread.sleep(500)
-
             if (uiShutter.exists()) {
                 uiShutter.click()
             }
-            Thread.sleep(500)
-
             // accept the image
             var uiAccept = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
             if (uiAccept.exists()) {
                 uiAccept.click()
             }
-            Thread.sleep(500)
-            onView(withId(R.id.ratingBar)).check(matches(isDisplayed()))
+            // wait for the image to upload
+            onView(isRoot()).perform(waitFor(5000))
             onView(withId(R.id.ratingBar)).perform(ViewActions.click())
             onView(withId(R.id.backHomeButton)).perform(ViewActions.click())
         }
@@ -232,5 +213,14 @@ class TakePictureTest {
         }
     }
 
+    fun waitFor(delay: Long): ViewAction? {
+        return object : ViewAction {
+            override fun getConstraints(): Matcher<View> = isRoot()
+            override fun getDescription(): String = "wait for $delay milliseconds"
+            override fun perform(uiController: UiController, v: View?) {
+                uiController.loopMainThreadForAtLeast(delay)
+            }
+        }
+    }
 
 }
