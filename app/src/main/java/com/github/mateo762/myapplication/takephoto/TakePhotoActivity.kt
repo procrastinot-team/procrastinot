@@ -78,6 +78,7 @@ class TakePhotoActivity : BaseActivity() {
                 takePhotoButton.isEnabled = false
                 takePhotoButton.text = getString(R.string.no_habit_found)
             }
+            getTrainerArray()
         }.addOnFailureListener {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
@@ -133,15 +134,12 @@ class TakePhotoActivity : BaseActivity() {
         backHomeButton = findViewById(R.id.backHomeButton)
         dropdownSpinner = findViewById(R.id.spinner)
         takePhotoButton = findViewById<Button>(R.id.takePhotoButton)
-
         dropdownSpinner= findViewById(R.id.spinner)
-
         backHomeButton.setOnClickListener {
             val intent = Intent(this, HomeActivity.HomeEntryPoint::class.java)
             startActivity(intent)
         }
         checkIfUserHasHabits()
-        getTrainerArray()
         imageView = findViewById(R.id.imageView)
         takePhotoText = findViewById(R.id.textView)
         takePhotoButton = findViewById<Button>(R.id.takePhotoButton)
