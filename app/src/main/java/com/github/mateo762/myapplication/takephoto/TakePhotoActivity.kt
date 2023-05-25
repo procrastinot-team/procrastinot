@@ -108,6 +108,7 @@ class TakePhotoActivity : BaseActivity() {
                 autoCompleteTextView = findViewById(R.id.auto_complete_txt)
                 dropdownAdapter = ArrayAdapter<String>(this, R.layout.list_item, dropdownItems)
                 autoCompleteTextView.setAdapter(dropdownAdapter)
+                takePhotoButton.text = getString(R.string.take_photo)
             } else {
                 Log.d("habitName", "No such document")
                 textInputLayout = findViewById(R.id.textInputLayout)
