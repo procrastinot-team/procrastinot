@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.fragments.CreateHabitFragment
-import com.github.mateo762.myapplication.habits.fragments.week.WeekFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,9 +29,6 @@ abstract class HabitsActivity : BaseActivity() {
         when (it.itemId) {
             R.id.developFragment -> {
                 selectedFragment = CreateHabitFragment()
-            }
-            R.id.weekFragment -> {
-                selectedFragment = WeekFragment()
             }
         }
         openFragmentSelected(selectedFragment)

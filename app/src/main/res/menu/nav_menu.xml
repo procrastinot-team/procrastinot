@@ -32,6 +32,12 @@
             android:icon="@drawable/lens_blur_24"
             android:title="Take Picture" />
         <item
+            android:id="@+id/nav_coaching"
+            android:icon="@drawable/baseline_co_present_24"
+            android:iconTint="@color/dark_text"
+            android:textColor="@color/dark_text"
+            android:title="@string/coaching" />
+        <item
             android:id="@+id/nav_about"
             android:icon="@drawable/baseline_info_24"
             android:title="About" />
@@ -41,12 +47,6 @@
             android:iconTint="@color/dark_text"
             android:textColor="@color/dark_text"
             android:title="@string/settings" />
-        <item
-            android:id="@+id/nav_coaching"
-            android:icon="@drawable/baseline_co_present_24"
-            android:iconTint="@color/dark_text"
-            android:textColor="@color/dark_text"
-            android:title="@string/coaching" />
         <item
             android:id="@+id/nav_log_out"
             android:icon="@drawable/logout_24"

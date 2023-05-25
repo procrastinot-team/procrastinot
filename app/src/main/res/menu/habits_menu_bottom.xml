@@ -8,11 +8,4 @@
         android:textColor="@color/dark_text"
         android:title="@string/develop" />
 
-    <item
-        android:id="@+id/weekFragment"
-        android:icon="@drawable/view_week_24"
-        android:iconTint="@color/dark_text"
-        android:textColor="@color/dark_text"
-        android:title="@string/week" />
-
 </menu>
