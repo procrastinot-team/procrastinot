@@ -330,35 +330,47 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
                 }
 
                 // Set the number of habits and the average repetitions per week
-                averageRepetitionsPerWeek = daysCount.sum() / daysCount.size
+                if (daysCount.size == 0) {
+                    averageRepetitionsPerWeek = 0
+                } else {
+                    averageRepetitionsPerWeek = daysCount.sum() / daysCount.size
+                }
                 habitCountText.text = getString(R.string.posted_habits) + numberOfhabits.toString()
                 avgPerWeekText.text = getString(R.string.avg_days_week) + averageRepetitionsPerWeek.toString()
 
                 // Get the earliest and latest habit
-                var earliestHour = starts[0].split(":")[0].toInt()
-                var earliestMinute = starts[0].split(":")[1].toInt()
-                for (i in 1 until starts.size) {
-                    val hour = starts[i].split(":")[0].toInt()
-                    val minute = starts[i].split(":")[1].toInt()
-                    if (hour < earliestHour || (hour == earliestHour && minute < earliestMinute)) {
-                        earliestHour = hour
-                        earliestMinute = minute
+                if (starts.size != 0) {
+                    var earliestHour = starts[0].split(":")[0].toInt()
+                    var earliestMinute = starts[0].split(":")[1].toInt()
+                    for (i in 1 until starts.size) {
+                        val hour = starts[i].split(":")[0].toInt()
+                        val minute = starts[i].split(":")[1].toInt()
+                        if (hour < earliestHour || (hour == earliestHour && minute < earliestMinute)) {
+                            earliestHour = hour
+                            earliestMinute = minute
+                        }
                     }
-                }
-                var latestHour = ends[0].split(":")[0].toInt()
-                var latestMinute = ends[0].split(":")[1].toInt()
-                for (i in 1 until ends.size) {
-                    val hour = ends[i].split(":")[0].toInt()
-                    val minute = ends[i].split(":")[1].toInt()
-                    if (hour > latestHour || (hour == latestHour && minute > latestMinute)) {
-                        latestHour = hour
-                        latestMinute = minute
-                    }
+                    earliestText.text = getString(R.string.earlystart) + earliestHour.toString() + ":" + earliestMinute.toString()
+                } else {
+                    earliestText.text = getString(R.string.na)
                 }
 
-                // Set the earliest and latest habit
-                earliestText.text = getString(R.string.earlystart) + earliestHour.toString() + ":" + earliestMinute.toString()
-                latestText.text = getString(R.string.lateend) + latestHour.toString() + ":" + latestMinute.toString()
+                if (ends.size != 0) {
+                    var latestHour = ends[0].split(":")[0].toInt()
+                    var latestMinute = ends[0].split(":")[1].toInt()
+                    for (i in 1 until ends.size) {
+                        val hour = ends[i].split(":")[0].toInt()
+                        val minute = ends[i].split(":")[1].toInt()
+                        if (hour > latestHour || (hour == latestHour && minute > latestMinute)) {
+                            latestHour = hour
+                            latestMinute = minute
+                        }
+                    }
+                    latestText.text =
+                        getString(R.string.lateend) + latestHour.toString() + ":" + latestMinute.toString()
+                } else {
+                    latestText.text = getString(R.string.na)
+                }
             }
 
 
