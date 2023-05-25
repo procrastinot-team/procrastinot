@@ -28,10 +28,6 @@
             android:textColor="@color/dark_text"
             android:title="@string/profile" />
         <item
-            android:id="@+id/nav_take_photo"
-            android:icon="@drawable/lens_blur_24"
-            android:title="Take Picture" />
-        <item
             android:id="@+id/nav_coaching"
             android:icon="@drawable/baseline_co_present_24"
             android:iconTint="@color/dark_text"
