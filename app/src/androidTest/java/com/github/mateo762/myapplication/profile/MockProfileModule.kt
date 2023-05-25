@@ -88,7 +88,7 @@ class MockProfileModule {
                 name = "Joe",
                 email = "Joe@test.com",
                 username = "johndoe",
-                url = "https://images.pexels.com/photos/10761809/pexels-photo-10761809.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                url = "url"
             )
         }
 
@@ -129,6 +129,39 @@ class MockProfileModule {
         override fun storeImage(uid: String?, imageUri: Uri?) {
             //no-op
         }
-
     }
+
+    class MockUserRepositoryWithException(): UserRepository {
+        override fun getUserUid(): String {
+            throw RuntimeException()
+        }
+
+        override suspend fun getUser(uid: String): UserEntity? {
+            throw RuntimeException()
+        }
+
+        override suspend fun followUser(currentUserId: String, targetUserId: String) {
+            throw RuntimeException()
+        }
+
+        override fun unfollowUser(currentUserId: String, targetUserId: String) {
+            throw RuntimeException()
+        }
+
+        override suspend fun checkIfUserFollows(
+            currentUserId: String,
+            targetUserId: String
+        ): Boolean {
+            throw RuntimeException()
+        }
+
+        override suspend fun getFollowers(currentUserId: String): List<String> {
+            throw RuntimeException()
+        }
+
+        override suspend fun getFollowing(currentUserId: String): List<String> {
+            throw RuntimeException()
+        }
+    }
+
 }
