@@ -75,10 +75,21 @@ class RequestsFragment : Fragment() {
                     "isCoached" to true,
                     "coach" to coach.uid
                 )
-            )
+            ).addOnSuccessListener {
+                val ref = FirebaseDatabase.getInstance().getReferenceFromUrl(habit.sharedHabitUrl)
+                ref.removeValue()
+                    .addOnSuccessListener {
+                        // Deletion successful
+                    }
+                    .addOnFailureListener { error ->
+                        // Handle deletion failure
+                    }
+
+            }
             val currentUser = FirebaseAuth.getInstance().currentUser
             getFirebaseCoachableHabitsFromPath("/users/${currentUser?.uid}/habitsPath")
         }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -177,8 +188,10 @@ class RequestsFragment : Fragment() {
     ) {
         println("Calling getCoachOffersFromFirebase with habit: $habit")
 
-        //Get the reference from the Firebase url stored in the habit.coachOffersUrl
-        val coachOffersRef = FirebaseDatabase.getInstance().getReferenceFromUrl(habit.coachOffersUrl)
+        //Concatenate the habit.sharedHabitUrl with the /coachOffers path
+        val url = "${habit.sharedHabitUrl}/coachOffers"
+
+        val coachOffersRef = FirebaseDatabase.getInstance().getReferenceFromUrl(url)
         coachOffersRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val coachOffers = mutableListOf<String>()

@@ -84,7 +84,7 @@ fun DisplayCoachingOffer(
                 RoundedCornerShape(8.dp)
             )
             .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .padding(vertical = 0.dp, horizontal = 16.dp)
             //.size(400.dp, 300.dp)
             .testTag("habit_selection_box")
 
@@ -96,49 +96,59 @@ fun DisplayCoachingOffer(
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.testTag("habit_name_${habit.name}")
             )
-            Row(modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp)) {
+            Row(modifier = Modifier.padding(vertical = 0.dp, horizontal = 0.dp)) {
                 //Retrieve the name of the habit Owner from Firebase
-                CoacheeCard(name = habit.habitOwnerName, date=habit.habitOwnerId)
+                CoacheeCard(habit)
+            }
+            Button(
+                onClick = {
+                    onCoachingOffered()
+                },
+                modifier = Modifier
+                    .testTag("habit_button"),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = colorResource(id = R.color.today_background),
+                    contentColor = colorResource(R.color.white)
+                )
+            ) {
+                Text(text = "Apply")
             }
         }
+
     }
-    Spacer(modifier = Modifier
-        .height(16.dp)
-        .testTag("habit_spacer"))
-    Button(
-        onClick = {
-            onCoachingOffered()
-        },
-        modifier = Modifier
-            .testTag("habit_button"),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = colorResource(id = R.color.today_background),
-            contentColor = colorResource(R.color.white)
-        )
-    ) {
-        Text(text = "Apply")
-    }
+
+    //Add a spacing
+    Spacer(modifier = Modifier.height(16.dp))
+
 }
 
 
 @Composable
 fun CoacheeCard(
-    name: String, date: String,
+    habit: HabitEntity
 ) {
     LocalContext.current
     Row(modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp)) {
         Column(modifier = Modifier.align(Alignment.CenterVertically)) {
             Text(
-                text = name,
+                text = habit.habitOwnerName,
                 style = MaterialTheme.typography.h6,
-                modifier = Modifier.testTag("candidate_card_name_$name"),
+                modifier = Modifier.testTag("candidate_card_name_${habit.habitOwnerName}"),
             )
             Text(
-                text = name,
-                style = MaterialTheme.typography.body1,
-                fontStyle = FontStyle.Italic,
-                modifier = Modifier.testTag("candidate_card_username_$name"),
+                text = habit.days.joinToString(),
+                style = MaterialTheme.typography.body1
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "Start time: ${habit.startTime}",
+                style = MaterialTheme.typography.body1
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "End time: ${habit.endTime}",
+                style = MaterialTheme.typography.body1
             )
         }
         Spacer(modifier = Modifier.weight(1f))

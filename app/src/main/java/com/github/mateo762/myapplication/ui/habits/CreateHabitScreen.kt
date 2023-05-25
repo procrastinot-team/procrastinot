@@ -254,7 +254,7 @@ private fun saveHabit(context:Context, habitName:String, habitDays:List<DayOfWee
                 "startTime" to myHabit.startTime,
                 "endTime" to myHabit.endTime,
                 "coachRequested" to myHabit.coachRequested,
-                "coachOffersUrl" to "",
+                "sharedHabitUrl" to "",
                 "habitOwnerId" to myHabit.habitOwnerId,
                 "habitOwnerName" to myHabit.habitOwnerName
             )
@@ -267,7 +267,7 @@ private fun saveHabit(context:Context, habitName:String, habitDays:List<DayOfWee
                     // Publish coaching request here with the same habitRefKey
                     if (myHabit.coachRequested) {
                         publishCoachingRequest(db, userHabitRef, habitData) { coachOffersRef ->
-                            habitData["coachOffersUrl"] = coachOffersRef.toString()
+                            habitData["sharedHabitUrl"] = coachOffersRef.toString()
                             userHabitRef.updateChildren(habitData)
                         }
                     }
@@ -296,7 +296,7 @@ private fun publishCoachingRequest(
     coachingHabitRef.setValue(habitData)
         .addOnSuccessListener {
             // Return the address of the list so we can update the privately stored habit reference
-            callback(coachingHabitRef.child("coachOffers"))
+            callback(coachingHabitRef)
         }
         .addOnFailureListener { e ->
             Log.w(TAG, "Error adding habit", e)
