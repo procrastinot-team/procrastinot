@@ -45,10 +45,7 @@ class TakePhotoActivity : BaseActivity() {
     private lateinit var takePhotoLoader: ProgressBar
     private lateinit var ratingBar: RatingBar
     private lateinit var imageData : ByteArray
-    private lateinit var dropdownItems: Array<String>
-    private lateinit var textInputLayout: TextInputLayout
-    private lateinit var autoCompleteTextView: AutoCompleteTextView
-    private lateinit var dropdownAdapter: ArrayAdapter<String>
+    private lateinit var dropdownSpinner: Spinner
     private var habitNames: ArrayList<String> = ArrayList()
     private var habitIds: ArrayList<String> = ArrayList()
     private var habitTrainers: ArrayList<String> = ArrayList()
@@ -67,7 +64,6 @@ class TakePhotoActivity : BaseActivity() {
             if (it.exists()) {
                 var children = it.children
                 for (child in children) {
-                    // write child value to object
                     var habitId = child.key.toString()
                     var habitName = child.child("name").value.toString()
                     var trainer = child.child("coach").value
@@ -75,26 +71,14 @@ class TakePhotoActivity : BaseActivity() {
                     habitIds += habitId
                     habitTrainerIds += trainer.toString()
                 }
-                Log.d("habitName", habitNames.toString())
-                Log.d("habitId", habitIds.toString())
-                Log.d("habitTrainer", habitTrainers.toString())
-                Log.d("habitTrainerId", habitTrainerIds.toString())
-                dropdownItems = Array(habitNames.size) { i -> habitNames[i] }
-                autoCompleteTextView = findViewById(R.id.auto_complete_txt)
-                dropdownAdapter = ArrayAdapter<String>(this, R.layout.list_item, dropdownItems)
-                autoCompleteTextView.setAdapter(dropdownAdapter)
                 takePhotoButton.text = getString(R.string.take_photo)
                 takePhotoButton.isEnabled = true
             } else {
-                Log.d("habitName", "No such document")
-                textInputLayout = findViewById(R.id.textInputLayout)
-                textInputLayout.visibility = View.GONE
-                takePhotoButton = findViewById<Button>(R.id.takePhotoButton)
+                dropdownSpinner.visibility = View.GONE
                 takePhotoButton.isEnabled = false
                 takePhotoButton.text = getString(R.string.no_habit_found)
             }
         }.addOnFailureListener {
-            // go to home
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
         }
@@ -103,7 +87,6 @@ class TakePhotoActivity : BaseActivity() {
     fun getTrainerArray() {
         var db = Firebase.database.reference
         var refUsernames = db.child("usernames")
-        // map ids to usernames
         var mapIdtoUser = HashMap<String, String>()
         refUsernames.get().addOnSuccessListener {
             if (it.exists()) {
@@ -122,14 +105,24 @@ class TakePhotoActivity : BaseActivity() {
                     "No trainer"
                 }
             }
-            Log.d("gta habitTrainer", habitTrainers.toString())
-            Log.d("gta habitTrainerId", habitTrainerIds.toString())
-            autoCompleteTextView.setOnItemClickListener() { parent, view, position, id ->
-                selectedHabit = parent.getItemAtPosition(position).toString()
-                selectedHabitId = habitIds[position]
-                selectedTrainer = habitTrainers[position]
-                selectedTrainerId = habitTrainerIds[position]
-                Toast.makeText(this, selectedHabit + " - " + selectedTrainer, Toast.LENGTH_SHORT).show()
+            val dropdownItems = habitNames.zip(habitTrainers).map { (habitName, trainer) -> "$habitName - $trainer" }
+            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, dropdownItems)
+            dropdownSpinner.adapter = adapter
+
+            dropdownSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                    selectedHabit = habitNames[0]
+                    selectedHabitId = habitIds[0]
+                    selectedTrainer = habitTrainers[0]
+                    selectedTrainerId = habitTrainerIds[0]
+                }
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    selectedHabit = habitNames[position]
+                    selectedHabitId = habitIds[position]
+                    selectedTrainer = habitTrainers[position]
+                    selectedTrainerId = habitTrainerIds[position]
+                    Toast.makeText(this@TakePhotoActivity, selectedHabit + " - " + selectedTrainer, Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -138,16 +131,17 @@ class TakePhotoActivity : BaseActivity() {
 
     fun startPage() {
         backHomeButton = findViewById(R.id.backHomeButton)
+        dropdownSpinner = findViewById(R.id.spinner)
+        takePhotoButton = findViewById<Button>(R.id.takePhotoButton)
+
+        dropdownSpinner= findViewById(R.id.spinner)
+
         backHomeButton.setOnClickListener {
             val intent = Intent(this, HomeActivity.HomeEntryPoint::class.java)
             startActivity(intent)
         }
-        textInputLayout = findViewById(R.id.textInputLayout)
-        autoCompleteTextView = findViewById(R.id.auto_complete_txt)
-
         checkIfUserHasHabits()
         getTrainerArray()
-
         imageView = findViewById(R.id.imageView)
         takePhotoText = findViewById(R.id.textView)
         takePhotoButton = findViewById<Button>(R.id.takePhotoButton)
@@ -159,7 +153,6 @@ class TakePhotoActivity : BaseActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         getCameraPermission()
         var firebaseUser = Firebase.auth.currentUser?.uid
@@ -171,9 +164,6 @@ class TakePhotoActivity : BaseActivity() {
         if(BuildConfig.DEBUG){
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
-
-
-
         setContentView(R.layout.activity_takephoto)
         startPage()
         super.onCreateDrawer()
@@ -216,14 +206,12 @@ class TakePhotoActivity : BaseActivity() {
         takePhotoButton.visibility = View.GONE
         takePhotoText.visibility = View.VISIBLE
         takePhotoLoader.visibility = View.VISIBLE
-        textInputLayout.visibility = View.GONE
         uploadImage()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun uploadImage() {
-        // write to firebase storage
-        //Generate a file name based on the upload time
+
         if (imageData == null) {
             Toast.makeText(this, getString(R.string.no_image_data), Toast.LENGTH_SHORT).show()
             // go to home
@@ -236,7 +224,6 @@ class TakePhotoActivity : BaseActivity() {
         val fileName = formatter.format(now)
         val storage = FirebaseStorage.getInstance().getReference("users/$currentUser/images/$fileName")
 
-        //Upload the image to firebase storage
         storage.putBytes(imageData).addOnSuccessListener {
             //show toast
             Toast.makeText(this, getString(R.string.image_uploaded), Toast.LENGTH_SHORT).show()
@@ -262,7 +249,6 @@ class TakePhotoActivity : BaseActivity() {
                 } else {
                     takePhotoText.text = getString(R.string.rank) + selectedTrainer + getString(R.string.as_a_trainer)
                     ratingBar.visibility = View.VISIBLE
-                    // listen for rating bar changes
                     var db = Firebase.database.reference
                     var rate = 0.0f
                     ratingBar.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
@@ -275,14 +261,11 @@ class TakePhotoActivity : BaseActivity() {
                         } else
                         {
                             Toast.makeText(this, getString(R.string.there_was_an_error), Toast.LENGTH_SHORT).show()
-                            // go to home
                             val intent = Intent(this, HomeActivity.HomeEntryPoint::class.java)
                             startActivity(intent)
                         }
                     }
                 }
-
-
                 Thread.sleep(2000)
                 takePhotoLoader.visibility = View.GONE
             }
