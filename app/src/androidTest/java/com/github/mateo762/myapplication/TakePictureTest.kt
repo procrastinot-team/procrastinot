@@ -41,13 +41,12 @@ class TakePictureTest {
     var hiltRule = HiltAndroidRule(this)
 
 
-
     private lateinit var decorView: View
 
 
     @get:Rule
-    public val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.CAMERA)
-
+    public val permissionRule: GrantPermissionRule =
+        GrantPermissionRule.grant(android.Manifest.permission.CAMERA)
 
 
     @Before
@@ -72,8 +71,7 @@ class TakePictureTest {
         // Perform different actions on the view based on what is the text of the button
         if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
             onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
-        }
-        else {
+        } else {
             onView(withId(R.id.takePhotoButton)).check(matches(withText("No habits found")))
         }
     }
@@ -84,8 +82,7 @@ class TakePictureTest {
         if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
             onView(withId(R.id.spinner)).perform(ViewActions.click())
 
-        }
-        else {
+        } else {
             onView(withId(R.id.takePhotoButton)).check(matches(withText("No habits found")))
         }
     }
@@ -95,8 +92,7 @@ class TakePictureTest {
         // Perform different actions on the view based on what is the text of the button
         if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
             onView(withId(R.id.spinner)).perform(ViewActions.click())
-        }
-        else {
+        } else {
             onView(withId(R.id.takePhotoButton)).check(matches(withText("No habits found")))
         }
     }
@@ -105,21 +101,23 @@ class TakePictureTest {
     fun testDropdownSelectImageClick() {
         if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
             onView(withId(R.id.spinner)).perform(ViewActions.click())
-            onData(allOf(`is`(instanceOf(String::class.java)))).atPosition(0).perform(ViewActions.click())
+            onData(allOf(`is`(instanceOf(String::class.java)))).atPosition(0)
+                .perform(ViewActions.click())
             onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
             var uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-            var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
+            var uiShutter =
+                uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
             // If the device has a physical shutter button, use it
             if (uiShutter.exists()) {
                 uiShutter.click()
             }
             // accept the image
-            var uiAccept = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
+            var uiAccept =
+                uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
             if (uiAccept.exists()) {
                 uiAccept.click()
             }
-        }
-        else {
+        } else {
             onView(withId(R.id.takePhotoButton)).check(matches(withText("No habits found")))
         }
     }
@@ -130,21 +128,23 @@ class TakePictureTest {
         if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
             Log.d("Test", "Passed if statement")
             onView(withId(R.id.spinner)).perform(ViewActions.click())
-            onData(allOf(`is`(instanceOf(String::class.java)))).atPosition(0).perform(ViewActions.click())
+            onData(allOf(`is`(instanceOf(String::class.java)))).atPosition(0)
+                .perform(ViewActions.click())
             onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
             var uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-            var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
+            var uiShutter =
+                uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
             // If the device has a physical shutter button, use it
             if (uiShutter.exists()) {
                 uiShutter.click()
             }
             // accept the image
-            var uiAccept = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
+            var uiAccept =
+                uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
             if (uiAccept.exists()) {
                 uiAccept.click()
             }
-        }
-        else {
+        } else {
             Log.d("Test", "Failed if statement")
             onView(withId(R.id.takePhotoButton)).check(matches(withText("No habits found")))
         }
@@ -158,22 +158,24 @@ class TakePictureTest {
             Log.d("Test", "Passed if statement")
             onView(withId(R.id.spinner)).perform(ViewActions.click())
             // click on the first item in the spinner
-            onData(allOf(`is`(instanceOf(String::class.java)))).atPosition(0).perform(ViewActions.click())
+            onData(allOf(`is`(instanceOf(String::class.java)))).atPosition(0)
+                .perform(ViewActions.click())
             onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
             var uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-            var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
+            var uiShutter =
+                uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
             // If the device has a physical shutter button, use it
             if (uiShutter.exists()) {
                 uiShutter.click()
             }
             // accept the image
-            var uiAccept = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
+            var uiAccept =
+                uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
             if (uiAccept.exists()) {
                 uiAccept.click()
             }
             onView(withId(R.id.textView)).check(matches(withText(containsString("Uploading"))))
-        }
-        else {
+        } else {
             Log.d("Test", "Failed if statement")
             onView(withId(R.id.takePhotoButton)).check(matches(withText("No habits found")))
         }
@@ -188,17 +190,22 @@ class TakePictureTest {
             onView(withId(R.id.spinner)).perform(ViewActions.click())
             // contains substring "Coach" to select the coach habit
 
-            onData(allOf(
-                `is`(instanceOf(String::class.java)), containsString("david"))).perform(ViewActions.click())
+            onData(
+                allOf(
+                    `is`(instanceOf(String::class.java)), containsString("david")
+                )
+            ).perform(ViewActions.click())
             onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
             var uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-            var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
+            var uiShutter =
+                uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
             // If the device has a physical shutter button, use it
             if (uiShutter.exists()) {
                 uiShutter.click()
             }
             // accept the image
-            var uiAccept = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
+            var uiAccept =
+                uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
             if (uiAccept.exists()) {
                 uiAccept.click()
             }
@@ -206,8 +213,7 @@ class TakePictureTest {
             onView(isRoot()).perform(waitFor(1000))
             onView(withId(R.id.ratingBar)).perform(ViewActions.click())
             onView(withId(R.id.backHomeButton)).perform(ViewActions.click())
-        }
-        else {
+        } else {
             Log.d("Test", "Failed if statement")
             onView(withId(R.id.takePhotoButton)).check(matches(withText("No habits found")))
         }
