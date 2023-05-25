@@ -17,4 +17,10 @@ class HabitRepository @Inject constructor(private val habitDao: HabitDao) {
             habitDao.insertAll(habits)
         }
     }
+
+    suspend fun deleteHabit(habit: HabitEntity) {
+        withContext(Dispatchers.IO) {
+            habitDao.delete(habit)
+        }
+    }
 }

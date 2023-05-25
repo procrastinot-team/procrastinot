@@ -1,6 +1,5 @@
 package com.github.mateo762.myapplication.home.fragments
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -17,17 +16,14 @@ import androidx.compose.material.*
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.github.mateo762.myapplication.getHardCodedHabits
+import androidx.lifecycle.lifecycleScope
 import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.room.HabitRepository
 import com.github.mateo762.myapplication.ui.home.HabitListScreen
-import com.github.mateo762.myapplication.ui.home.TodayScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -35,7 +31,7 @@ class SummaryFragment : Fragment() {
 
     private lateinit var habitsRef: DatabaseReference
     private val habitsState = mutableStateOf(emptyList<HabitEntity>())
-    private val TAG = TodayFragment::class.java.simpleName
+    private val TAG = SummaryFragment::class.java.simpleName
 
     @Inject
     lateinit var habitRepository: HabitRepository
@@ -48,7 +44,7 @@ class SummaryFragment : Fragment() {
             setContent {
                 HabitListScreen(
                     habits = habitsState.value
-                )
+                ) { habit -> deleteHabit(habit) }
             }
         }
     }
@@ -113,16 +109,47 @@ class SummaryFragment : Fragment() {
     }
 
     private fun getLocalHabits() {
-        GlobalScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             habitsState.value = habitRepository.getAllHabits()
         }
     }
 
     fun updateHabitsCache(fetchedHabits: MutableList<HabitEntity>) {
-        GlobalScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             habitRepository.insertAllHabits(fetchedHabits)
         }
     }
 
+    private fun deleteHabit(habit: HabitEntity) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            habitRepository.deleteHabit(habit)
+            val currentUser = FirebaseAuth.getInstance().currentUser
+            val path = "/users/${currentUser?.uid}/habitsPath"
+            habitsRef = FirebaseDatabase.getInstance().getReference(path)
+            habitsRef.orderByChild("id").equalTo(habit.id)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        snapshot.children.forEach { childSnapshot ->
+                            val habitSnapshot = childSnapshot.getValue(HabitEntity::class.java)
+                            if (habitSnapshot != null) {
+                                // Delete the habit with the matching ID
+                                childSnapshot.ref.removeValue()
+                                    .addOnCompleteListener { deletionTask ->
+                                        if (deletionTask.isSuccessful) {
+                                            getFirebaseHabitsFromPath("/users/${currentUser?.uid}/habitsPath")
+                                        } else {
+                                            // Handle deletion failure TBC: delete
+                                        }
+                                    }
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+                })
+        }
+    }
 }
+
 
