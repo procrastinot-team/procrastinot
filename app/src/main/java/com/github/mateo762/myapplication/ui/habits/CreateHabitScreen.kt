@@ -31,10 +31,12 @@ import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.notifications.HabitAlarmReceiver
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.time.DayOfWeek
 import java.util.*
+import kotlin.collections.HashMap
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -224,22 +226,24 @@ private fun saveHabit(context:Context, habitName:String, habitDays:List<DayOfWee
         intent.putExtra("habitEndTime", habitEndTime.value)
         context.startActivity(intent)
 
-        val myHabit = HabitEntity(
-            UUID.randomUUID().toString(),
-            habitName,
-            ArrayList(habitDays),
-            habitStartTime.value,
-            habitEndTime.value,
-            coachRequested = askingForCoach.value
-        )
         val user = FirebaseAuth.getInstance().currentUser
 
         val uid = user?.uid
+
+
         if (uid == null) {
-            Toast.makeText(
-                context, R.string.user_data_error, Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(context, R.string.user_data_error, Toast.LENGTH_SHORT).show()
         } else {
+            val myHabit = HabitEntity(
+                UUID.randomUUID().toString(),
+                habitName,
+                ArrayList(habitDays),
+                habitStartTime.value,
+                habitEndTime.value,
+                coachRequested = askingForCoach.value,
+                habitOwnerId = user.uid
+            )
+
             val db = Firebase.database.reference
 
             val habitData = hashMapOf(
@@ -248,15 +252,24 @@ private fun saveHabit(context:Context, habitName:String, habitDays:List<DayOfWee
                 "days" to myHabit.days,
                 "startTime" to myHabit.startTime,
                 "endTime" to myHabit.endTime,
-                "coachRequested" to myHabit.coachRequested
+                "coachRequested" to myHabit.coachRequested,
+                "coachOffersUrl" to "",
+                "habitOwnerId" to myHabit.habitOwnerId
             )
 
-            val habitRef =
-                db.child("users").child(uid).child("habitsPath").push()
-
-            habitRef.setValue(habitData)
+            val userHabitRef = db.child("users").child(uid).child("habitsPath").push()
+            userHabitRef.setValue(habitData)
                 .addOnSuccessListener {
-                    Log.d(TAG, "Habit added with ID: ${habitRef.key}")
+                    Log.d(TAG, "Habit added with ID: ${userHabitRef.key}")
+
+                    // Publish coaching request here with the same habitRefKey
+                    if (myHabit.coachRequested) {
+                        publishCoachingRequest(db, userHabitRef, habitData) { coachOffersRef ->
+                            habitData["coachOffersUrl"] = coachOffersRef.toString()
+                            userHabitRef.updateChildren(habitData)
+                        }
+                    }
+
                     scheduleHabit(context, myHabit)
                 }
                 .addOnFailureListener { e ->
@@ -265,6 +278,29 @@ private fun saveHabit(context:Context, habitName:String, habitDays:List<DayOfWee
         }
     }
 }
+
+//Coaching was requested, so publish to the habits directory and store the "coaching" list url
+private fun publishCoachingRequest(
+    db: DatabaseReference,
+    userHabitRef: DatabaseReference,
+    habitData: HashMap<String, Any>,
+    callback: (coachingRef: DatabaseReference) -> Unit
+) {
+    val coachingHabitRef = db.child("habits").child(userHabitRef.key!!).push()
+
+    val emptyList: List<String> = emptyList()
+    habitData["coachOffers"] = emptyList
+
+    coachingHabitRef.setValue(habitData)
+        .addOnSuccessListener {
+            // Return the address of the list so we can update the privately stored habit reference
+            callback(coachingHabitRef.child("coachOffers"))
+        }
+        .addOnFailureListener { e ->
+            Log.w(TAG, "Error adding habit", e)
+        }
+}
+
 private fun isValidTime(time: String): Boolean {
     val pattern = Regex(pattern = "^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])\$")
     return pattern.matches(time)

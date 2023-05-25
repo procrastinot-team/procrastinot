@@ -15,6 +15,8 @@ data class HabitEntity(
     @ColumnInfo(name = "is_coached") var isCoached: Boolean = false,
     @ColumnInfo(name = "coach_requested") val coachRequested: Boolean = false,
     @ColumnInfo(name = "coach_offers") val coachOffers: List<String> = emptyList(),
+    @ColumnInfo(name = "coach_offers_url") val coachOffersUrl: String = "",
+    @ColumnInfo(name = "habit_owner_id") val habitOwnerId: String = "",
     @ColumnInfo(name = "coach") val coach: String = ""
     // Could additionally add new feature such as labels, but the entity is kept same as Firebase
     // NOTE: Room is not compatible with ArrayLists apparently, so only List<Object> can be used
