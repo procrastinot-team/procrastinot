@@ -86,47 +86,35 @@ class TakePhotoActivity : BaseActivity() {
     }
 
     fun getTrainerArray() {
-        var db = Firebase.database.reference
-        var refUsernames = db.child("usernames")
+        var db = Firebase.database.reference;
+        var refUsernames = db.child("usernames");
         var mapIdtoUser = HashMap<String, String>()
         refUsernames.get().addOnSuccessListener {
-            if (it.exists()) {
-                var children = it.children
+            if (it.exists()) { var children = it.children
                 for (child in children) {
                     var username = child.key.toString()
                     var id = child.value.toString()
-                    mapIdtoUser[id] = username
-                }
-            }
+                    mapIdtoUser[id] = username } }
             for (trainerId in habitTrainerIds) {
                 habitTrainers += if (trainerId != "null") {
                     var trainerUsername = mapIdtoUser[trainerId]
-                    trainerUsername.toString()
-                } else {
-                    "No trainer"
-                }
-            }
+                    trainerUsername.toString() } else { "No trainer" } }
             val dropdownItems = habitNames.zip(habitTrainers).map { (habitName, trainer) -> "$habitName - $trainer" }
             val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, dropdownItems)
             dropdownSpinner.adapter = adapter
-
             dropdownSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                     selectedHabit = habitNames[0]
                     selectedHabitId = habitIds[0]
                     selectedTrainer = habitTrainers[0]
-                    selectedTrainerId = habitTrainerIds[0]
-                }
+                    selectedTrainerId = habitTrainerIds[0] }
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     selectedHabit = habitNames[position]
                     selectedHabitId = habitIds[position]
                     selectedTrainer = habitTrainers[position]
                     selectedTrainerId = habitTrainerIds[position]
-                    Toast.makeText(this@TakePhotoActivity, selectedHabit + " - " + selectedTrainer, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
+                    Toast.makeText(this@TakePhotoActivity, selectedHabit + " - " + selectedTrainer, Toast.LENGTH_SHORT).show() }
+            } }
     }
 
 
