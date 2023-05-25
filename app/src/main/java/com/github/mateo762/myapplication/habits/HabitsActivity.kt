@@ -2,17 +2,12 @@ package com.github.mateo762.myapplication.habits
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.ListFragment
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.fragments.CreateHabitFragment
 import com.github.mateo762.myapplication.habits.fragments.week.WeekFragment
-import com.github.mateo762.myapplication.home.HomeActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.HiltAndroidApp
-import javax.inject.Inject
 
 abstract class HabitsActivity : BaseActivity() {
 
@@ -38,9 +33,6 @@ abstract class HabitsActivity : BaseActivity() {
             }
             R.id.weekFragment -> {
                 selectedFragment = WeekFragment()
-            }
-            R.id.listFragment -> {
-                selectedFragment = ListFragment()
             }
         }
         openFragmentSelected(selectedFragment)
