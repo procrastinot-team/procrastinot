@@ -1,12 +1,12 @@
 package com.github.mateo762.myapplication.authentication
 
-import android.content.Context
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.contrib.DrawerActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
@@ -14,7 +14,6 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.ToastMatcher
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.Matchers
@@ -48,8 +47,16 @@ class LoginActivityTest {
         hiltRule.inject()
         // Initialize the Intents framework
         Intents.init()
-
-        //PreferenceHelper.setLoggedIn(ApplicationProvider.getApplicationContext(), false)
+        // NOTE: When running all the tests together, the app remembers the initial state and thus
+        // we first need to logout to avoid login tests to fail. This is not needed when running
+        // login tests only. Thus, with this hack, we can logout only when a drawerLayout is
+        // available and hence we're not inside the login activity.
+        // Otherwise, it will fail silently as wished on standard behavior
+        try {
+            // First, logout
+            Espresso.onView(ViewMatchers.withId(R.id.drawerLayout)).perform(DrawerActions.open())
+            Espresso.onView(ViewMatchers.withId(R.id.nav_log_out)).perform(ViewActions.click())
+        } catch (ex:Exception) {}
     }
 
     @After

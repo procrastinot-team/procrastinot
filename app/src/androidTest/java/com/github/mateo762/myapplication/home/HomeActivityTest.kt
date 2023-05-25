@@ -1,8 +1,6 @@
 package com.github.mateo762.myapplication.home
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.testing.launchFragmentInContainer
-import androidx.test.core.app.launchActivity
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -29,7 +27,7 @@ class HomeActivityTest {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val activityScenarioRule = ActivityScenarioRule(HomeActivity::class.java)
+    val activityScenarioRule = ActivityScenarioRule(HomeActivity.HomeEntryPoint::class.java)
 
     @Before
     fun setUp() {

@@ -1,14 +1,11 @@
 package com.github.mateo762.myapplication.takephoto
 
 import android.Manifest
-import android.app.KeyguardManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
@@ -17,7 +14,7 @@ import androidx.core.content.ContextCompat
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.BuildConfig
 import com.github.mateo762.myapplication.R
-import com.github.mateo762.myapplication.home.HomeActivity
+import com.github.mateo762.myapplication.home.HomeActivity.HomeEntryPoint
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -103,7 +100,7 @@ class TakePhotoActivity : BaseActivity() {
         if (imageData == null) {
             Toast.makeText(this, getString(R.string.no_image_data), Toast.LENGTH_SHORT).show()
             // go to home
-            val intent = Intent(this, HomeActivity::class.java)
+            val intent = Intent(this, HomeEntryPoint::class.java)
             startActivity(intent)
             return
         }
@@ -123,7 +120,7 @@ class TakePhotoActivity : BaseActivity() {
 
         }
         // go to home
-        val intent = Intent(this, HomeActivity::class.java)
+        val intent = Intent(this, HomeEntryPoint::class.java)
         startActivity(intent)
     }
 
