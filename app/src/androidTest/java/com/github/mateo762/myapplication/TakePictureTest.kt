@@ -74,7 +74,7 @@ class TakePictureTest {
     @Test
     fun testButton() {
         // Perform different actions on the view based on what is the text of the button
-        if (decorView.findViewById<View>(R.id.takePhotoButton).isClickable) {
+        if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
             onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
         }
         else {
@@ -85,7 +85,7 @@ class TakePictureTest {
     @Test
     fun testDropdown() {
         // Perform different actions on the view based on what is the text of the button
-        if (decorView.findViewById<View>(R.id.takePhotoButton).isClickable) {
+        if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
             onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
 
         }
@@ -97,7 +97,7 @@ class TakePictureTest {
     @Test
     fun testDropdownSelect() {
         // Perform different actions on the view based on what is the text of the button
-        if (decorView.findViewById<View>(R.id.takePhotoButton).isClickable) {
+        if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
             onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
             onData(Matchers.anything())
                 .inRoot(isPlatformPopup())
@@ -111,7 +111,7 @@ class TakePictureTest {
 
     @Test
     fun testDropdownSelectImageClick() {
-        if (decorView.findViewById<View>(R.id.takePhotoButton).isClickable) {
+        if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
             onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
             onData(Matchers.anything())
                 .inRoot(isPlatformPopup())
@@ -138,7 +138,7 @@ class TakePictureTest {
     @Test
     fun testDropdownSelectToScreenThree() {
         Log.d("Test", "testDropdownSelectToScreenThree")
-        if (decorView.findViewById<View>(R.id.takePhotoButton).isClickable) {
+        if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
             Log.d("Test", "Passed if statement")
             onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
             onData(Matchers.anything())
