@@ -143,7 +143,7 @@ class UsernameActivityTest {
         if (mActivity.shouldShowRequestPermissionRationale(POST_NOTIFICATIONS) || !notificationManager.areNotificationsEnabled()) {
             Intents.intended(IntentMatchers.hasComponent(NotificationInfoActivity::class.java.name))
         } else {
-            Intents.intended(IntentMatchers.hasComponent(HomeActivity::class.java.name))
+            Intents.intended(IntentMatchers.hasComponent(HomeActivity.HomeEntryPoint::class.java.name))
         }
     }
 

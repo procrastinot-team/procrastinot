@@ -15,7 +15,7 @@ import androidx.core.content.ContextCompat
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.databinding.ActivityUsernameBinding
-import com.github.mateo762.myapplication.home.HomeActivity
+import com.github.mateo762.myapplication.home.HomeActivity.HomeEntryPoint
 import com.github.mateo762.myapplication.notifications.NotificationInfoActivity
 import com.github.mateo762.myapplication.util.State
 import com.github.mateo762.myapplication.util.showToast
@@ -167,7 +167,7 @@ abstract class UsernameActivity : BaseActivity() {
                 if (this.shouldShowRequestPermissionRationale(POST_NOTIFICATIONS) || !notificationManager.areNotificationsEnabled()) {
                     Intent(this, NotificationInfoActivity::class.java)
                 } else {
-                    Intent(this, HomeActivity::class.java)
+                    Intent(this, HomeEntryPoint::class.java)
                 }
             startActivity(intent)
         }

@@ -241,7 +241,8 @@ fun DisplayCurrentCoach(habitMap: Map<HabitEntity, UserEntity>) {
                 Text(
                     text = habit.name,
                     style = MaterialTheme.typography.h4,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.testTag("current_coach_habit_name${habit.name}")
                 )
                 CoachCard(
                     habitMap[habit]!!.name!!,
@@ -276,16 +277,19 @@ fun CoachCard(name: String, username: String, email: String) {
             Text(
                 text = "Coach: $name",
                 style = MaterialTheme.typography.h6,
+                modifier = Modifier.testTag("coach_card_name")
             )
             Text(
                 text = "@$username",
                 style = MaterialTheme.typography.body1,
-                fontStyle = Italic
+                fontStyle = Italic,
+                modifier = Modifier.testTag("coach_card_username")
             )
             Text(
                 text = email,
                 style = MaterialTheme.typography.body1,
-                fontStyle = Italic
+                fontStyle = Italic,
+                modifier = Modifier.testTag("coach_card_email")
             )
             Spacer(modifier = Modifier.height(12.dp))
         }

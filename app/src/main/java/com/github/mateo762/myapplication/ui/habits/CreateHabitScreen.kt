@@ -3,7 +3,7 @@ package com.github.mateo762.myapplication.ui.habits
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.TimePickerDialog
-import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
@@ -24,8 +24,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import android.content.Context
-import androidx.core.content.ContextCompat.getSystemService
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.github.mateo762.myapplication.models.HabitEntity
@@ -169,11 +167,21 @@ fun CreateHabitScreen() {
                             .padding(8.dp)
                             .testTag("checkbox_coach_request")
                     )
-                    Text(text = stringResource(R.string.coach_request), modifier = Modifier.padding(start = 8.dp))
+                    Text(
+                        text = stringResource(R.string.coach_request),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
                 }
                 Button(
                     onClick = {
-                        saveHabit(context,habitName,habitDays,habitStartTime,habitEndTime,askingForCoach)
+                        saveHabit(
+                            context,
+                            habitName,
+                            habitDays,
+                            habitStartTime,
+                            habitEndTime,
+                            askingForCoach
+                        )
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = colorResource(R.color.bottom_highlight),
@@ -191,9 +199,11 @@ fun CreateHabitScreen() {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-private fun saveHabit(context:Context, habitName:String, habitDays:List<DayOfWeek>,
-                      habitStartTime:MutableState<String>, habitEndTime:MutableState<String>,
-                      askingForCoach:MutableState<Boolean>) {
+private fun saveHabit(
+    context: Context, habitName: String, habitDays: List<DayOfWeek>,
+    habitStartTime: MutableState<String>, habitEndTime: MutableState<String>,
+    askingForCoach: MutableState<Boolean>
+) {
     val TAG = "CreateHabitScreen"
     if (habitName.isBlank()) {
         Toast.makeText(
@@ -219,7 +229,7 @@ private fun saveHabit(context:Context, habitName:String, habitDays:List<DayOfWee
         // This intent would now save into a DB / Firebase
         // For now, it returns to the calling activity
         val intent =
-            Intent(context, HabitsActivity::class.java)
+            Intent(context, HabitsActivity.HabitsEntryPoint::class.java)
         intent.putExtra("habitName", habitName)
         intent.putExtra("habitDays", ArrayList(habitDays))
         intent.putExtra("habitStartTime", habitStartTime.value)
@@ -288,6 +298,7 @@ private fun publishCoachingRequest(
     habitData: HashMap<String, Any>,
     callback: (coachingRef: DatabaseReference) -> Unit
 ) {
+    val TAG = "CreateHabitScreen_Coaching"
     val coachingHabitRef = db.child("habits").push()
 
     val emptyList: List<String> = emptyList()

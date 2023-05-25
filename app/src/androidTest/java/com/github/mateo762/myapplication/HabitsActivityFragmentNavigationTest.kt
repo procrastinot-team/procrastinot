@@ -26,29 +26,18 @@ class HabitsActivityFragmentNavigationTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    private lateinit var activityScenario: ActivityScenario<HabitsActivity>
+    private lateinit var activityScenario: ActivityScenario<HabitsActivity.HabitsEntryPoint>
 
     @Before
     fun setUp() {
         hiltRule.inject()
-        activityScenario = ActivityScenario.launch(HabitsActivity::class.java)
+        activityScenario = ActivityScenario.launch(HabitsActivity.HabitsEntryPoint::class.java)
     }
 
     @After
     fun tearDown() {
         activityScenario.close()
     }
-
-/*
-    @Test
-    fun switchToWeekFragment() {
-        Espresso.onView(withId(R.id.weekFragment)).perform(ViewActions.click())
-        // Get a reference to the current fragment
-        val fragment = getCurrentFragment()
-        // Check if the current fragment is a com.github.mateo762.myapplication.habits.fragments.week.WeekFragment
-        TestCase.assertTrue(fragment is WeekFragment)
-    }
-*/
 
     @Test
     fun switchToSummaryFragment() {
@@ -68,6 +57,17 @@ class HabitsActivityFragmentNavigationTest {
         val fragment = getCurrentFragment()
         // Check if the current fragment is a DevelopFragment
         TestCase.assertTrue(fragment is CreateHabitFragment)
+    }
+
+    @Test
+    fun switchToWeekFragment() {
+        Espresso.onView(withId(R.id.listFragment)).perform(ViewActions.click())
+        // Go to weekFragment and back to test DevelopFragment
+        Espresso.onView(withId(R.id.weekFragment)).perform(ViewActions.click())
+        // Get a reference to the current fragment
+        val fragment = getCurrentFragment()
+        // Check if the current fragment is a DevelopFragment
+        TestCase.assertTrue(fragment is WeekFragment)
     }
 
     private fun getCurrentFragment(): Fragment? {

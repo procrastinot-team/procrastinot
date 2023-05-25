@@ -9,10 +9,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.coaching.CoachingActivity
 import com.github.mateo762.myapplication.coaching.fragments.OffersFragment
 import com.github.mateo762.myapplication.coaching.fragments.RequestsFragment
-import com.github.mateo762.myapplication.home.HomeActivity
-import com.github.mateo762.myapplication.home.fragments.FeedFragment
-import com.github.mateo762.myapplication.home.fragments.SummaryFragment
-import com.github.mateo762.myapplication.home.fragments.TodayFragment
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase

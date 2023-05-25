@@ -9,7 +9,6 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
@@ -30,7 +29,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class FeedFragmentTest {
-    private lateinit var activityScenario: ActivityScenario<HomeActivity>
+    private lateinit var activityScenario: ActivityScenario<HomeActivity.HomeEntryPoint>
     private var imagesRef = ArrayList<HabitImageEntity>()
 
     @get:Rule(order = 1)
@@ -43,7 +42,7 @@ class FeedFragmentTest {
     fun setUp() {
         hiltRule.inject()
         // Travel to Feed Fragment
-        activityScenario = ActivityScenario.launch(HomeActivity::class.java)
+        activityScenario = ActivityScenario.launch(HomeActivity.HomeEntryPoint::class.java)
         fillTestPosts()
         Espresso.onView(ViewMatchers.withId(R.id.feedFragment)).perform(ViewActions.click())
     }
@@ -86,7 +85,7 @@ class FeedFragmentTest {
                 // Get a reference to the current activity
                 currentActivity = getCurrentActivity()
                 // Check if the current activity is a HomeActivity
-                TestCase.assertTrue(currentActivity is HomeActivity)
+                TestCase.assertTrue(currentActivity is HomeActivity.HomeEntryPoint)
                 // Get a reference to the current fragment
                 val fragment = getCurrentFragment()
                 // Check if the current fragment is a FeedFragment
