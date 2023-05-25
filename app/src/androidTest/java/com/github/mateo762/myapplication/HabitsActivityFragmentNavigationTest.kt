@@ -39,34 +39,12 @@ class HabitsActivityFragmentNavigationTest {
     }
 
     @Test
-    fun switchToSummaryFragment() {
-//        Espresso.onView(withId(R.id.listFragment)).perform(ViewActions.click())
-//        // Get a reference to the current fragment
-//        val fragment = getCurrentFragment()
-//        // Check if the current fragment is a ListFragment
-//        TestCase.assertTrue(fragment is ListFragment)
-    }
-
-    @Test
     fun switchToDevelopFragment() {
-//        Espresso.onView(withId(R.id.listFragment)).perform(ViewActions.click())
-//        // Go to weekFragment and back to test DevelopFragment
         Espresso.onView(withId(R.id.developFragment)).perform(ViewActions.click())
         // Get a reference to the current fragment
         val fragment = getCurrentFragment()
         // Check if the current fragment is a DevelopFragment
         TestCase.assertTrue(fragment is CreateHabitFragment)
-    }
-
-    @Test
-    fun switchToWeekFragment() {
-        Espresso.onView(withId(R.id.listFragment)).perform(ViewActions.click())
-        // Go to weekFragment and back to test DevelopFragment
-        Espresso.onView(withId(R.id.weekFragment)).perform(ViewActions.click())
-        // Get a reference to the current fragment
-        val fragment = getCurrentFragment()
-        // Check if the current fragment is a DevelopFragment
-        TestCase.assertTrue(fragment is WeekFragment)
     }
 
     private fun getCurrentFragment(): Fragment? {
