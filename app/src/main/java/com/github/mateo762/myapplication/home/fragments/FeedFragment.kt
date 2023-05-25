@@ -158,13 +158,17 @@ class FeedFragment : Fragment() {
 
     fun updatePostsCache(feedState: List<PostEntity>) {
         GlobalScope.launch {
-            postRepository.insertAllPosts(feedState)
+            if (postRepository != null) {
+                postRepository.insertAllPosts(feedState)
+            }
         }
     }
 
     fun getLocalPosts() {
         GlobalScope.launch {
-            feedState.value = postRepository.getAllPosts()
+            if(postRepository != null) {
+                feedState.value = postRepository.getAllPosts()
+            }
         }
     }
 
