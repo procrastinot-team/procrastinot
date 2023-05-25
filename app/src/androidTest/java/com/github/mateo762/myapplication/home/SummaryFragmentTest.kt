@@ -1,84 +1,57 @@
-package com.github.mateo762.myapplication
+package com.github.mateo762.myapplication.home
 
-import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.fragment.app.Fragment
-import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.mateo762.myapplication.home.HomeActivity
 import com.github.mateo762.myapplication.home.fragments.SummaryFragment
 import com.github.mateo762.myapplication.models.HabitEntity
+import com.github.mateo762.myapplication.room.HabitDao
+import com.github.mateo762.myapplication.room.HabitRepository
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.time.DayOfWeek
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class SummaryFragmentTest {
 
-    @get:Rule
-    val hiltRule = HiltAndroidRule(this)
+    @get:Rule(order = 0)
+    var hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
-    val composeTestRule = createComposeRule()
-
-    private lateinit var activityScenario: ActivityScenario<HomeActivity.HomeEntryPoint>
+    private lateinit var summaryFragment: SummaryFragment
 
     @Before
-    fun setUp() {
+    fun setup() {
         hiltRule.inject()
-        activityScenario = ActivityScenario.launch(HomeActivity.HomeEntryPoint::class.java)
+        summaryFragment = SummaryFragment()
+        // First, we mock the PostRepository
+        val habitsDao = object : HabitDao {
+            override fun getAll(): List<HabitEntity> {
+                return listOf()
+            }
+
+            override fun insertAll(posts: List<HabitEntity>) {
+                return
+            }
+
+            override fun insertOne(habit: HabitEntity) {
+                return
+            }
+
+            override fun delete(post: HabitEntity) {
+                return
+            }
+        }
+        summaryFragment.habitRepository = HabitRepository(habitsDao)
     }
-
-    val habits = listOf(
-        HabitEntity("Habit 1", "Habit 1", listOf(DayOfWeek.TUESDAY), "08:00", "09:00"),
-        HabitEntity("Habit 2", "Habit 2", listOf(DayOfWeek.THURSDAY, DayOfWeek.SUNDAY), "10:00", "11:00"),
-        HabitEntity("Habit 3", "Habit 3", listOf(DayOfWeek.MONDAY, DayOfWeek.THURSDAY), "12:00", "13:00"),
-    )
-
-//    @Composable
-//    fun myHabits(onClick: () -> Unit) {
-//        HabitListScreen(habits = habits)
-//    }
 
     @Test
-    fun testSummaryFragment() {
-        Espresso.onView(withId(R.id.summaryFragment)).perform(ViewActions.click())
-        // Get a reference to the current fragment
-        val fragment = getCurrentFragment()
-        // Check if the current fragment is a SummaryFragment
-        assertTrue(fragment is SummaryFragment)
-//
-//        composeTestRule.onNodeWithTag("Habit 1").assertExists()
-//        composeTestRule.onNodeWithTag("Habit 2").assertExists()
-//        composeTestRule.onNodeWithTag("Habit 3").assertExists()
-//
-//        composeTestRule.onNodeWithTag("Habit 1").performClick()
-//        composeTestRule.onNodeWithTag("Habit 2").performClick()
-//        composeTestRule.onNodeWithTag("Habit 3").performClick()
-//
-//        habits.forEach { habit ->
-//            composeTestRule.onNodeWithText(habit.name).assertExists()
-//            composeTestRule.onNodeWithText(habit.days.joinToString()).assertExists()
-//            composeTestRule.onNodeWithText("Start time: ${habit.startTime}").assertExists()
-//            composeTestRule.onNodeWithText("End time: ${habit.endTime}").assertExists()
-//        }
+    fun testGetLocalHabits() {
+        summaryFragment.getLocalHabits()
     }
-
-    private fun getCurrentFragment(): Fragment? {
-        // Get the current fragment from the ActivityScenario
-        var fragment: Fragment? = null
-        activityScenario.onActivity { activity ->
-            // Get the current fragment by its container ID
-            fragment = activity.supportFragmentManager.findFragmentById(R.id.navHostFragment)
-        }
-        return fragment
+    @Test
+    fun testUpdateHabitsCache() {
+        summaryFragment.updateHabitsCache(mutableListOf())
     }
 }
