@@ -97,7 +97,8 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    android:text="@string/loading"
+                    android:text="@string/no_habit_found"
+                    android:enabled="false"
                     android:textColor="@color/white"
                     android:layout_marginBottom="100dp"
                     />

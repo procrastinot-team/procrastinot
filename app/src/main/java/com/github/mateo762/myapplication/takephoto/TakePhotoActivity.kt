@@ -49,28 +49,21 @@ class TakePhotoActivity : BaseActivity() {
     private lateinit var textInputLayout: TextInputLayout
     private lateinit var autoCompleteTextView: AutoCompleteTextView
     private lateinit var dropdownAdapter: ArrayAdapter<String>
+    private var habitNames: ArrayList<String> = ArrayList()
+    private var habitIds: ArrayList<String> = ArrayList()
+    private var habitTrainers: ArrayList<String> = ArrayList()
+    private var habitTrainerIds: ArrayList<String> = ArrayList()
     private var selectedHabit: String? = null
     private var selectedHabitId: String? = null
     private var selectedTrainer: String? = null
     private var selectedTrainerId: String? = null
     private lateinit var backHomeButton: Button
 
-    fun startPage() {
-        backHomeButton = findViewById(R.id.backHomeButton)
-        backHomeButton.setOnClickListener {
-            val intent = Intent(this, HomeActivity.HomeEntryPoint::class.java)
-            startActivity(intent)
-        }
-        textInputLayout = findViewById(R.id.textInputLayout)
-        autoCompleteTextView = findViewById(R.id.auto_complete_txt)
-        var habitNames = ArrayList<String>()
-        var habitIds = ArrayList<String>()
-        var habitTrainer = ArrayList<String>()
-        var habitTrainerId = ArrayList<String>()
+
+    fun checkIfUserHasHabits() {
         var db = Firebase.database.reference
-        var ref = db.child("users").child(currentUser).child("habitsPath")
-        var ref2 = db.child("usernames")
-        ref.get().addOnSuccessListener {
+        var refUsers = db.child("users").child(currentUser).child("habitsPath")
+        refUsers.get().addOnSuccessListener {
             if (it.exists()) {
                 var children = it.children
                 for (child in children) {
@@ -80,35 +73,18 @@ class TakePhotoActivity : BaseActivity() {
                     var trainer = child.child("coach").value
                     habitNames += habitName
                     habitIds += habitId
-                    Log.d("habitName", habitName)
-                    Log.d("habitCoach", trainer.toString())
-                    if (trainer != null) {
-                        trainer = trainer.toString()
-                        ref2.get().addOnSuccessListener {
-                            var children = it.children
-                            for (child in children) {
-                                var username = child.key.toString()
-                                var id = child.value.toString()
-                                Log.d("username", username)
-                                Log.d("id", id)
-                                if (id == trainer.toString()) {
-                                    Log.d("FOUND", username)
-                                    trainer = username
-                                    habitTrainerId += id
-                                    habitTrainer += trainer.toString()
-                                }
-                            }
-                        }
-                    } else {
-                        habitTrainer += "No trainer"
-                        habitTrainerId += "No trainer id"
-                    }
+                    habitTrainerIds += trainer.toString()
                 }
+                Log.d("habitName", habitNames.toString())
+                Log.d("habitId", habitIds.toString())
+                Log.d("habitTrainer", habitTrainers.toString())
+                Log.d("habitTrainerId", habitTrainerIds.toString())
                 dropdownItems = Array(habitNames.size) { i -> habitNames[i] }
                 autoCompleteTextView = findViewById(R.id.auto_complete_txt)
                 dropdownAdapter = ArrayAdapter<String>(this, R.layout.list_item, dropdownItems)
                 autoCompleteTextView.setAdapter(dropdownAdapter)
                 takePhotoButton.text = getString(R.string.take_photo)
+                takePhotoButton.isEnabled = true
             } else {
                 Log.d("habitName", "No such document")
                 textInputLayout = findViewById(R.id.textInputLayout)
@@ -122,22 +98,56 @@ class TakePhotoActivity : BaseActivity() {
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
         }
+    }
 
-        autoCompleteTextView.setOnItemClickListener() { parent, view, position, id ->
-            Log.d("Selected habit", habitNames.toString())
-            Log.d("Selected habit", habitIds.toString())
-            Log.d("Selected habit", habitTrainer.toString())
-            Log.d("Selected habit", habitTrainerId.toString())
-            Log.d("Selected habit", parent.getItemAtPosition(position).toString() + " " + position.toString())
-            Log.d("Selected habit id", habitIds[position] + " " + position.toString())
-            Log.d("Selected trainer", habitTrainer[position] + " " + position.toString())
-            Log.d("Selected trainer id", habitTrainerId[position] + " " + position.toString())
-            selectedHabit = parent.getItemAtPosition(position).toString()
-            selectedHabitId = habitIds[position]
-            selectedTrainer = habitTrainer[position]
-            selectedTrainerId = habitTrainerId[position]
-            Toast.makeText(this, selectedHabit + " - " + selectedTrainer, Toast.LENGTH_SHORT).show()
+    fun getTrainerArray() {
+        var db = Firebase.database.reference
+        var refUsernames = db.child("usernames")
+        // map ids to usernames
+        var mapIdtoUser = HashMap<String, String>()
+        refUsernames.get().addOnSuccessListener {
+            if (it.exists()) {
+                var children = it.children
+                for (child in children) {
+                    var username = child.key.toString()
+                    var id = child.value.toString()
+                    mapIdtoUser[id] = username
+                }
+            }
+            for (trainerId in habitTrainerIds) {
+                habitTrainers += if (trainerId != "null") {
+                    var trainerUsername = mapIdtoUser[trainerId]
+                    trainerUsername.toString()
+                } else {
+                    "No trainer"
+                }
+            }
+            Log.d("gta habitTrainer", habitTrainers.toString())
+            Log.d("gta habitTrainerId", habitTrainerIds.toString())
+            autoCompleteTextView.setOnItemClickListener() { parent, view, position, id ->
+                selectedHabit = parent.getItemAtPosition(position).toString()
+                selectedHabitId = habitIds[position]
+                selectedTrainer = habitTrainers[position]
+                selectedTrainerId = habitTrainerIds[position]
+                Toast.makeText(this, selectedHabit + " - " + selectedTrainer, Toast.LENGTH_SHORT).show()
+            }
         }
+
+    }
+
+
+    fun startPage() {
+        backHomeButton = findViewById(R.id.backHomeButton)
+        backHomeButton.setOnClickListener {
+            val intent = Intent(this, HomeActivity.HomeEntryPoint::class.java)
+            startActivity(intent)
+        }
+        textInputLayout = findViewById(R.id.textInputLayout)
+        autoCompleteTextView = findViewById(R.id.auto_complete_txt)
+
+        checkIfUserHasHabits()
+        getTrainerArray()
+
         imageView = findViewById(R.id.imageView)
         takePhotoText = findViewById(R.id.textView)
         takePhotoButton = findViewById<Button>(R.id.takePhotoButton)
