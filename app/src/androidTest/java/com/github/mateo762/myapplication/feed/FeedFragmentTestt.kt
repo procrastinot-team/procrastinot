@@ -64,10 +64,10 @@ class FeedFragmentTestt {
         feedFragment.fetchUserImages("dummyId")
     }*/
 
- /*   @Test
+    @Test
     fun generatePostsTest() {
         feedFragment.generatePosts(listOf())
-    }*/
+    }
 
     @Test
     fun updatePostsCacheTest() {
