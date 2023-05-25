@@ -142,8 +142,19 @@ class RequestsFragment : Fragment() {
                             // Otherwise, set it to false
                         } else {
                             habit.isCoached = false
-                            //TODO: Retrieve the list of coaches stored in the shared /habits/{habit.id}/coachOffers directory and store in the habit
+                            habit.coachOffers = emptyList()
+
+                            getCoachOffersFromFirebase(habit) { coachOffers ->
+                                habit.coachOffers = coachOffers
+
+                                //Update the UI
+                                lifecycleScope.launch {
+                                    habitsState.value = coachableHabits
+                                    getCoachableAndCoachedHabits()
+                                }
+                            }
                         }
+
                         coachableHabits.add(habit)
                     }
                 }
@@ -154,6 +165,37 @@ class RequestsFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+
+    /*
+    Retrieves the list of coaches from the Firebase database from the /habits/{habit.id}/coachOffers path and returns it as a list of UserEntity objects
+     */
+    private fun getCoachOffersFromFirebase(
+        habit: HabitEntity,
+        callback: (List<String>) -> Unit
+    ) {
+        println("Calling getCoachOffersFromFirebase with habit: $habit")
+
+        //Get the reference from the Firebase url stored in the habit.coachOffersUrl
+        val coachOffersRef = FirebaseDatabase.getInstance().getReferenceFromUrl(habit.coachOffersUrl)
+        coachOffersRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val coachOffers = mutableListOf<String>()
+                for (childSnapshot in snapshot.children) {
+                    val coach = childSnapshot.getValue(String::class.java)
+                    if (coach != null) {
+                        coachOffers.add(coach)
+                    }
+                }
+
+                callback(coachOffers.toList())
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle error
+                callback(emptyList())
+            }
         })
     }
 

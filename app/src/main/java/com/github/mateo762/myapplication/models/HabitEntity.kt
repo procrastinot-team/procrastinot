@@ -14,7 +14,7 @@ data class HabitEntity(
     @ColumnInfo(name = "habit_end_time") val endTime: String = "",
     @ColumnInfo(name = "is_coached") var isCoached: Boolean = false,
     @ColumnInfo(name = "coach_requested") val coachRequested: Boolean = false,
-    @ColumnInfo(name = "coach_offers") val coachOffers: List<String> = emptyList(),
+    @ColumnInfo(name = "coach_offers") var coachOffers: List<String> = emptyList(),
     @ColumnInfo(name = "coach_offers_url") val coachOffersUrl: String = "",
     @ColumnInfo(name = "habit_owner_id") val habitOwnerId: String = "",
     @ColumnInfo(name = "habit_owner_name") val habitOwnerName: String = "",
