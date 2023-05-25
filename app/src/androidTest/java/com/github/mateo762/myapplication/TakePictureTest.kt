@@ -203,7 +203,7 @@ class TakePictureTest {
                 uiAccept.click()
             }
             // wait for the image to upload
-            onView(isRoot()).perform(waitFor(5000))
+            onView(isRoot()).perform(waitFor(1000))
             onView(withId(R.id.ratingBar)).perform(ViewActions.click())
             onView(withId(R.id.backHomeButton)).perform(ViewActions.click())
         }
