@@ -81,7 +81,7 @@ class TakePictureTest {
         Thread.sleep(500)
         // Perform different actions on the view based on what is the text of the button
         if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
-            onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
+            onView(withId(R.id.spinner)).perform(ViewActions.click())
 
         }
         else {
@@ -94,7 +94,7 @@ class TakePictureTest {
         Thread.sleep(500)
         // Perform different actions on the view based on what is the text of the button
         if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
-            onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
+            onView(withId(R.id.spinner)).perform(ViewActions.click())
         }
         else {
             onView(withId(R.id.takePhotoButton)).check(matches(withText("No habits found")))
@@ -185,7 +185,44 @@ class TakePictureTest {
                 uiAccept.click()
             }
             Thread.sleep(500)
-            onView(withId(R.id.textView)).check(matches(withText(containsString("Done!"))))
+            onView(withId(R.id.textView)).check(matches(withText(containsString("Uploading"))))
+        }
+        else {
+            Log.d("Test", "Failed if statement")
+            onView(withId(R.id.takePhotoButton)).check(matches(withText("No habits found")))
+        }
+    }
+
+    @Test
+    fun testDropdownSelectToScreenThreeDoneCoach() {
+        Thread.sleep(500)
+        Log.d("Test", "testDropdownSelectToScreenThree")
+
+        if (decorView.findViewById<View>(R.id.takePhotoButton).isEnabled) {
+            Log.d("Test", "Passed if statement")
+            onView(withId(R.id.spinner)).perform(ViewActions.click())
+            // contains substring "Coach" to select the coach habit
+
+            onData(allOf(
+                `is`(instanceOf(String::class.java)), containsString("david"))).perform(ViewActions.click())
+            onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
+            var uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+            var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
+            // If the device has a physical shutter button, use it
+            Thread.sleep(500)
+
+            if (uiShutter.exists()) {
+                uiShutter.click()
+            }
+            Thread.sleep(500)
+
+            // accept the image
+            var uiAccept = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
+            if (uiAccept.exists()) {
+                uiAccept.click()
+            }
+            Thread.sleep(500)
+            onView(withId(R.id.ratingBar)).check(matches(isDisplayed()))
         }
         else {
             Log.d("Test", "Failed if statement")
