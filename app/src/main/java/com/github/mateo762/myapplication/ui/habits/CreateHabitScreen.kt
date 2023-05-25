@@ -241,7 +241,8 @@ private fun saveHabit(context:Context, habitName:String, habitDays:List<DayOfWee
                 habitStartTime.value,
                 habitEndTime.value,
                 coachRequested = askingForCoach.value,
-                habitOwnerId = user.uid
+                habitOwnerId = user.uid,
+                habitOwnerName = user.displayName!!
             )
 
             val db = Firebase.database.reference
@@ -254,7 +255,8 @@ private fun saveHabit(context:Context, habitName:String, habitDays:List<DayOfWee
                 "endTime" to myHabit.endTime,
                 "coachRequested" to myHabit.coachRequested,
                 "coachOffersUrl" to "",
-                "habitOwnerId" to myHabit.habitOwnerId
+                "habitOwnerId" to myHabit.habitOwnerId,
+                "habitOwnerName" to myHabit.habitOwnerName
             )
 
             val userHabitRef = db.child("users").child(uid).child("habitsPath").push()
@@ -286,7 +288,7 @@ private fun publishCoachingRequest(
     habitData: HashMap<String, Any>,
     callback: (coachingRef: DatabaseReference) -> Unit
 ) {
-    val coachingHabitRef = db.child("habits").child(userHabitRef.key!!).push()
+    val coachingHabitRef = db.child("habits").push()
 
     val emptyList: List<String> = emptyList()
     habitData["coachOffers"] = emptyList

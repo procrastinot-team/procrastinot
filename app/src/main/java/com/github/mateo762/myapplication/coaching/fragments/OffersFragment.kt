@@ -11,11 +11,13 @@ import android.view.ViewGroup
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
+import com.github.mateo762.myapplication.followers.UserRepository
 import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.models.UserEntity
 import com.github.mateo762.myapplication.ui.coaching.OffersScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 import kotlinx.coroutines.launch
 
 class OffersFragment : Fragment() {
@@ -28,7 +30,7 @@ class OffersFragment : Fragment() {
 
     // A list of habits where coaching has been requested
     private val coachingRequested =
-        mutableStateOf(mutableListOf<Map<HabitEntity, UserEntity>>())
+        mutableStateOf(mutableListOf<HabitEntity>())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,13 +38,17 @@ class OffersFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                OffersScreen(coachingRequested.value) { coachee, habit ->
+                OffersScreen(coachingRequested.value) { habit ->
+
+                    println("Coaching offered for $habit by ${getCurrentUser()}")
+
                     habitsRef.orderByChild("id").equalTo(habit.id)
                         .addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
                                 snapshot.children.forEach { childSnapshot ->
 
                                     //Add the coach to the list of coaches for the habit
+                                    updateHabitCoachesCallback(childSnapshot, habit, getCurrentUser())
                                 }
                             }
 
@@ -68,11 +74,7 @@ class OffersFragment : Fragment() {
         if (connectionExists) {
             val currentUser = FirebaseAuth.getInstance().currentUser
             if (currentUser != null) {
-                val habitsPath = "/users/${currentUser.uid}/habitsPath"
-                val coachingHabits = "coachingHabits"
-
-                //TODO: Create a "coachable habits" public path on firebase and refactor the habit storing methods
-
+                val habitsPath = "/habits"
                 lifecycleScope.launch {
                     getFirebaseHabits(habitsPath)
                 }
@@ -81,16 +83,18 @@ class OffersFragment : Fragment() {
     }
 
     private fun getCurrentUser(): UserEntity{
-        return UserEntity("currentUserId", "getCurrentUser", "coachee_user", "coachee_user@email.com")
+        val firebaseEntity = FirebaseAuth.getInstance().currentUser!!
+        return UserEntity(uid=firebaseEntity.uid, name =firebaseEntity.displayName)
     }
 
     suspend fun getCoachableHabits() {
-        val coachableHabitsState: MutableList<Map<HabitEntity, UserEntity>> = mutableListOf()
+        val coachableHabitsState: MutableList<HabitEntity> = mutableListOf()
         for (coachableHabit in habitsState.value) {
             //Add all habits where coaching is requested and the habit is not yet coached
             if (coachableHabit.coachRequested && !coachableHabit.isCoached) {
-                coachableHabitsState.add(mapOf(coachableHabit to getCurrentUser()))
+                coachableHabitsState.add(coachableHabit)
             }
+
             this@OffersFragment.coachingRequested.value = coachableHabitsState
         }
     }
@@ -103,18 +107,11 @@ class OffersFragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val coachableHabits = mutableListOf<HabitEntity>()
                 for (childSnapshot in snapshot.children) {
+                    println("Offers Screen: $snapshot")
                     val habit = childSnapshot.getValue(HabitEntity::class.java)
                     // BUG? snapshot.getValue forces isCoached to false, but not the other values?
-                    if (habit != null && habit.coachRequested) {
-                        if (childSnapshot.hasChild("isCoached")) {
-                            // If the snapshot contains a value for isCoached, use it
-                            habit.isCoached =
-                                childSnapshot.child("isCoached").getValue(Boolean::class.java)
-                                    ?: false
-                            // Otherwise, set it to false
-                        } else {
-                            habit.isCoached = false
-                        }
+                    //TODO: if (habit != null && habit.habitOwnerId != getCurrentUser().uid) {
+                    if (habit != null) {
                         coachableHabits.add(habit)
                     }
                 }
@@ -127,5 +124,60 @@ class OffersFragment : Fragment() {
             override fun onCancelled(error: DatabaseError) {}
         })
     }
-    
+
+    /*
+    Propagated function from the Offerscreen.
+    The childSnapshot is the habit that will be appended with currentUser
+    (the user who applied to coach for the given habit)
+     */
+    fun updateHabitCoachesCallback(
+        childSnapshot: DataSnapshot,
+        habit: HabitEntity,
+        coach: UserEntity
+    ) {
+        val habitSnapshot = childSnapshot.getValue(HabitEntity::class.java)
+        if (habitSnapshot != null && habitSnapshot.id == habit.id) {
+            // Update the child with the matching ID
+            val habitRef = childSnapshot.ref
+
+            // Retrieve the current value of coachOffers
+            habitRef.child("coachOffers").addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val coachOffersList = mutableListOf<String>()
+
+                    if (dataSnapshot.exists() && dataSnapshot.value != null) {
+                        // If the coachOffers list already exists, retrieve its current value
+                        val currentCoachOffers = dataSnapshot.getValue<List<String>>()
+                        if (currentCoachOffers != null) {
+                            coachOffersList.addAll(currentCoachOffers)
+                        }
+                    }
+
+                    // Append the new coach to the list
+                    coachOffersList.add(coach.uid) // Assuming the coach's name is stored in the 'name' property of UserEntity
+
+                    // Update the coachOffers list in Firebase
+                    habitRef.child("coachOffers").setValue(coachOffersList)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                // Update successful
+                                println("Coach added to coachOffers list")
+                            } else {
+                                // Update failed
+                                println("Failed to add coach to coachOffers list")
+                            }
+                        }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Handle error
+                    println("Error retrieving coachOffers: ${databaseError.message}")
+                }
+            })
+
+            val currentUser = FirebaseAuth.getInstance().currentUser
+            //getFirebaseCoachableHabitsFromPath("/users/${currentUser?.uid}/habitsPath")
+        }
+    }
+
 }

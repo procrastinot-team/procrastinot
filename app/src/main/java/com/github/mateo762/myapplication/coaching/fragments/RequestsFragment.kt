@@ -142,6 +142,7 @@ class RequestsFragment : Fragment() {
                             // Otherwise, set it to false
                         } else {
                             habit.isCoached = false
+                            //TODO: Retrieve the list of coaches stored in the shared /habits/{habit.id}/coachOffers directory and store in the habit
                         }
                         coachableHabits.add(habit)
                     }

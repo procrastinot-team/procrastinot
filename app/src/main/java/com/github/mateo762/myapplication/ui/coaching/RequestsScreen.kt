@@ -111,10 +111,12 @@ fun DisplayCoachSelection(
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.testTag("habit_name_${habit.name}")
                 )
+                println("Requests Screen: " + habitMap[habit]?.isEmpty())
                 if (habitMap[habit]?.isEmpty() == true) {
                     EmptyCandidateCard()
                 } else {
                     for (candidate in habitMap[habit]!!) {
+                            println("Requests Screen: fails here")
                             CandidateCard(
                                 candidate.name!!,
                                 candidate.username!!,
@@ -123,6 +125,7 @@ fun DisplayCoachSelection(
                             ) {
                                 onCoachSelected(candidate, habit)
                             }
+                        println("Requests Screen: fails here 2")
                     }
                 }
             }
