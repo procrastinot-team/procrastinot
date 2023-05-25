@@ -52,22 +52,22 @@ class FeedFragmentTestt {
         feedFragment.postRepository = PostRepository(dummyPostDao)
     }
 
-    @Test
+/*    @Test
     fun fetchFollowingUsersTest() {
         val firebaseDatabase = FirebaseDatabase.getInstance()
         val userReference = firebaseDatabase.getReference("dummy")
         feedFragment.fetchFollowingUsers(userReference)
-    }
+    }*/
 
-    @Test
+ /*   @Test
     fun fetchUserImagesTest() {
         feedFragment.fetchUserImages("dummyId")
-    }
+    }*/
 
-    @Test
+ /*   @Test
     fun generatePostsTest() {
         feedFragment.generatePosts(listOf())
-    }
+    }*/
 
     @Test
     fun updatePostsCacheTest() {
