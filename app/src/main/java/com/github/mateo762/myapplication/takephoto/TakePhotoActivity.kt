@@ -93,23 +93,28 @@ class TakePhotoActivity : BaseActivity() {
                     mapIdtoUser[id] = username } }
             for (trainerId in habitTrainerIds) {
                 habitTrainers += if (trainerId != "null") { var trainerUsername = mapIdtoUser[trainerId]; trainerUsername.toString() } else { "No trainer" } }
-            val dropdownItems = habitNames.zip(habitTrainers).map { (habitName, trainer) -> "$habitName - $trainer" }
-            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, dropdownItems)
-            dropdownSpinner.adapter = adapter
-            dropdownSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    selectedHabit = habitNames[0]
-                    selectedHabitId = habitIds[0]
-                    selectedTrainer = habitTrainers[0]
-                    selectedTrainerId = habitTrainerIds[0] }
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    selectedHabit = habitNames[position]
-                    selectedHabitId = habitIds[position]
-                    selectedTrainer = habitTrainers[position]
-                    selectedTrainerId = habitTrainerIds[position]
-                    showToast(selectedHabit + " - " + selectedTrainer)
-                }
-            } }
+            dropDownInit()
+        }
+    }
+    
+    fun dropDownInit() {
+        val dropdownItems = habitNames.zip(habitTrainers).map { (habitName, trainer) -> "$habitName - $trainer" }
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, dropdownItems)
+        dropdownSpinner.adapter = adapter
+        dropdownSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                selectedHabit = habitNames[0]
+                selectedHabitId = habitIds[0]
+                selectedTrainer = habitTrainers[0]
+                selectedTrainerId = habitTrainerIds[0] }
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                selectedHabit = habitNames[position]
+                selectedHabitId = habitIds[position]
+                selectedTrainer = habitTrainers[position]
+                selectedTrainerId = habitTrainerIds[position]
+                showToast(selectedHabit + " - " + selectedTrainer)
+            }
+        }
     }
 
     fun startPage() {
@@ -187,19 +192,40 @@ class TakePhotoActivity : BaseActivity() {
         uploadImage()
     }
 
+    private fun showAfterUpload() {
+        if (selectedTrainer == "No trainer" || selectedTrainer == null) {
+            takePhotoText.text = getString(R.string.done)
+            backHomeButton.visibility = View.VISIBLE
+            backHomeButton.isEnabled = true
+        } else {
+            takePhotoText.text = getString(R.string.rank) + selectedTrainer + getString(R.string.as_a_trainer)
+            ratingBar.visibility = View.VISIBLE
+            var db = Firebase.database.reference
+            var rate = 0.0f
+            ratingBar.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
+                rate = rating
+                if (selectedTrainerId != null) {
+                    var refBar = db.child("ratings").child(selectedTrainerId!!).child(currentUser).setValue(rating)
+                    takePhotoText.text = getString(R.string.done)
+                    backHomeButton.visibility = View.VISIBLE
+                    backHomeButton.isEnabled = true
+                }
+            }
+        }
+        takePhotoLoader.visibility = View.GONE
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun uploadImage() {
         if (imageData == null) {
             showToast(getString(R.string.no_image_data))
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, HomeActivity::class.java))
             return }
         val formatter = SimpleDateFormat(getString(R.string.file_name_date), Locale.getDefault())
         val now = Date()
         val fileName = formatter.format(now)
         val storage = FirebaseStorage.getInstance().getReference("users/$currentUser/images/$fileName")
         storage.putBytes(imageData).addOnSuccessListener {
-            showToast(getString(R.string.image_uploaded))
             storage.downloadUrl.addOnSuccessListener {
                 var imageUrl = it.toString()
                 var db = Firebase.database.reference
@@ -213,26 +239,7 @@ class TakePhotoActivity : BaseActivity() {
                     )
                     db.child("users").child(currentUser).child("imagesPath").push().setValue(habitImage)
                 }
-                if (selectedTrainer == "No trainer" || selectedTrainer == null) {
-                    takePhotoText.text = getString(R.string.done)
-                    backHomeButton.visibility = View.VISIBLE
-                    backHomeButton.isEnabled = true
-                } else {
-                    takePhotoText.text = getString(R.string.rank) + selectedTrainer + getString(R.string.as_a_trainer)
-                    ratingBar.visibility = View.VISIBLE
-                    var db = Firebase.database.reference
-                    var rate = 0.0f
-                    ratingBar.setOnRatingBarChangeListener { ratingBar, rating, fromUser ->
-                        rate = rating
-                        if (selectedTrainerId != null) {
-                            var refBar = db.child("ratings").child(selectedTrainerId!!).child(currentUser).setValue(rating)
-                            takePhotoText.text = getString(R.string.done)
-                            backHomeButton.visibility = View.VISIBLE
-                            backHomeButton.isEnabled = true
-                        }
-                    }
-                }
-                takePhotoLoader.visibility = View.GONE
+                showAfterUpload()
             }
         }
     }
