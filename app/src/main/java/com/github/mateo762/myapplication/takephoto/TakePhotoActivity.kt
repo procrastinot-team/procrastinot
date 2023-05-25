@@ -162,10 +162,6 @@ class TakePhotoActivity : BaseActivity() {
     }
 
     private fun dispatchTakePictureIntent() {
-        if (selectedHabit == null) {
-            Toast.makeText(this,getString(R.string.select_a_habit), Toast.LENGTH_SHORT).show()
-            return
-        }
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
     }
@@ -182,8 +178,6 @@ class TakePhotoActivity : BaseActivity() {
             val data = baos.toByteArray()
             imageData = data
             onImageCaptured()
-        } else {
-            Toast.makeText(this, getString(R.string.no_image_captured), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -244,11 +238,6 @@ class TakePhotoActivity : BaseActivity() {
                             takePhotoText.text = getString(R.string.done)
                             backHomeButton.visibility = View.VISIBLE
                             backHomeButton.isEnabled = true
-                        } else
-                        {
-                            Toast.makeText(this, getString(R.string.there_was_an_error), Toast.LENGTH_SHORT).show()
-                            val intent = Intent(this, HomeActivity.HomeEntryPoint::class.java)
-                            startActivity(intent)
                         }
                     }
                 }
