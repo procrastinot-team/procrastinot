@@ -59,10 +59,10 @@ class FeedFragmentTestt {
         feedFragment.fetchFollowingUsers(userReference)
     }*/
 
- /*   @Test
+    @Test
     fun fetchUserImagesTest() {
         feedFragment.fetchUserImages("dummyId")
-    }*/
+    }
 
     @Test
     fun generatePostsTest() {
