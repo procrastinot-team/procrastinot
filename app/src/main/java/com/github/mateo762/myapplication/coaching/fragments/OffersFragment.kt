@@ -38,9 +38,7 @@ class OffersFragment : Fragment() {
     ): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                OffersScreen(coachingRequested.value) { habit ->
-
-                    println("Coaching offered for $habit by ${getCurrentUser()}")
+                OffersScreen(coachingRequested.value, getCurrentUser().uid) { habit ->
 
                     habitsRef.orderByChild("id").equalTo(habit.id)
                         .addListenerForSingleValueEvent(object : ValueEventListener {
@@ -90,8 +88,8 @@ class OffersFragment : Fragment() {
     suspend fun getCoachableHabits() {
         val coachableHabitsState: MutableList<HabitEntity> = mutableListOf()
         for (coachableHabit in habitsState.value) {
-            //Add all habits where coaching is requested and the habit is not yet coached
-            if (coachableHabit.coachRequested && !coachableHabit.isCoached) {
+            //Add all habits where coaching is requested and the habit is not yet coached and the habit is not owned by the current user
+            if (coachableHabit.coachRequested && !coachableHabit.isCoached && coachableHabit.habitOwnerId != getCurrentUser().uid) {
                 coachableHabitsState.add(coachableHabit)
             }
 
@@ -110,7 +108,7 @@ class OffersFragment : Fragment() {
                     println("Offers Screen: $snapshot")
                     val habit = childSnapshot.getValue(HabitEntity::class.java)
                     // BUG? snapshot.getValue forces isCoached to false, but not the other values?
-                    //TODO: if (habit != null && habit.habitOwnerId != getCurrentUser().uid) {
+
                     if (habit != null) {
                         coachableHabits.add(habit)
                     }

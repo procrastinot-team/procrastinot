@@ -54,11 +54,9 @@ fun RequestsScreen(
                         ) // Invoke the callback with coach and habit
                     }
                 }
-            }
-        }
-        LazyColumn {
-            items(coachedHabits) { coachedHabit ->
-                DisplayCurrentCoach(coachedHabit)
+                items(coachedHabits) { coachedHabit ->
+                    DisplayCurrentCoach(coachedHabit)
+                }
             }
         }
     }
