@@ -1,84 +1,216 @@
-package com.github.mateo762.myapplication
+package com.github.mateo762.myapplication.home
 
-import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.fragment.app.Fragment
-import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import android.net.ConnectivityManager
+import android.net.Network
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.lifecycle.Lifecycle
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.mateo762.myapplication.home.HomeActivity
 import com.github.mateo762.myapplication.home.fragments.SummaryFragment
 import com.github.mateo762.myapplication.models.HabitEntity
+import com.github.mateo762.myapplication.room.HabitRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.*
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import junit.framework.TestCase.assertTrue
+import io.mockk.*
+import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.*
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.time.DayOfWeek
+import org.mockito.ArgumentMatchers
+import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class SummaryFragmentTest {
 
     @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
-    val composeTestRule = createComposeRule()
+    val activityRule = ActivityScenarioRule(HomeActivity::class.java)
 
-    private lateinit var activityScenario: ActivityScenario<HomeActivity>
+    // Set up an executor test rule
+    @get:Rule
+    val executorTestRule = InstantTaskExecutorRule()
+
+    @MockK(relaxed = true)
+    private lateinit var habitsRef: DatabaseReference
+
+    @MockK(relaxed = true)
+    private lateinit var dataSnapshot: DataSnapshot
+
+    @Inject
+    lateinit var habitRepository: HabitRepository
+
+    @Inject
+    lateinit var connectivityManager: ConnectivityManager
+
+    private lateinit var summaryFragment: SummaryFragment
+
+    private lateinit var testCoroutineScope: TestCoroutineScope
+
 
     @Before
-    fun setUp() {
+    fun setup() {
         hiltRule.inject()
-        activityScenario = ActivityScenario.launch(HomeActivity::class.java)
+
+        testCoroutineScope = TestCoroutineScope()
+
+        testCoroutineScope.runBlockingTest {
+            withContext(Dispatchers.Main) {
+                val activityScenario = activityRule.scenario
+
+                activityScenario.onActivity { activity ->
+                    val fragmentFactory = activity.supportFragmentManager.fragmentFactory
+
+                    launchFragmentInContainer<SummaryFragment>(
+                        factory = fragmentFactory,
+                        fragmentArgs = null,
+                        initialState = Lifecycle.State.RESUMED
+                    ).onFragment { fragment ->
+                        summaryFragment = fragment
+                    }
+                }
+            }
+        }
+
+
+        MockKAnnotations.init(this)
+        mockkStatic(FirebaseAuth::class)
+        mockkStatic(FirebaseDatabase::class)
+        every { summaryFragment.requireContext() } returns ApplicationProvider.getApplicationContext()
+        every { FirebaseAuth.getInstance().currentUser } returns mockk(relaxed = true)
+        every { summaryFragment.viewLifecycleOwner } returns mockk(relaxed = true)
+        every { summaryFragment.lifecycle } returns mockk {
+            every { currentState } returns Lifecycle.State.STARTED
+        }
+        every { summaryFragment.habitRepository } returns habitRepository
+        every { summaryFragment.privateCall<Any>("getFirebaseHabitsFromPath", any()) } just awaits
+        every { summaryFragment.privateCall<Any>("getLocalHabits") } just awaits
+        every { summaryFragment.privateCall<Any>("updateHabitsCache", any()) } just awaits
+        //every { summaryFragment.habitRepository.insertAllHabits(any()) } returns Unit
+        habitRepository = mockk()
+
+        // Set the habitRepository field in summaryFragment to use the mock object
+        summaryFragment.habitRepository = habitRepository
     }
 
-    val habits = listOf(
-        HabitEntity("Habit 1", "Habit 1", listOf(DayOfWeek.TUESDAY), "08:00", "09:00"),
-        HabitEntity("Habit 2", "Habit 2", listOf(DayOfWeek.THURSDAY, DayOfWeek.SUNDAY), "10:00", "11:00"),
-        HabitEntity("Habit 3", "Habit 3", listOf(DayOfWeek.MONDAY, DayOfWeek.THURSDAY), "12:00", "13:00"),
-    )
-
-//    @Composable
-//    fun myHabits(onClick: () -> Unit) {
-//        HabitListScreen(habits = habits)
-//    }
+    @After
+    fun tearDown() {
+        unmockkAll()
+    }
 
     @Test
-    fun testSummaryFragment() {
-        Espresso.onView(withId(R.id.summaryFragment)).perform(ViewActions.click())
-        // Get a reference to the current fragment
-        val fragment = getCurrentFragment()
-        // Check if the current fragment is a SummaryFragment
-        assertTrue(fragment is SummaryFragment)
-//
-//        composeTestRule.onNodeWithTag("Habit 1").assertExists()
-//        composeTestRule.onNodeWithTag("Habit 2").assertExists()
-//        composeTestRule.onNodeWithTag("Habit 3").assertExists()
-//
-//        composeTestRule.onNodeWithTag("Habit 1").performClick()
-//        composeTestRule.onNodeWithTag("Habit 2").performClick()
-//        composeTestRule.onNodeWithTag("Habit 3").performClick()
-//
-//        habits.forEach { habit ->
-//            composeTestRule.onNodeWithText(habit.name).assertExists()
-//            composeTestRule.onNodeWithText(habit.days.joinToString()).assertExists()
-//            composeTestRule.onNodeWithText("Start time: ${habit.startTime}").assertExists()
-//            composeTestRule.onNodeWithText("End time: ${habit.endTime}").assertExists()
-//        }
+    fun testHabitsFetch() {
+        // Mock the active network and network capabilities
+        val activeNetwork = mockk<Network>()
+        every { connectivityManager.activeNetwork } returns activeNetwork
+
+        // Mock the Firebase habits response
+        val habitEntity = mockk<HabitEntity>()
+        every { dataSnapshot.children } returns listOf(mockk { every { getValue(HabitEntity::class.java) } returns habitEntity })
+        every { dataSnapshot.getValue(ArgumentMatchers.any<Class<MutableList<HabitEntity>>>()) } returns mutableListOf(
+            habitEntity
+        )
+
+        // Mock the Firebase database reference
+        every { FirebaseDatabase.getInstance().getReference(any()) } returns habitsRef
+        every { habitsRef.addListenerForSingleValueEvent(any()) } answers {
+            val listener = arg<ValueEventListener>(0)
+            listener.onDataChange(dataSnapshot)
+        }
+
+        // Call the method under test
+        summaryFragment.onViewCreated(mockk(), mockk())
+
+        // Verify that the Firebase habits were fetched and cached
+        verify {
+            summaryFragment.privateCall<Any>("getFirebaseHabitsFromPath", any())
+            summaryFragment.privateCall<Any>("updateHabitsCache", any())
+        }
+
+        // Verify that the local habits were not fetched
+        verify(inverse = true) {
+            summaryFragment.privateCall<Any>("getLocalHabits")
+        }
     }
 
-    private fun getCurrentFragment(): Fragment? {
-        // Get the current fragment from the ActivityScenario
-        var fragment: Fragment? = null
-        activityScenario.onActivity { activity ->
-            // Get the current fragment by its container ID
-            fragment = activity.supportFragmentManager.findFragmentById(R.id.navHostFragment)
+    @Test
+    fun testNoConnection() {
+        // Mock the active network and network capabilities
+        every { connectivityManager.activeNetwork } returns null
+
+        // Call the method under test
+        summaryFragment.onViewCreated(mockk(), mockk())
+
+        // Verify that the local habits were fetched
+        verify {
+            summaryFragment.privateCall<Any>("getLocalHabits")
         }
-        return fragment
+
+        // Verify that the Firebase habits were not fetched
+        verify(inverse = true) {
+            summaryFragment.privateCall<Any>("getFirebaseHabitsFromPath", any())
+            summaryFragment.privateCall<Any>("updateHabitsCache", any())
+        }
+    }
+
+    @Test
+    fun testDeleteHabit() = testCoroutineScope.runBlockingTest {
+        // Mock the habit and current user
+        val habitEntity = mockk<HabitEntity>()
+        val currentUser = mockk<FirebaseUser>()
+        every { FirebaseAuth.getInstance().currentUser } returns currentUser
+        every { currentUser.uid } returns "user_id"
+        every { habitEntity.id } returns "habit_id"
+
+
+        // Mock the Firebase database reference
+        every { FirebaseDatabase.getInstance().getReference(any()) } returns habitsRef
+        every { habitsRef.orderByChild(any()).equalTo(any<String>()) } returns habitsRef
+        every { habitsRef.addListenerForSingleValueEvent(any()) } answers {
+            val listener = arg<ValueEventListener>(0)
+            listener.onDataChange(dataSnapshot)
+        }
+        every { habitsRef.ref } returns mockk(relaxed = true)
+        every { habitsRef.ref.removeValue() } returns mockk(relaxed = true)
+        every { summaryFragment.privateCall<Any>("getFirebaseHabitsFromPath", any()) } just awaits
+        coEvery { habitRepository.insertAllHabits(any()) } returns Unit
+
+        // Call the method under test
+        runBlocking {
+            summaryFragment.deleteHabit(habitEntity)
+        }
+        // Verify that the habit was deleted and Firebase was updated
+        verify {
+            runBlocking { habitRepository.deleteHabit(habitEntity) }
+            habitsRef.orderByChild("id").equalTo("habit_id")
+            habitsRef.addListenerForSingleValueEvent(any())
+            habitsRef.ref.removeValue()
+            summaryFragment.privateCall<Any>("getFirebaseHabitsFromPath", any())
+        }
     }
 }
+
+inline fun <reified T> Any.privateCall(functionName: String, vararg args: Any?): T? {
+    val function = javaClass.getDeclaredMethod(
+        functionName,
+        *args.map { it?.javaClass ?: Unit::class.java }.toTypedArray()
+    )
+    function.isAccessible = true
+    return function.invoke(this, *args) as? T
+}
+

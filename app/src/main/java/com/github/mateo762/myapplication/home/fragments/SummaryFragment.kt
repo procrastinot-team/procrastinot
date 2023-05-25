@@ -120,7 +120,7 @@ class SummaryFragment : Fragment() {
         }
     }
 
-    private fun deleteHabit(habit: HabitEntity) {
+    fun deleteHabit(habit: HabitEntity) {
         viewLifecycleOwner.lifecycleScope.launch {
             habitRepository.deleteHabit(habit)
             val currentUser = FirebaseAuth.getInstance().currentUser

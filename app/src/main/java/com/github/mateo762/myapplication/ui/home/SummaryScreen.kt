@@ -96,6 +96,7 @@ fun HabitListItem(habit: HabitEntity, onClick: (habit: HabitEntity) -> Unit) {
                     .align(Alignment.End)
                     .padding(10.dp)
                     .clickable(onClick = { onClick(habit) })
+                    .testTag("delete_${habit.id}")
             )
         }
     }
