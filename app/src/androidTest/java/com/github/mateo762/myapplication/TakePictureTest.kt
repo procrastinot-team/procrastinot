@@ -223,6 +223,8 @@ class TakePictureTest {
             }
             Thread.sleep(500)
             onView(withId(R.id.ratingBar)).check(matches(isDisplayed()))
+            onView(withId(R.id.ratingBar)).perform(ViewActions.click())
+            onView(withId(R.id.backHomeButton)).perform(ViewActions.click())
         }
         else {
             Log.d("Test", "Failed if statement")
