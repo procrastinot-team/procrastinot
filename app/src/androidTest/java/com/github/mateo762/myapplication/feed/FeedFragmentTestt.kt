@@ -59,7 +59,7 @@ class FeedFragmentTestt {
 
         val feedFragment = FeedFragment()
         feedFragment.fetchFollowingUsers(
-            FirebaseDatabase.getInstance().getReference("/users/mTFQAS8YmlXK89siWb36PwIe1x82"))
+            FirebaseDatabase.getInstance().getReference("/users/test_user"))
     }
 
 }
