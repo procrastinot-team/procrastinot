@@ -58,8 +58,7 @@ class TakePhotoActivity : BaseActivity() {
 
 
     fun checkIfUserHasHabits() {
-        var db = Firebase.database.reference
-        var refUsers = db.child("users").child(currentUser).child("habitsPath")
+        var db = Firebase.database.reference; var refUsers = db.child("users").child(currentUser).child("habitsPath")
         refUsers.get().addOnSuccessListener {
             if (it.exists()) {
                 var children = it.children
@@ -79,10 +78,7 @@ class TakePhotoActivity : BaseActivity() {
                 takePhotoButton.text = getString(R.string.no_habit_found)
             }
             getTrainerArray()
-        }.addOnFailureListener {
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-        }
+        }.addOnFailureListener { startActivity(Intent(this, HomeActivity.HomeEntryPoint::class.java)) }
     }
 
     fun getTrainerArray() {
@@ -96,9 +92,7 @@ class TakePhotoActivity : BaseActivity() {
                     var id = child.value.toString()
                     mapIdtoUser[id] = username } }
             for (trainerId in habitTrainerIds) {
-                habitTrainers += if (trainerId != "null") {
-                    var trainerUsername = mapIdtoUser[trainerId]
-                    trainerUsername.toString() } else { "No trainer" } }
+                habitTrainers += if (trainerId != "null") { var trainerUsername = mapIdtoUser[trainerId]; trainerUsername.toString() } else { "No trainer" } }
             val dropdownItems = habitNames.zip(habitTrainers).map { (habitName, trainer) -> "$habitName - $trainer" }
             val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, dropdownItems)
             dropdownSpinner.adapter = adapter
@@ -113,10 +107,10 @@ class TakePhotoActivity : BaseActivity() {
                     selectedHabitId = habitIds[position]
                     selectedTrainer = habitTrainers[position]
                     selectedTrainerId = habitTrainerIds[position]
-                    Toast.makeText(this@TakePhotoActivity, selectedHabit + " - " + selectedTrainer, Toast.LENGTH_SHORT).show() }
+                    showToast(selectedHabit + " - " + selectedTrainer)
+                }
             } }
     }
-
 
     fun startPage() {
         backHomeButton = findViewById(R.id.backHomeButton)
@@ -136,6 +130,10 @@ class TakePhotoActivity : BaseActivity() {
         takePhotoButton.setOnClickListener {
             dispatchTakePictureIntent()
         }
+    }
+
+    private fun showToast(error: String) {
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -170,7 +168,7 @@ class TakePhotoActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Toast.makeText(this, getString(R.string.image_captured), Toast.LENGTH_SHORT).show()
+            showToast(getString(R.string.image_captured))
             val imageBitmap = data?.extras?.get("data") as Bitmap
             imageView.setImageBitmap(imageBitmap)
             val baos = ByteArrayOutputStream()
@@ -191,26 +189,19 @@ class TakePhotoActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun uploadImage() {
-
         if (imageData == null) {
-            Toast.makeText(this, getString(R.string.no_image_data), Toast.LENGTH_SHORT).show()
-            // go to home
+            showToast(getString(R.string.no_image_data))
             val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
-            return
-        }
+            return }
         val formatter = SimpleDateFormat(getString(R.string.file_name_date), Locale.getDefault())
         val now = Date()
         val fileName = formatter.format(now)
         val storage = FirebaseStorage.getInstance().getReference("users/$currentUser/images/$fileName")
-
         storage.putBytes(imageData).addOnSuccessListener {
-            //show toast
-            Toast.makeText(this, getString(R.string.image_uploaded), Toast.LENGTH_SHORT).show()
-            // get the image url
+            showToast(getString(R.string.image_uploaded))
             storage.downloadUrl.addOnSuccessListener {
                 var imageUrl = it.toString()
-                // write to firebase database
                 var db = Firebase.database.reference
                 if (selectedTrainerId != null) {
                     val habitImage = HabitImageEntity(
@@ -241,11 +232,8 @@ class TakePhotoActivity : BaseActivity() {
                         }
                     }
                 }
-                Thread.sleep(2000)
                 takePhotoLoader.visibility = View.GONE
             }
-
         }
     }
-
 }
