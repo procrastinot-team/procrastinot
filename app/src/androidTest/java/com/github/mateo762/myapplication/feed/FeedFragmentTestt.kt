@@ -34,6 +34,7 @@ class FeedFragmentTestt {
         }
     }
 
+
     @Test
     fun testFeed_fetchFollowingUsers() {
         val user1 = UserEntity("user1", "james", "james2", "james@gmail.com", emptyList(), emptyList(),
