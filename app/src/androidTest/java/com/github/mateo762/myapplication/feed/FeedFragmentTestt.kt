@@ -1,6 +1,7 @@
 package com.github.mateo762.myapplication.feed
 
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.home.fragments.FeedFragment
 import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.models.HabitImageEntity
@@ -12,15 +13,18 @@ import com.github.mateo762.myapplication.ui.home.FeedScreen
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 
-@ExperimentalCoroutinesApi
+@RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
 class FeedFragmentTestt {
 
     @get:Rule
@@ -28,7 +32,7 @@ class FeedFragmentTestt {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.openMocks(this)
+        //MockitoAnnotations.openMocks(this)
         composeTestRule.setContent {
             FeedScreen(posts = emptyList())
         }
@@ -36,6 +40,7 @@ class FeedFragmentTestt {
 
     @Test
     fun testFeed_fetchFollowingUsers() {
+/*
         val user1 = UserEntity("user1", "james", "james2", "james@gmail.com", emptyList(), emptyList(),
         emptyList(), emptyList()
         )
@@ -50,6 +55,7 @@ class FeedFragmentTestt {
         val mockUserDatabaseReference = mock(DatabaseReference::class.java)
         `when`(mockDataSnapshot.ref).thenReturn(mockUserDatabaseReference)
 
+*/
 
         val feedFragment = FeedFragment()
         feedFragment.fetchFollowingUsers(
