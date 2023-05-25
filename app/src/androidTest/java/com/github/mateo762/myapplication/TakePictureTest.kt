@@ -50,8 +50,6 @@ class TakePictureTest {
 
 
     private lateinit var decorView: View
-    private var habitsCollected: ArrayList<String> = ArrayList()
-    private var habitsCoaches: ArrayList<String> = ArrayList()
 
 
     @get:Rule
@@ -64,29 +62,7 @@ class TakePictureTest {
         activityRule.scenario.onActivity {
             decorView = it.window.decorView
         }
-        var currentUser = "testUser"
-        var firebaseUser = Firebase.auth.currentUser?.uid
-        if (firebaseUser != null) {
-            currentUser = firebaseUser.toString()
-        }
-        val db = Firebase.database.reference
-        val ref =  db.child("users").child(currentUser).child("habitsPath")
-        ref.get().addOnSuccessListener {
-            if (it.exists()) {
-                Log.d("TakePictureTest", "Habits exist")
-                Log.d("TakePictureTest", it.toString())
-                var children = it.children
-                for (child in children) {
-                    // write child value to object
-                    var habitName = child.child("name").value.toString()
-                    var coach = child.child("coach").value.toString()
-
-                    habitsCollected += habitName
-                    habitsCoaches += coach
-                }
-            }
-        }
-        Thread.sleep(500)
+        hiltRule.inject()
         Intents.init()
     }
 
@@ -94,6 +70,100 @@ class TakePictureTest {
     fun tearDown() {
         Intents.release()
     }
-    
+
+    @Test
+    fun testButton() {
+        // Perform different actions on the view based on what is the text of the button
+        if (decorView.findViewById<View>(R.id.takePhotoButton).isClickable) {
+            onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
+        }
+        else {
+            onView(withId(R.id.takePhotoButton)).check(matches(withText("No habits found")))
+        }
+    }
+
+    @Test
+    fun testDropdown() {
+        // Perform different actions on the view based on what is the text of the button
+        if (decorView.findViewById<View>(R.id.takePhotoButton).isClickable) {
+            onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
+
+        }
+        else {
+            onView(withId(R.id.takePhotoButton)).check(matches(withText("No habits found")))
+        }
+    }
+
+    @Test
+    fun testDropdownSelect() {
+        // Perform different actions on the view based on what is the text of the button
+        if (decorView.findViewById<View>(R.id.takePhotoButton).isClickable) {
+            onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
+            onData(Matchers.anything())
+                .inRoot(isPlatformPopup())
+                .atPosition(0)
+                .perform(ViewActions.click())
+        }
+        else {
+            onView(withId(R.id.takePhotoButton)).check(matches(withText("No habits found")))
+        }
+    }
+
+    @Test
+    fun testDropdownSelectImageClick() {
+        if (decorView.findViewById<View>(R.id.takePhotoButton).isClickable) {
+            onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
+            onData(Matchers.anything())
+                .inRoot(isPlatformPopup())
+                .atPosition(0)
+                .perform(ViewActions.click())
+            onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
+            var uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+            var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
+            // If the device has a physical shutter button, use it
+            if (uiShutter.exists()) {
+                uiShutter.click()
+            }
+            // accept the image
+            var uiAccept = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
+            if (uiAccept.exists()) {
+                uiAccept.click()
+            }
+        }
+        else {
+            onView(withId(R.id.takePhotoButton)).check(matches(withText("No habits found")))
+        }
+    }
+
+    @Test
+    fun testDropdownSelectToScreenThree() {
+        Log.d("Test", "testDropdownSelectToScreenThree")
+        if (decorView.findViewById<View>(R.id.takePhotoButton).isClickable) {
+            Log.d("Test", "Passed if statement")
+            onView(withId(R.id.textInputLayout)).perform(ViewActions.click())
+            onData(Matchers.anything())
+                .inRoot(isPlatformPopup())
+                .atPosition(0)
+                .perform(ViewActions.click())
+            onView(withId(R.id.takePhotoButton)).perform(ViewActions.click())
+            var uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+            var uiShutter = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/shutter_button"))
+            // If the device has a physical shutter button, use it
+            if (uiShutter.exists()) {
+                uiShutter.click()
+            }
+            // accept the image
+            var uiAccept = uiDevice.findObject(UiSelector().resourceId("com.android.camera2:id/done_button"))
+            if (uiAccept.exists()) {
+                uiAccept.click()
+            }
+            onView(withId(R.id.textView)).check(matches(withText(containsString("Uploading"))))
+        }
+        else {
+            Log.d("Test", "Failed if statement")
+            onView(withId(R.id.takePhotoButton)).check(matches(withText("No habits found")))
+        }
+    }
+
 
 }

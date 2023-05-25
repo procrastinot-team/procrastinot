@@ -97,7 +97,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    android:text="@string/take_photo"
+                    android:text="@string/loading"
                     android:textColor="@color/white"
                     android:layout_marginBottom="100dp"
                     />
