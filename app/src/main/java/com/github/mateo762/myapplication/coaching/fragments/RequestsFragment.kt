@@ -75,17 +75,22 @@ class RequestsFragment : Fragment() {
                     "isCoached" to true,
                     "coach" to coach.uid
                 )
-            ).addOnSuccessListener {
-                val ref = FirebaseDatabase.getInstance().getReferenceFromUrl(habit.sharedHabitUrl)
+            )
+
+            val sharedHabitUrl = habit.sharedHabitUrl
+            if (sharedHabitUrl != "") {
+                val ref = FirebaseDatabase.getInstance().getReferenceFromUrl(sharedHabitUrl)
+
                 ref.removeValue()
                     .addOnSuccessListener {
                         // Deletion successful
                     }
                     .addOnFailureListener { error ->
                         // Handle deletion failure
+                        println("Failed to delete shared habit: $error")
                     }
-
             }
+
             val currentUser = FirebaseAuth.getInstance().currentUser
             getFirebaseCoachableHabitsFromPath("/users/${currentUser?.uid}/habitsPath")
         }
@@ -189,27 +194,31 @@ class RequestsFragment : Fragment() {
         println("Calling getCoachOffersFromFirebase with habit: $habit")
 
         //Concatenate the habit.sharedHabitUrl with the /coachOffers path
-        val url = "${habit.sharedHabitUrl}/coachOffers"
+        val sharedHabitUrl = habit.sharedHabitUrl
 
-        val coachOffersRef = FirebaseDatabase.getInstance().getReferenceFromUrl(url)
-        coachOffersRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val coachOffers = mutableListOf<String>()
-                for (childSnapshot in snapshot.children) {
-                    val coach = childSnapshot.getValue(String::class.java)
-                    if (coach != null) {
-                        coachOffers.add(coach)
+        if (sharedHabitUrl != "") {
+            val url = "${habit.sharedHabitUrl}/coachOffers"
+
+            val coachOffersRef = FirebaseDatabase.getInstance().getReferenceFromUrl(url)
+            coachOffersRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val coachOffers = mutableListOf<String>()
+                    for (childSnapshot in snapshot.children) {
+                        val coach = childSnapshot.getValue(String::class.java)
+                        if (coach != null) {
+                            coachOffers.add(coach)
+                        }
                     }
+
+                    callback(coachOffers.toList())
                 }
 
-                callback(coachOffers.toList())
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Handle error
-                callback(emptyList())
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle error
+                    callback(emptyList())
+                }
+            })
+        }
     }
 
 }
