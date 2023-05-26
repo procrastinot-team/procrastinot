@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
-import com.github.mateo762.myapplication.coaching.CoachingActivity
 import com.github.mateo762.myapplication.followers.UserRepository
 import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.models.UserEntity
@@ -19,19 +18,12 @@ import com.github.mateo762.myapplication.ui.coaching.OffersScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import javax.inject.Inject
 
-abstract class OffersFragment : Fragment() {
-
-    @AndroidEntryPoint
-    class OffersEntryPoint: OffersFragment()
+class OffersFragment : Fragment() {
 
     //Reference to the habits database
-    @Inject
-    lateinit var habitsRef: DatabaseReference
+    private lateinit var habitsRef: DatabaseReference
 
     //Create an empty habit list state
     val habitsState = mutableStateOf(emptyList<HabitEntity>())
@@ -80,14 +72,15 @@ abstract class OffersFragment : Fragment() {
         if (connectionExists) {
             val currentUser = FirebaseAuth.getInstance().currentUser
             if (currentUser != null) {
+                val habitsPath = "/habits"
                 lifecycleScope.launch {
-                    getFirebaseHabits("habits")
+                    getFirebaseHabits(habitsPath)
                 }
             }
         }
     }
 
-    fun getCurrentUser(): UserEntity{
+    private fun getCurrentUser(): UserEntity{
         val firebaseEntity = FirebaseAuth.getInstance().currentUser
         return if (firebaseEntity == null) {
             UserEntity(uid="", name ="")
@@ -109,28 +102,29 @@ abstract class OffersFragment : Fragment() {
     }
 
     //Retrieve the list of all habits from firebase
-    private suspend fun getFirebaseHabits(path: String) {
+    private fun getFirebaseHabits(path: String) {
+        // Initialize Firebase database reference
+        habitsRef = FirebaseDatabase.getInstance().getReference(path)
+        habitsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val coachableHabits = mutableListOf<HabitEntity>()
+                for (childSnapshot in snapshot.children) {
+                    println("Offers Screen: $snapshot")
+                    val habit = childSnapshot.getValue(HabitEntity::class.java)
+                    // BUG? snapshot.getValue forces isCoached to false, but not the other values?
 
-        //Get the path from the habitsRef using Firebase injected database reference
-        val habitsSnapshot = habitsRef.child(path).get().await() // Path: / -> /habits
-
-        val coachableHabits = mutableListOf<HabitEntity>()
-
-        for (child in habitsSnapshot.children){
-            println("Offers Screen: $habitsSnapshot")
-            val habit = child.getValue(HabitEntity::class.java)
-            // BUG? snapshot.getValue forces isCoached to false, but not the other values?
-
-            if (habit != null) {
-                coachableHabits.add(habit)
+                    if (habit != null) {
+                        coachableHabits.add(habit)
+                    }
+                }
+                lifecycleScope.launch {
+                    habitsState.value = coachableHabits
+                    getCoachableHabits()
+                }
             }
-        }
 
-        lifecycleScope.launch {
-            habitsState.value = coachableHabits
-            getCoachableHabits()
-        }
-
+            override fun onCancelled(error: DatabaseError) {}
+        })
     }
 
     /*

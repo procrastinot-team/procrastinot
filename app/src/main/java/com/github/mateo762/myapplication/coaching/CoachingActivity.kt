@@ -16,10 +16,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 
 
-abstract class CoachingActivity : BaseActivity() {
-
-    @AndroidEntryPoint
-    class CoachingEntryPoint: CoachingActivity()
+@AndroidEntryPoint
+open class CoachingActivity : BaseActivity() {
 
     private lateinit var bottomNavView: BottomNavigationView
 
@@ -35,10 +33,10 @@ abstract class CoachingActivity : BaseActivity() {
         lateinit var selectedFragment: Fragment
         when (it.itemId) {
             R.id.offersFragment -> {
-                selectedFragment = OffersFragment.OffersEntryPoint()
+                selectedFragment = OffersFragment()
             }
             R.id.requestsFragment -> {
-                selectedFragment = RequestsFragment.RequestsEntryPoint()
+                selectedFragment = RequestsFragment()
             }
         }
         openFragmentSelected(selectedFragment)

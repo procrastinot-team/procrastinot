@@ -24,11 +24,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @SuppressLint("MutableCollectionMutableState")
-abstract class RequestsFragment : Fragment() {
-
-
-    @AndroidEntryPoint
-    class RequestsEntryPoint: RequestsFragment()
+@AndroidEntryPoint
+class RequestsFragment : Fragment() {
 
     @Inject
     lateinit var userRepository: UserRepository

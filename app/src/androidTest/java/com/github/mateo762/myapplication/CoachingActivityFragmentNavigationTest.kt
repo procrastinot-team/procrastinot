@@ -25,12 +25,12 @@ class CoachingActivityFragmentNavigationTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-   private lateinit var activityScenario: ActivityScenario<CoachingActivity.CoachingEntryPoint>
+   private lateinit var activityScenario: ActivityScenario<CoachingActivity>
 
     @Before
     fun setUp() {
         hiltRule.inject()
-        activityScenario = ActivityScenario.launch(CoachingActivity.CoachingEntryPoint::class.java)
+        activityScenario = ActivityScenario.launch(CoachingActivity::class.java)
     }
 
     @After
