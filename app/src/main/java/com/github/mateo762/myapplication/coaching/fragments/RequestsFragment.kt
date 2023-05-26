@@ -18,10 +18,13 @@ import com.github.mateo762.myapplication.models.UserEntity
 import com.github.mateo762.myapplication.ui.coaching.RequestsScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @SuppressLint("MutableCollectionMutableState")
+@AndroidEntryPoint
 class RequestsFragment : Fragment() {
 
     @Inject
@@ -80,9 +83,25 @@ class RequestsFragment : Fragment() {
                     "coach" to coach.uid
                 )
             )
+
+            val sharedHabitUrl = habit.sharedHabitUrl
+            if (sharedHabitUrl != "") {
+                val ref = FirebaseDatabase.getInstance().getReferenceFromUrl(sharedHabitUrl)
+
+                ref.removeValue()
+                    .addOnSuccessListener {
+                        // Deletion successful
+                    }
+                    .addOnFailureListener { error ->
+                        // Handle deletion failure
+                        println("Failed to delete shared habit: $error")
+                    }
+            }
+
             val currentUser = FirebaseAuth.getInstance().currentUser
             getFirebaseCoachableHabitsFromPath("/users/${currentUser?.uid}/habitsPath")
         }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -146,7 +165,19 @@ class RequestsFragment : Fragment() {
                             // Otherwise, set it to false
                         } else {
                             habit.isCoached = false
+                            habit.coachOffers = emptyList()
+
+                            getCoachOffersFromFirebase(habit) { coachOffers ->
+                                habit.coachOffers = coachOffers
+
+                                //Update the UI
+                                lifecycleScope.launch {
+                                    habitsState.value = coachableHabits
+                                    getCoachableAndCoachedHabits()
+                                }
+                            }
                         }
+
                         coachableHabits.add(habit)
                     }
                 }
@@ -158,6 +189,43 @@ class RequestsFragment : Fragment() {
 
             override fun onCancelled(error: DatabaseError) {}
         })
+    }
+
+    /*
+    Retrieves the list of coaches from the Firebase database from the /habits/{habit.id}/coachOffers path and returns it as a list of UserEntity objects
+     */
+    private fun getCoachOffersFromFirebase(
+        habit: HabitEntity,
+        callback: (List<String>) -> Unit
+    ) {
+        println("Calling getCoachOffersFromFirebase with habit: $habit")
+
+        //Concatenate the habit.sharedHabitUrl with the /coachOffers path
+        val sharedHabitUrl = habit.sharedHabitUrl
+
+        if (sharedHabitUrl != "") {
+            val url = "${habit.sharedHabitUrl}/coachOffers"
+
+            val coachOffersRef = FirebaseDatabase.getInstance().getReferenceFromUrl(url)
+            coachOffersRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val coachOffers = mutableListOf<String>()
+                    for (childSnapshot in snapshot.children) {
+                        val coach = childSnapshot.getValue(String::class.java)
+                        if (coach != null) {
+                            coachOffers.add(coach)
+                        }
+                    }
+
+                    callback(coachOffers.toList())
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle error
+                    callback(emptyList())
+                }
+            })
+        }
     }
 
 }
