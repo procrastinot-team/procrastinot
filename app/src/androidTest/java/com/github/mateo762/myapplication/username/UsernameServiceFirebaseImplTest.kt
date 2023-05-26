@@ -8,10 +8,11 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
-
 import org.junit.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import java.util.UUID
@@ -53,7 +54,7 @@ class UsernameServiceFirebaseImplTest {
         //then
         assertNotNull(result)
         assertNotEquals(0, result?.size)
-        assertEquals(username, result?.elementAt(0))
+        assertTrue(result!!.contains(username))
     }
 
     @Test
