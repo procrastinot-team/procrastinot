@@ -96,7 +96,7 @@ class TakePhotoActivity : BaseActivity() {
             dropDownInit()
         }
     }
-    
+
     fun dropDownInit() {
         val dropdownItems = habitNames.zip(habitTrainers).map { (habitName, trainer) -> "$habitName - $trainer" }
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, dropdownItems)
