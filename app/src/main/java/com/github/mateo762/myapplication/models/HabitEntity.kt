@@ -15,7 +15,7 @@ data class HabitEntity(
     @ColumnInfo(name = "is_coached") var isCoached: Boolean = false,
     @ColumnInfo(name = "coach_requested") val coachRequested: Boolean = false,
     @ColumnInfo(name = "coach_offers") var coachOffers: List<String> = emptyList(),
-    @ColumnInfo(name = "coach_offers_url") val sharedHabitUrl: String = "",
+    @ColumnInfo(name = "coach_offers_url") val sharedHabitUrl: String = "https://procrastinot-backend-default-rtdb.europe-west1.firebasedatabase.app/habits",
     @ColumnInfo(name = "habit_owner_id") val habitOwnerId: String = "",
     @ColumnInfo(name = "habit_owner_name") val habitOwnerName: String = "",
     @ColumnInfo(name = "coach") val coach: String = ""
