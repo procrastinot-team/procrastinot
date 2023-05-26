@@ -176,9 +176,6 @@ class OffersFragment : Fragment() {
                     println("Error retrieving coachOffers: ${databaseError.message}")
                 }
             })
-
-            val currentUser = FirebaseAuth.getInstance().currentUser
-            //getFirebaseCoachableHabitsFromPath("/users/${currentUser?.uid}/habitsPath")
         }
     }
 

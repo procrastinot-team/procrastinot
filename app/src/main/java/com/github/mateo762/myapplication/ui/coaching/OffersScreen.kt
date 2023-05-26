@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -74,7 +75,7 @@ fun DisplayNoOffers() {
             .testTag("nothing_to_see_box")
     ) {
         Text(
-            text = "There are no requests for coaching",
+            text = stringResource(R.string.no_requests_for_coaching),
             style = MaterialTheme.typography.h6,
             fontStyle = FontStyle.Italic,
             modifier = Modifier.testTag("nothing_to_see_text")
@@ -123,7 +124,7 @@ fun DisplayCoachingOffer(
                     contentColor = colorResource(R.color.white)
                 )
             ) {
-                Text(text = "Apply")
+                Text(text = stringResource(R.string.apply))
             }
         }
 
@@ -174,7 +175,7 @@ fun DisplayAppliedCoachOffer(
                     contentColor = colorResource(R.color.white)
                 )
             ) {
-                Text(text = "Applied")
+                Text(text = stringResource(R.string.applied))
             }
         }
 
