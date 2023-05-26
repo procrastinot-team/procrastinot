@@ -18,10 +18,13 @@ import com.github.mateo762.myapplication.models.UserEntity
 import com.github.mateo762.myapplication.ui.coaching.RequestsScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @SuppressLint("MutableCollectionMutableState")
+@AndroidEntryPoint
 class RequestsFragment : Fragment() {
 
     @Inject
