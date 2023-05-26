@@ -71,7 +71,7 @@ class FeedFragment : Fragment() {
             val currentUser = FirebaseAuth.getInstance().currentUser
             if (currentUser != null) {
                 usersRef = FirebaseDatabase.getInstance().getReference("/users/${currentUser.uid}")
-                fetchFollowingUsers()
+                fetchFollowingUsers(usersRef)
             }
         } else {
             // There is no connection available - (plane mode, no service, wifi...) Use cached data
@@ -81,8 +81,8 @@ class FeedFragment : Fragment() {
         }
     }
 
-    private fun fetchFollowingUsers() {
-        usersRef.child("followingPath").addListenerForSingleValueEvent(object : ValueEventListener {
+    fun fetchFollowingUsers(userReference: DatabaseReference) {
+        userReference.child("followingPath").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (childSnapshot in snapshot.children) {
                     val followingUserList =
@@ -108,7 +108,7 @@ class FeedFragment : Fragment() {
         })
     }
 
-    private fun fetchUserImages(userId: String) {
+    fun fetchUserImages(userId: String) {
         imagesRef = FirebaseDatabase.getInstance().getReference("/users/$userId/imagesPath")
 
         imagesRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -129,7 +129,7 @@ class FeedFragment : Fragment() {
         })
     }
 
-    private fun generatePosts(fetchedImages: List<HabitImageEntity>) {
+    fun generatePosts(fetchedImages: List<HabitImageEntity>) {
         CoroutineScope(Dispatchers.IO).launch {
             val generatedPosts = mutableListOf<PostEntity>()
 
@@ -156,15 +156,19 @@ class FeedFragment : Fragment() {
         }
     }
 
-    private fun updatePostsCache(feedState: List<PostEntity>) {
+    fun updatePostsCache(feedState: List<PostEntity>) {
         GlobalScope.launch {
-            postRepository.insertAllPosts(feedState)
+            if (postRepository != null) {
+                postRepository.insertAllPosts(feedState)
+            }
         }
     }
 
     fun getLocalPosts() {
         GlobalScope.launch {
-            feedState.value = postRepository.getAllPosts()
+            if(postRepository != null) {
+                feedState.value = postRepository.getAllPosts()
+            }
         }
     }
 

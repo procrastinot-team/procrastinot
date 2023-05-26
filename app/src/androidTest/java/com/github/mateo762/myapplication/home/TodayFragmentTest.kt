@@ -1,9 +1,12 @@
 package com.github.mateo762.myapplication.home
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.mateo762.myapplication.home.fragments.SummaryFragment
+import com.github.mateo762.myapplication.home.fragments.TodayFragment
 import com.github.mateo762.myapplication.models.HabitEntity
+import com.github.mateo762.myapplication.models.HabitImageEntity
 import com.github.mateo762.myapplication.room.HabitDao
+import com.github.mateo762.myapplication.room.HabitImageDao
+import com.github.mateo762.myapplication.room.HabitImageRepository
 import com.github.mateo762.myapplication.room.HabitRepository
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -14,17 +17,17 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class SummaryFragmentTest {
+class TodayFragmentTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
 
-    private lateinit var summaryFragment: SummaryFragment
+    private lateinit var todayFragment: TodayFragment
 
     @Before
     fun setup() {
         hiltRule.inject()
-        summaryFragment = SummaryFragment()
+        todayFragment = TodayFragment()
         // First, we mock the PostRepository
         val habitsDao = object : HabitDao {
             override fun getAll(): List<HabitEntity> {
@@ -43,15 +46,37 @@ class SummaryFragmentTest {
                 return
             }
         }
-        summaryFragment.habitRepository = HabitRepository(habitsDao)
+        todayFragment.habitRepository = HabitRepository(habitsDao)
+
+        val habitsImageDao = object : HabitImageDao {
+            override fun getAll(): List<HabitImageEntity> {
+                return listOf()
+            }
+
+            override fun cacheAll(habits: List<HabitImageEntity>) {
+                return
+            }
+        }
+        todayFragment.habitImageRepository = HabitImageRepository(habitsImageDao)
     }
 
     @Test
     fun testGetLocalHabits() {
-        summaryFragment.getLocalHabits()
+        todayFragment.getLocalHabits()
     }
+
+    @Test
+    fun testGetLocalImages() {
+        todayFragment.getLocalImages()
+    }
+
     @Test
     fun testUpdateHabitsCache() {
-        summaryFragment.updateHabitsCache(mutableListOf())
+        todayFragment.updateHabitsCache(mutableListOf())
+    }
+
+    @Test
+    fun testUpdateImagesCache() {
+        todayFragment.updateImagesCache(mutableListOf())
     }
 }

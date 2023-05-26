@@ -1,7 +1,6 @@
 package com.github.mateo762.myapplication
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.ListFragment
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
@@ -9,6 +8,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.habits.HabitsActivity
 import com.github.mateo762.myapplication.habits.fragments.CreateHabitFragment
+import com.github.mateo762.myapplication.habits.fragments.week.WeekFragment
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase
@@ -39,18 +39,7 @@ class HabitsActivityFragmentNavigationTest {
     }
 
     @Test
-    fun switchToSummaryFragment() {
-        Espresso.onView(withId(R.id.listFragment)).perform(ViewActions.click())
-        // Get a reference to the current fragment
-        val fragment = getCurrentFragment()
-        // Check if the current fragment is a ListFragment
-        TestCase.assertTrue(fragment is ListFragment)
-    }
-
-    @Test
     fun switchToDevelopFragment() {
-        Espresso.onView(withId(R.id.listFragment)).perform(ViewActions.click())
-        // Go to weekFragment and back to test DevelopFragment
         Espresso.onView(withId(R.id.developFragment)).perform(ViewActions.click())
         // Get a reference to the current fragment
         val fragment = getCurrentFragment()
