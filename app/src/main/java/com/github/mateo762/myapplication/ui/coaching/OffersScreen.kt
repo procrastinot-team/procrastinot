@@ -97,7 +97,7 @@ fun DisplayCoachingOffer(
             .fillMaxWidth()
             .padding(vertical = 0.dp, horizontal = 16.dp)
             //.size(400.dp, 300.dp)
-            .testTag("habit_selection_box")
+            .testTag("coaching_habits_box")
 
     ) {
         Column {
@@ -105,7 +105,7 @@ fun DisplayCoachingOffer(
                 text = habit.name,
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.testTag("habit_name_${habit.name}")
+                modifier = Modifier.testTag("coachable_habit_${habit.name}")
             )
             Row(modifier = Modifier.padding(vertical = 0.dp, horizontal = 0.dp)) {
                 //Retrieve the name of the habit Owner from Firebase
@@ -147,7 +147,7 @@ fun DisplayAppliedCoachOffer(
             .fillMaxWidth()
             .padding(vertical = 0.dp, horizontal = 16.dp)
             //.size(400.dp, 300.dp)
-            .testTag("habit_selection_box")
+            .testTag("coaching_habits_box_gray")
 
     ) {
         Column {
@@ -198,17 +198,17 @@ fun CoacheeCard(
             )
             Text(
                 text = habit.days.joinToString(),
-                style = MaterialTheme.typography.body1
-            )
+                style = MaterialTheme.typography.body1,
+                )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "Start time: ${habit.startTime}",
-                style = MaterialTheme.typography.body1
+                style = MaterialTheme.typography.body1,
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "End time: ${habit.endTime}",
-                style = MaterialTheme.typography.body1
+                style = MaterialTheme.typography.body1,
             )
         }
         Spacer(modifier = Modifier.weight(1f))
