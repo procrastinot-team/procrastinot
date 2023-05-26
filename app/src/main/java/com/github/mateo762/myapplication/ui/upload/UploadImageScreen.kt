@@ -49,7 +49,7 @@ fun UploadImageScreen(userId: String, habitId: String, image: Int) {
         Text(text = "Upload Hardcoded habits", fontSize = 24.sp)
         Button(
             modifier = Modifier.padding(top = 16.dp).testTag("btnHabits"),
-            onClick = { addHabitsToUser(userId, habits = getHardCodedHabits()) }
+            onClick = { }
         ) {
             Text(text = "Upload Habits")
         }
@@ -91,29 +91,5 @@ private suspend fun uploadImageToFirebaseStorageAndSaveURL(
         }.addOnFailureListener {
             // Handle failure
         }
-    }
-}
-
-fun addHabitsToUser(userId: String, habits: List<HabitEntity>) {
-    val TAG = "addHabitsToUser"
-    val db = Firebase.database.reference
-    val habitsRef = db.child("users").child(userId).child("habitsPath")
-
-    habits.forEach { habit ->
-        val habitData = hashMapOf(
-            "id" to habit.id,
-            "name" to habit.name,
-            "days" to habit.days,
-            "startTime" to habit.startTime,
-            "endTime" to habit.endTime
-        )
-
-        habitsRef.push().setValue(habitData)
-            .addOnSuccessListener {
-                Log.d(TAG, "Habit added successfully. $habit.id")
-            }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "Error adding habit: $e")
-            }
     }
 }
