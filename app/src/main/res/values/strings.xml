@@ -96,7 +96,6 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="take_photo">Take photo</string>
-    <string name="uploading_your_photo_to_the_cloud">Uploading your photo to the cloud</string>
     <string name="take_photo_title">Take Photo</string>
     <string name="image_captured">Image captured</string>
     <string name="no_image_captured">No image captured</string>
@@ -133,6 +132,18 @@
     <string name="coaching">Coaching</string>
     <string name="requests">Requests</string>
     <string name="offers">Offers</string>
+    <string name="upload_picture">Upload Picture</string>
+    <string name="uploading_your_photo_to_the_cloud">Uploading</string>
+    <string name="go_back_to_home">Go back to home</string>
+    <string name="no_habit_found">No habits found</string>
+    <string name="select_a_habit">Please select a habit</string>
+    <string name="done">Done!</string>
+    <string name="hint_select_a_habit">Select a habit</string>
+    <string name="rank">\"Rank \"</string>
+    <string name="as_a_trainer">\" as a trainer\"</string>
+    <string name="there_was_an_error">There was an error</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="na">N/A</string>
+    <string name="no_habits_found">No habits found</string>
 </resources>

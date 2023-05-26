@@ -173,14 +173,7 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
             galleryAdapter.galleryItems = it
         }
         profileViewModel.statsLiveData.observe(this) { statsUiModel ->
-            binding.habitCountText.text =
-                getString(R.string.posted_habits, statsUiModel.totalNumberOfHabits.toString())
-            binding.avgPerWeekText.text =
-                getString(R.string.avg_days_week, statsUiModel.averageDaysInWeek.toString())
-
-            binding.earliestTextView.text =
-                getString(R.string.earlystart, statsUiModel.earliestStart)
-            binding.latestTextView.text = getString(R.string.lateend, statsUiModel.latestEnd)
+            setStatsData(statsUiModel)
         }
 
         profileViewModel.followingLiveData.observe(this) {
@@ -281,6 +274,24 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
                     binding.btnUnfollow.visibility = View.GONE
                 }
             }
+        }
+    }
+
+    private fun setStatsData(statsUiModel: ProfileStatsUiModel) {
+        binding.habitCountText.text =
+            getString(R.string.posted_habits, statsUiModel.totalNumberOfHabits.toString())
+        binding.avgPerWeekText.text =
+            getString(R.string.avg_days_week, statsUiModel.averageDaysInWeek.toString())
+
+        binding.earliestTextView.text = if (statsUiModel.earliestStart != "0") {
+            getString(R.string.earlystart, statsUiModel.earliestStart)
+        } else {
+            getString(R.string.na)
+        }
+        binding.latestTextView.text = if (statsUiModel.earliestStart != "0") {
+            getString(R.string.lateend, statsUiModel.latestEnd)
+        } else {
+            getString(R.string.na)
         }
     }
 }

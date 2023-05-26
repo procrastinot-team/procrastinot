@@ -118,7 +118,11 @@ class ProfileViewModel @Inject constructor(
             daysCount.add(habit.days.size)
         }
 
-        averageRepetitionsPerWeek = daysCount.sum() / daysCount.size
+        averageRepetitionsPerWeek = if (daysCount.size > 0) {
+            daysCount.sum() / daysCount.size
+        } else  {
+            0
+        }
 
         val statsUiModel = ProfileStatsUiModel(
             totalNumberOfHabits = habits.size,
@@ -130,30 +134,38 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun getLatestEnd(): String {
-        var latestHour = ends[0].split(":")[0].toInt()
-        var latestMinute = ends[0].split(":")[1].toInt()
-        for (i in 1 until ends.size) {
-            val hour = ends[i].split(":")[0].toInt()
-            val minute = ends[i].split(":")[1].toInt()
-            if (hour > latestHour || (hour == latestHour && minute > latestMinute)) {
-                latestHour = hour
-                latestMinute = minute
+        if (ends.size > 0) {
+            var latestHour = ends[0].split(":")[0].toInt()
+            var latestMinute = ends[0].split(":")[1].toInt()
+            for (i in 1 until ends.size) {
+                val hour = ends[i].split(":")[0].toInt()
+                val minute = ends[i].split(":")[1].toInt()
+                if (hour > latestHour || (hour == latestHour && minute > latestMinute)) {
+                    latestHour = hour
+                    latestMinute = minute
+                }
             }
+            return "${latestHour}:${latestMinute}"
+        } else {
+            return "0"
         }
-        return "${latestHour}:${latestMinute}"
     }
 
     private fun getEarliestStart(): String {
-        var earliestHour = starts[0].split(":")[0].toInt()
-        var earliestMinute = starts[0].split(":")[1].toInt()
-        for (i in 1 until starts.size) {
-            val hour = starts[i].split(":")[0].toInt()
-            val minute = starts[i].split(":")[1].toInt()
-            if (hour < earliestHour || (hour == earliestHour && minute < earliestMinute)) {
-                earliestHour = hour
-                earliestMinute = minute
+        if (starts.size > 0) {
+            var earliestHour = starts[0].split(":")[0].toInt()
+            var earliestMinute = starts[0].split(":")[1].toInt()
+            for (i in 1 until starts.size) {
+                val hour = starts[i].split(":")[0].toInt()
+                val minute = starts[i].split(":")[1].toInt()
+                if (hour < earliestHour || (hour == earliestHour && minute < earliestMinute)) {
+                    earliestHour = hour
+                    earliestMinute = minute
+                }
             }
+            return "${earliestHour}:${earliestMinute}"
+        } else {
+            return "0"
         }
-        return "${earliestHour}:${earliestMinute}"
     }
 }
