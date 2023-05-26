@@ -155,7 +155,7 @@ fun DisplayAppliedCoachOffer(
                 text = habit.name,
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.testTag("habit_name_${habit.name}")
+                modifier = Modifier.testTag("coachable_habit_gray_${habit.name}")
             )
             Row(modifier = Modifier.padding(vertical = 0.dp, horizontal = 0.dp)) {
                 //Retrieve the name of the habit Owner from Firebase

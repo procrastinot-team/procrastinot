@@ -5,10 +5,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.models.UserEntity
-import com.github.mateo762.myapplication.ui.coaching.DisplayCoachingOffer
-import com.github.mateo762.myapplication.ui.coaching.DisplayNoOffers
-import com.github.mateo762.myapplication.ui.coaching.DisplayNothing
-import com.github.mateo762.myapplication.ui.coaching.OffersScreen
+import com.github.mateo762.myapplication.ui.coaching.*
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Before
@@ -108,22 +105,72 @@ class OffersScreenTest {
             composeTestRule.onNodeWithTag("candidate_card_name_${habit.habitOwnerName}")
                 .assertTextEquals(habit.habitOwnerName)
         }
+
+        //Check that the buttons are displayed
+        composeTestRule.onAllNodesWithTag("habit_button")
+            .assertCountEquals(2)
+
+        //Check that the buttons have the correct text
+        val buttons = composeTestRule.onAllNodesWithTag("habit_button")
+            .assertCountEquals(2)
+
+        buttons[0].assertTextEquals("Apply")
+        buttons[1].assertTextEquals("Apply")
     }
 
+    @Test
+    fun testDisplayAppliedCoachOffer() {
+        val coachableHabits = listOf(coachableHabit1, coachableHabit2)
 
-//
-//    @Test
-//    fun testRequestsPlaceholderTest() {
-//        setUpOffersScreen()
-//        composeTestRule
-//            .onNodeWithTag("placeholder_text")
-//            .assertExists()
-//            .assertIsDisplayed()
-//    }
-//
-//    private fun setUpOffersScreen() {
-//        composeTestRule.setContent {
-//            OffersScreen(emptyList(),"some_id",{})
-//        }
-//    }
+        //Let the current user be user1
+        composeTestRule.setContent {
+            for (habit in coachableHabits) {
+                DisplayAppliedCoachOffer(habit = habit)
+            }
+        }
+
+        composeTestRule.onAllNodesWithTag("coaching_habits_box_gray")
+            .assertCountEquals(coachableHabits.size)
+
+        for (habit in coachableHabits){
+            //Check that the coachable habits are displayed
+            composeTestRule.onNodeWithTag("coachable_habit_gray_${habit.name}")
+                .assertIsDisplayed()
+
+            //Check that the coachable habits have the correct text
+            composeTestRule.onNodeWithTag("coachable_habit_gray_${habit.name}")
+                .assertTextEquals(habit.name)
+
+            composeTestRule.onNodeWithTag("candidate_card_name_${habit.habitOwnerName}")
+                .assertTextEquals(habit.habitOwnerName)
+        }
+
+        //Check that the buttons are displayed
+        composeTestRule.onAllNodesWithTag("habit_button")
+            .assertCountEquals(2)
+
+        //Check that the buttons have the correct text
+        val buttons = composeTestRule.onAllNodesWithTag("habit_button")
+            .assertCountEquals(2)
+
+        buttons[0].assertTextEquals("Applied")
+        buttons[1].assertTextEquals("Applied")
+    }
+
+    @Test
+    fun testCoacheeCard(){
+        val coachableHabits = listOf(coachableHabit1, coachableHabit2)
+
+        composeTestRule.setContent {
+            for (habit in coachableHabits) {
+                CoacheeCard(habit = habit)
+            }
+        }
+
+        for (habit in coachableHabits){
+
+            composeTestRule.onNodeWithTag("candidate_card_name_${habit.habitOwnerName}")
+                .assertTextEquals(habit.habitOwnerName)
+        }
+    }
 }
