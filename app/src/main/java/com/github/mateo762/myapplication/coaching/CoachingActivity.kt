@@ -16,8 +16,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 
 
-@AndroidEntryPoint
-open class CoachingActivity : BaseActivity() {
+abstract open class CoachingActivity : BaseActivity() {
+
+    @AndroidEntryPoint
+    class CoachingEntryPoint: CoachingActivity()
 
     private lateinit var bottomNavView: BottomNavigationView
 

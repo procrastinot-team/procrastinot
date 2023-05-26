@@ -17,7 +17,7 @@ class CoachingActivityTest {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
-    val activityScenarioRule = ActivityScenarioRule(CoachingActivity::class.java)
+    val activityScenarioRule = ActivityScenarioRule(CoachingActivity.CoachingEntryPoint::class.java)
 
     @Test
     fun testActivityLaunchesSuccessfully() {

@@ -78,7 +78,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 openActivitySelected(AboutActivity())
             }
             R.id.nav_coaching -> {
-                openActivitySelected(CoachingActivity())
+                openActivitySelected(CoachingActivity.CoachingEntryPoint())
             }
             R.id.nav_log_out -> {
                 val intent = Intent(this@BaseActivity, LoginActivity::class.java)

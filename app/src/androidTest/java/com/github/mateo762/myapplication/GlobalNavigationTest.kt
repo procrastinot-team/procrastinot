@@ -110,7 +110,7 @@ class NavigationActivityTest {
         val currentActivity = getCurrentActivity()
 
         // Check if the current activity is a ProfileActivity
-        assertTrue(currentActivity is CoachingActivity)
+        assertTrue(currentActivity is CoachingActivity.CoachingEntryPoint)
     }
 
     // User icon tests
