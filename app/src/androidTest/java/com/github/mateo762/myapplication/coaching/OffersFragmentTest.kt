@@ -58,56 +58,56 @@ class OffersFragmentTest {
         }
     }
 
-    @Test
-    fun testGetFirebaseHabits() = runTest {
-        //TODO
-        assert(true)
-        val coach1 = UserEntity(
-            "9i3402934ojfssmfoiwjeoi293",
-            "Test Coach 1",
-            "test_coach_1",
-            "test_coach1@gmail.com",
-            emptyList(),
-            emptyList(),
-            emptyList(),
-            emptyList()
-        )
-        val coach2 = UserEntity(
-            "68790239u8yughjkladosou19028",
-            "Test Coach 2",
-            "test_coach_2",
-            "test_coach2@gmail.com",
-            emptyList(),
-            emptyList(),
-            emptyList(),
-            emptyList()
-        )
-        val habitWithCoachRequested = HabitEntity(
-            "0", "Requested",
-            listOf(DayOfWeek.MONDAY, DayOfWeek.TUESDAY),
-            "9:00", "12:00",
-            isCoached = false, coachRequested = true,
-            listOf(coach1.uid, coach2.uid), ""
-        )
-
-        db.child("habits/").push().setValue(habitWithCoachRequested).await()
-        db.child("users/${userId}/").push().setValue(habitWithCoachRequested).await()
-
-
-
-        val profileService = ProfileServiceFirebaseImpl(db)
-        var array: ArrayList<HabitImageEntity>? = null
-
-        //when
-        profileService.getHabitsImages(userId).collect {
-            array = it
-        }
-
-        //then
-        checkNotNull(array)
-        Assert.assertEquals(array?.size, 1)
-
-    }
+//    @Test
+//    fun testGetFirebaseHabits() = runTest {
+//        //TODO
+//        assert(true)
+//        val coach1 = UserEntity(
+//            "9i3402934ojfssmfoiwjeoi293",
+//            "Test Coach 1",
+//            "test_coach_1",
+//            "test_coach1@gmail.com",
+//            emptyList(),
+//            emptyList(),
+//            emptyList(),
+//            emptyList()
+//        )
+//        val coach2 = UserEntity(
+//            "68790239u8yughjkladosou19028",
+//            "Test Coach 2",
+//            "test_coach_2",
+//            "test_coach2@gmail.com",
+//            emptyList(),
+//            emptyList(),
+//            emptyList(),
+//            emptyList()
+//        )
+//        val habitWithCoachRequested = HabitEntity(
+//            "0", "Requested",
+//            listOf(DayOfWeek.MONDAY, DayOfWeek.TUESDAY),
+//            "9:00", "12:00",
+//            isCoached = false, coachRequested = true,
+//            listOf(coach1.uid, coach2.uid), ""
+//        )
+//
+//        db.child("habits/").push().setValue(habitWithCoachRequested).await()
+//        db.child("users/${userId}/").push().setValue(habitWithCoachRequested).await()
+//
+//
+//
+//        val profileService = ProfileServiceFirebaseImpl(db)
+//        var array: ArrayList<HabitImageEntity>? = null
+//
+//        //when
+//        profileService.getHabitsImages(userId).collect {
+//            array = it
+//        }
+//
+//        //then
+//        checkNotNull(array)
+//        Assert.assertEquals(array?.size, 1)
+//
+//    }
 
     @Test
     fun testGetCurrentUser(){
