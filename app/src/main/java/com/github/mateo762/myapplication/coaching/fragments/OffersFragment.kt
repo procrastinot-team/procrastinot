@@ -81,8 +81,12 @@ class OffersFragment : Fragment() {
     }
 
     private fun getCurrentUser(): UserEntity{
-        val firebaseEntity = FirebaseAuth.getInstance().currentUser!!
-        return UserEntity(uid=firebaseEntity.uid, name =firebaseEntity.displayName)
+        val firebaseEntity = FirebaseAuth.getInstance().currentUser
+        return if (firebaseEntity == null) {
+            UserEntity(uid="", name ="")
+        } else {
+            UserEntity(uid=firebaseEntity.uid, name =firebaseEntity.displayName)
+        }
     }
 
     suspend fun getCoachableHabits() {
