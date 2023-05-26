@@ -1,10 +1,11 @@
-id 'com.android.application'
-id 'org.jetbrains.kotlin.android'
-id 'jacoco'
-id 'com.google.gms.google-services'
-id 'kotlin-kapt'
-id 'com.google.dagger.hilt.android'
-id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.21'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'jacoco'
+    id 'com.google.gms.google-services'
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.21'
 }
 android {
     namespace 'com.github.mateo762.myapplication'
@@ -59,13 +60,6 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation platform('com.google.firebase:firebase-bom:31.2.3')
 
-
-
-
-
-
-
-    Expand Down
 
 
 
