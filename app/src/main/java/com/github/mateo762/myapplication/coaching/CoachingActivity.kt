@@ -16,7 +16,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 
 
-abstract open class CoachingActivity : BaseActivity() {
+abstract class CoachingActivity : BaseActivity() {
 
     @AndroidEntryPoint
     class CoachingEntryPoint: CoachingActivity()
