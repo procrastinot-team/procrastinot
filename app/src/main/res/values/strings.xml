@@ -146,4 +146,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="na">N/A</string>
     <string name="no_habits_found">No habits found</string>
+    <string name="no_requests_for_coaching">There are no requests for coaching</string>
+    <string name="apply">Apply</string>
+    <string name="applied">Applied</string>
 </resources>

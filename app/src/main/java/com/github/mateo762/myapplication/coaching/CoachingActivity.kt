@@ -11,9 +11,12 @@ import com.github.mateo762.myapplication.home.fragments.SummaryFragment
 import com.github.mateo762.myapplication.home.fragments.TodayFragment
 import com.github.mateo762.myapplication.ui.coaching.OffersScreen
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
 import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 open class CoachingActivity : BaseActivity() {
 
     private lateinit var bottomNavView: BottomNavigationView
