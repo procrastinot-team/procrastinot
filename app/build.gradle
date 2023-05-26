@@ -1,17 +1,14 @@
-plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-    id 'jacoco'
-    id 'com.google.gms.google-services'
-    id 'kotlin-kapt'
-    id 'com.google.dagger.hilt.android'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.21'
+id 'com.android.application'
+id 'org.jetbrains.kotlin.android'
+id 'jacoco'
+id 'com.google.gms.google-services'
+id 'kotlin-kapt'
+id 'com.google.dagger.hilt.android'
+id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.21'
 }
-
 android {
     namespace 'com.github.mateo762.myapplication'
     compileSdk 33
-
     packagingOptions {
         exclude("META-INF/DEPENDENCIES")
         exclude("META-INF/LICENSE.md")
@@ -23,17 +20,14 @@ android {
         exclude("META-INF/ASL2.0")
         exclude("META-INF/*.kotlin_module")
     }
-
     defaultConfig {
         applicationId "com.github.mateo762.myapplication"
         minSdk 24
         targetSdk 33
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "com.github.mateo762.myapplication.CustomTestRunner"
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -43,18 +37,13 @@ android {
             testCoverageEnabled true
         }
     }
-
-
-
     buildFeatures {
         compose true
         viewBinding true
     }
-
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.1"
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -64,13 +53,22 @@ android {
     }
 }
 
-
 dependencies {
     implementation "com.google.dagger:hilt-android:2.44"
     kapt "com.google.dagger:hilt-compiler:2.44"
-    implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation platform('com.google.firebase:firebase-bom:31.2.3')
+
+
+
+
+
+
+
+    Expand Down
+
+
+
     implementation 'androidx.navigation:navigation-fragment:2.5.3'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
@@ -86,9 +84,10 @@ dependencies {
     implementation composeBom
     androidTestImplementation composeBom
     def room_version = "2.5.0"
-    implementation "androidx.room:room-runtime:2.3.0"
-    annotationProcessor "androidx.room:room-compiler:2.3.0"
-
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
     implementation 'com.google.code.gson:gson:2.9.0'
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-rxjava3:$room_version"
@@ -111,23 +110,18 @@ dependencies {
     // or only import the main APIs for the underlying toolkit systems,
     // such as input and measurement/layout
     implementation 'androidx.compose.ui:ui'
-
     // Android Studio Preview support
     implementation 'androidx.compose.ui:ui-tooling-preview'
     debugImplementation 'androidx.compose.ui:ui-tooling'
-
     // UI Tests
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
-
     // Kotlin Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4'
-
     // ViewModel
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
-
     // Optional - Included automatically by material, only add when you need
     // the icons but not the material library (e.g. when using Material3 or a
     // custom design system based on Foundation)
@@ -136,7 +130,6 @@ dependencies {
     implementation 'androidx.compose.material:material-icons-extended'
     // Optional - Add window size utils
     implementation 'androidx.compose.material3:material3-window-size-class'
-
     // Optional - Integration with activities
     implementation 'androidx.activity:activity-compose:1.6.1'
     // Optional - Integration with ViewModels
@@ -177,38 +170,30 @@ dependencies {
     debugImplementation "androidx.test:monitor:1.6.1"
     implementation 'com.google.dagger:hilt-android:2.45'
     kapt 'com.google.dagger:hilt-compiler:2.45'
-
     // For instrumentation tests
     androidTestImplementation  'com.google.dagger:hilt-android-testing:2.45'
     kaptAndroidTest 'com.google.dagger:hilt-compiler:2.45'
-
     // For local unit tests
     testImplementation 'com.google.dagger:hilt-android-testing:2.45'
     kaptTest 'com.google.dagger:hilt-compiler:2.45'
     implementation 'com.github.bumptech.glide:glide:4.15.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.15.0'
-
     testImplementation "androidx.arch.core:core-testing:2.2.0"
     androidTestImplementation 'androidx.arch.core:core-testing:2.2.0'
 }
-
 // Allow references to generated code
 kapt {
     correctErrorTypes true
 }
-
-
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
     jacoco.excludes = ['jdk.internal.*']
 }
-
 task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
     reports {
         xml.required = true
         html.required = true
     }
-
     def fileFilter = [
             '**/R.class',
             '**/R$*.class',
@@ -216,7 +201,6 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
             '**/Manifest*.*',
             '**/*Test*.*',
             'android/**/*.*',
-
             // Exclude DAO interface files from coverage report
             '**room/*Dao*.*',
             // Exclude manually since the above line seems to not work?
@@ -224,7 +208,6 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
             '**room/HabitImageDao*.*',
             '**room/PostDao*.*',
             '**room/UserDao*.*',
-
             // Exclude Hilt generated classes
             '**/*Hilt*.*',
             'hilt_aggregated_deps/**',
@@ -232,14 +215,12 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
             '**/*_MembersInjector.class',
             // Exclude Hilt modules
             '**/di/**',
-
             //Exclude objects and data class
             '**authentication/PreferenceHelper.kt',
             '**/HardCodedValues.kt'
     ]
     def debugTree = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
     def mainSrc = "$project.projectDir/src/main/java"
-
     sourceDirectories.setFrom(files([mainSrc]))
     classDirectories.setFrom(files([debugTree]))
     executionData.setFrom(fileTree(dir: project.buildDir, includes: [
@@ -247,7 +228,6 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'crea
             'outputs/code_coverage/debugAndroidTest/connected/*/coverage.ec'
     ]))
 }
-
 connectedCheck {
     finalizedBy jacocoTestReport
 }
