@@ -14,8 +14,4 @@
         android:name="com.github.mateo762.myapplication.habits.fragments.week.WeekFragment"
         android:label="fragment_week"
         tools:layout="@layout/fragment_week" />
-    <fragment
-        android:id="@+id/listFragment"
-        android:name="com.github.mateo762.myapplication.habits.fragments.ListFragment"
-        android:label="fragment_list"/>
 </navigation>

@@ -74,9 +74,6 @@ abstract class BaseActivity : AppCompatActivity() {
             R.id.nav_settings -> {
                 openActivitySelected(SettingsActivity())
             }
-            R.id.nav_take_photo -> {
-                openActivitySelected(TakePhotoActivity())
-            }
             R.id.nav_about -> {
                 openActivitySelected(AboutActivity())
             }

@@ -102,7 +102,7 @@ class TodayFragment : Fragment() {
 
     // I tried to refactor this into a single function taking different class types
     // but it was a huge mess so I split it in two very similar functions for now.
-    private fun getFirebaseHabitsFromPath(path: String) {
+    fun getFirebaseHabitsFromPath(path: String) {
         // Initialize Firebase database reference
         habitsRef = FirebaseDatabase.getInstance().getReference(path)
         habitsRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -132,7 +132,7 @@ class TodayFragment : Fragment() {
         })
     }
 
-    private fun getFirebaseHabitImagesFromPath(path: String) {
+    fun getFirebaseHabitImagesFromPath(path: String) {
         imagesRef = FirebaseDatabase.getInstance()
             .getReference(path)
 
@@ -162,13 +162,13 @@ class TodayFragment : Fragment() {
         })
     }
 
-    private fun getLocalHabits() {
+    fun getLocalHabits() {
         GlobalScope.launch {
             habitsState.value = habitRepository.getAllHabits()
         }
     }
 
-    private fun getLocalImages() {
+    fun getLocalImages() {
         GlobalScope.launch {
             imagesState.value = habitImageRepository.getAllHabitImages()
         }
@@ -181,7 +181,7 @@ class TodayFragment : Fragment() {
         }
     }
 
-    private fun updateImagesCache(fetchedImages: MutableList<HabitImageEntity>) {
+    fun updateImagesCache(fetchedImages: MutableList<HabitImageEntity>) {
         GlobalScope.launch {
             habitImageRepository.insertAllHabitImages(fetchedImages)
         }

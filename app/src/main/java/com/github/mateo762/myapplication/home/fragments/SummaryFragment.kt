@@ -112,7 +112,7 @@ class SummaryFragment : Fragment() {
         })
     }
 
-    private fun getLocalHabits() {
+    fun getLocalHabits() {
         GlobalScope.launch {
             habitsState.value = habitRepository.getAllHabits()
         }
