@@ -3,9 +3,12 @@ package com.github.mateo762.myapplication.profile
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.models.HabitImageEntity
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.tasks.await
@@ -17,28 +20,35 @@ import org.junit.Rule
 import org.junit.Test
 import java.time.DayOfWeek
 import java.util.UUID
+import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
+@HiltAndroidTest
 class ProfileServiceFirebaseImplTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
+    @Inject
+    lateinit var db: DatabaseReference
+
     private var userId: String = UUID.randomUUID().toString()
-    private lateinit var db: FirebaseDatabase
 
     @Before
     fun setup() {
-        db = Firebase.database
-        db.useEmulator("10.0.2.2", 9000)
+        hiltRule.inject()
+
     }
 
     @Test
     fun getHabitsImages() = runTest {
         //given
         val habitImage = HabitImageEntity(url = "https://images.stockfreeimages.com/402/sfixl/4025248.jpg")
-        db.reference.child("users/${userId}/imagesPath").push().setValue(habitImage).await()
-        val profileService = ProfileServiceFirebaseImpl(db.reference)
+        db.child("users/${userId}/imagesPath").push().setValue(habitImage).await()
+        val profileService = ProfileServiceFirebaseImpl(db)
         var array: ArrayList<HabitImageEntity>? = null
 
         //when
@@ -60,8 +70,8 @@ class ProfileServiceFirebaseImplTest {
             startTime = "00:01",
             endTime = "23:58",
         )
-        db.reference.child("users/${userId}/habitsPath").push().setValue(habit1).await()
-        val profileService = ProfileServiceFirebaseImpl(db.reference)
+        db.child("users/${userId}/habitsPath").push().setValue(habit1).await()
+        val profileService = ProfileServiceFirebaseImpl(db)
         var array: ArrayList<HabitEntity>? = null
 
         //when
