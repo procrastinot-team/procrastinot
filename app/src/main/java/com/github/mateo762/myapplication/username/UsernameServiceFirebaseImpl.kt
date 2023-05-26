@@ -21,9 +21,9 @@ class UsernameServiceFirebaseImpl @Inject constructor(
 
     companion object {
         private val TAG = UsernameServiceFirebaseImpl::class.java.simpleName
-        private const val USERNAMES_REF = "usernames"
-        private const val USERNAME_REF = "username"
-        private const val USERS_REF = "users"
+        const val USERNAMES_REF = "usernames"
+        const val USERNAME_REF = "username"
+        const val USERS_REF = "users"
     }
 
     override fun getUsernames() = flow {

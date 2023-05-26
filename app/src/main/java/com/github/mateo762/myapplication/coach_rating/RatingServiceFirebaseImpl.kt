@@ -17,7 +17,7 @@ class RatingServiceFirebaseImpl @Inject constructor(private val db: DatabaseRefe
 
     companion object {
         private val TAG = RatingServiceFirebaseImpl::class.java.simpleName
-        private const val RATINGS_REF = "ratings"
+        const val RATINGS_REF = "ratings"
     }
 
     override fun getRatings(uid: String): Flow<List<Int>> = flow {

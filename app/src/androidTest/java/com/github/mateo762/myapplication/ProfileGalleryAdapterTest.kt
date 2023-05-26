@@ -1,7 +1,7 @@
 package com.github.mateo762.myapplication
 
+import com.github.mateo762.myapplication.models.HabitImageEntity
 import com.github.mateo762.myapplication.profile.ProfileGalleryAdapter
-import com.github.mateo762.myapplication.profile.ProfileGalleryItem
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -28,9 +28,9 @@ class ProfileGalleryAdapterTest {
 
     @Test
     fun testGetItemCountWithNonEmptyGalleryItems() {
-        val items = ArrayList<ProfileGalleryItem>()
-        items.add(ProfileGalleryItem(R.mipmap.ic_launcher))
-        items.add(ProfileGalleryItem(R.mipmap.ic_launcher))
+        val items = ArrayList<HabitImageEntity>()
+        items.add(HabitImageEntity())
+        items.add(HabitImageEntity())
         adapter.galleryItems = items
         assertEquals(2, adapter.itemCount)
     }

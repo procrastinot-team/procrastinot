@@ -24,6 +24,8 @@ check_android_task:
     -no-snapshot
     -no-window
     -camera-back none
+  download_firebase_emulator_script: |
+    curl -Lo ./firebase_bin https://firebase.tools/bin/linux/latest
   assemble_instrumented_tests_script: |
     chmod +x gradlew
     ./gradlew assembleDebugAndroidTest
@@ -41,8 +43,9 @@ check_android_task:
 
   screen_record_background_script:
     for n in $(seq 1 20); do adb exec-out screenrecord --time-limit=180 --output-format=h264 - > $n.h264; done
-  check_script:
-    ./gradlew check connectedCheck
+  check_script: |
+    chmod +x firebase_bin
+    ./firebase_bin emulators:exec --project procrastinot-backend './gradlew check connectedCheck'
 
   report_codeclimate_script: |
     export JACOCO_SOURCE_PATH=app/src/main/java/

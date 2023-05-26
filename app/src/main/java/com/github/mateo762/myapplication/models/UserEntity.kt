@@ -15,5 +15,6 @@ data class UserEntity(
     @ColumnInfo(name = "habitsPath") var habitList: List<HabitEntity>? = null,
     @ColumnInfo(name = "imagesPath") var imagesList: List<HabitImageEntity> = listOf(),
     @ColumnInfo(name = "followingPath") var followingUsers: List<String> = listOf(),
-    @ColumnInfo(name = "followersPath") var followerUsers: List<String> = listOf()
+    @ColumnInfo(name = "followersPath") var followerUsers: List<String> = listOf(),
+    @ColumnInfo var url: String? = null
 )
