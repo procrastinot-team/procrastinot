@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.databinding.ActivitySearchBinding
 import com.github.mateo762.myapplication.profile.ProfileActivity
+import com.github.mateo762.myapplication.profile.ProfileActivity.Companion.USER_ID_EXTRA
 import com.github.mateo762.myapplication.profile.SearchItem
 import com.github.mateo762.myapplication.profile.SearchViewAdapter
 import com.google.firebase.auth.FirebaseAuth
@@ -73,7 +74,7 @@ class SearchActivity : BaseActivity() {
 
     private fun onUserItemClick(userId: String) {
         val intent = Intent(this, ProfileActivity.EntryPoint::class.java)
-        intent.putExtra("userId", userId)
+        intent.putExtra(USER_ID_EXTRA, userId)
         startActivity(intent)
     }
 }

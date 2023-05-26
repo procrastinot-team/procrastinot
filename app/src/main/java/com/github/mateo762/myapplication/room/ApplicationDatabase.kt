@@ -10,7 +10,7 @@ import com.github.mateo762.myapplication.models.HabitImageEntity
 import com.github.mateo762.myapplication.models.PostEntity
 import com.github.mateo762.myapplication.models.UserEntity
 
-@Database(entities = [UserEntity::class, HabitEntity::class, PostEntity::class, HabitImageEntity::class], version = 9)
+@Database(entities = [UserEntity::class, HabitEntity::class, PostEntity::class, HabitImageEntity::class], version = 10)
 @TypeConverters(HabitTypeConverter::class)
 abstract class ApplicationDatabase : RoomDatabase() {
     abstract fun getUserDao(): UserDao

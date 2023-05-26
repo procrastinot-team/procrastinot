@@ -19,9 +19,13 @@ import com.github.mateo762.myapplication.ui.coaching.RequestsScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @SuppressLint("MutableCollectionMutableState")
 class RequestsFragment : Fragment() {
+
+    @Inject
+    lateinit var userRepository: UserRepository
 
     private lateinit var habitsRef: DatabaseReference
     val habitsState = mutableStateOf(emptyList<HabitEntity>())
@@ -109,13 +113,13 @@ class RequestsFragment : Fragment() {
         val coachableHabitsState: MutableList<Map<HabitEntity, List<UserEntity>>> = mutableListOf()
         for (coachableHabit in habitsState.value) {
             if (coachableHabit.isCoached) {
-                val coach = UserRepository().getUser(coachableHabit.coach)
+                val coach = userRepository.getUser(coachableHabit.coach)
                 if (coach != null) {
                     coachedHabitsState.add(mapOf(coachableHabit to coach))
                 }
             } else {
                 val requestedCandidates =
-                    coachableHabit.coachOffers.mapNotNull { UserRepository().getUser(it) }
+                    coachableHabit.coachOffers.mapNotNull { userRepository.getUser(it) }
                 coachableHabitsState.add(mapOf(coachableHabit to requestedCandidates))
             }
         }

@@ -37,8 +37,8 @@ class CoachRatingView @JvmOverloads constructor(
     /**
      * Method that gets the rating stats.
      */
-    fun getRatingStats() {
-        viewModel?.getRatingStats()
+    fun getRatingStats(uid: String) {
+        viewModel?.getRatingStats(uid)
     }
 
     private fun populateView(state: State<CoachRatingUiModel>) {

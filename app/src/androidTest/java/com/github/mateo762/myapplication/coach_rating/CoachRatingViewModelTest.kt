@@ -64,7 +64,7 @@ class CoachRatingViewModelTest {
     @Test
     fun getRatingStats_Success() = runTest {
         //when
-        viewModel.getRatingStats()
+        viewModel.getRatingStats("uid")
 
         advanceUntilIdle()
 
@@ -78,7 +78,7 @@ class CoachRatingViewModelTest {
         viewModel = CoachRatingViewModel(MockRatingModule.MockRatingServiceEmptyArray(), auth)
 
         //when
-        viewModel.getRatingStats()
+        viewModel.getRatingStats("uid")
 
         advanceUntilIdle()
 
@@ -92,7 +92,7 @@ class CoachRatingViewModelTest {
         viewModel = CoachRatingViewModel(MockRatingModule.MockRatingServiceWithException(), auth)
 
         //when
-        viewModel.getRatingStats()
+        viewModel.getRatingStats("uid")
 
         advanceUntilIdle()
 

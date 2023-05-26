@@ -5,45 +5,27 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.ScrollView
-import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.github.mateo762.myapplication.BaseActivity
 import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.coach_rating.CoachRatingViewModel
 import com.github.mateo762.myapplication.databinding.ActivityProfileBinding
 import com.github.mateo762.myapplication.followers.UserRepository
-import com.github.mateo762.myapplication.models.HabitImageEntity
-import com.github.mateo762.myapplication.upload_gallery.ImageAdapter
 import com.github.mateo762.myapplication.username.UsernameActivity
-import com.google.android.material.imageview.ShapeableImageView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.time.DayOfWeek
-import java.util.*
-import kotlin.collections.ArrayList
+import javax.inject.Inject
 
 /**
  * Activity for displaying the profile information.
@@ -55,42 +37,33 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
     //
     // More info can be found: https://issuetracker.google.com/issues/161300933#comment5
     @AndroidEntryPoint
-    class EntryPoint: ProfileActivity()
+    class EntryPoint : ProfileActivity()
+
+    @Inject
+    lateinit var userRepository: UserRepository
+    @Inject
+    lateinit var userImageStorageService: UserImageStorageService
 
     private val coachRatingViewModel: CoachRatingViewModel by viewModels()
+    private val profileViewModel: ProfileViewModel by viewModels()
 
     private val job = Job()
 
     override val coroutineContext = job + Dispatchers.Main
 
-    private lateinit var nameTextView: TextView
-    private lateinit var emailTextView: TextView
-    private lateinit var nameEditText: EditText
-    private lateinit var emailEditText: EditText
-    private lateinit var usernameTextView: TextView
     private var imageUri: Uri? = null
-    private lateinit var btnEdit: ImageButton
-    private lateinit var btnSave: ImageButton
-    private lateinit var btnFollow: ImageButton
-    private lateinit var btnUnfollow: ImageButton
-    private lateinit var habitCountText: TextView
-    private lateinit var avgPerWeekText: TextView
-    private lateinit var earliestText: TextView
-    private lateinit var latestText: TextView
-    private lateinit var followersText: TextView
-    private lateinit var followingText: TextView
-    private lateinit var changeUsernameButton: Button
 
     private val user = FirebaseAuth.getInstance().currentUser
-    private lateinit var profileImage:ShapeableImageView
-    lateinit var binding: ActivityProfileBinding
-    private val userRepository = UserRepository()
     private lateinit var db: DatabaseReference
+    lateinit var binding: ActivityProfileBinding
     private lateinit var uid: String
 
+    private lateinit var habitsAdapter: ProfileHabitsAdapter
+    private lateinit var galleryAdapter: ProfileGalleryAdapter
 
     companion object {
         private val TAG = ProfileActivity::class.java.simpleName
+        const val USER_ID_EXTRA = "userId"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,382 +71,37 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupToolbar()
-
         db = Firebase.database.reference
-        profileImage = findViewById(R.id.profileImage)
-        nameEditText = findViewById(R.id.editTextName)
-        emailEditText = findViewById(R.id.editTextEmail)
-        nameTextView = findViewById(R.id.textViewName)
-        emailTextView = findViewById(R.id.textViewEmail)
-        usernameTextView = findViewById(R.id.textViewUsername)
-        changeUsernameButton = findViewById(R.id.changeUsernameButton)
-        btnEdit = findViewById(R.id.btnEdit)
-        btnSave = findViewById(R.id.btnSave)
-        btnFollow = findViewById(R.id.btnFollow)
-        btnUnfollow = findViewById(R.id.btnUnfollow)
-        habitCountText = findViewById(R.id.habit_count)
-        avgPerWeekText = findViewById(R.id.avg_per_week)
-        earliestText = findViewById(R.id.earliest)
-        latestText = findViewById(R.id.latest)
-        followersText = findViewById(R.id.followers)
-        followingText = findViewById(R.id.following)
-        nameEditText.isEnabled = false
-        nameEditText.isClickable = false
-        nameEditText.background = null
-        nameEditText.visibility = View.GONE
-        emailEditText.isEnabled = false
-        emailEditText.isClickable = false
-        emailEditText.background = null
-        emailEditText.visibility = View.GONE
-        changeUsernameButton.visibility = View.GONE
-        btnSave.visibility = View.GONE
-        
+
+        setupToolbar()
+        handleProfileInfoChange(false)
+
         binding.coachRatingView.setViewModel(coachRatingViewModel)
-        binding.coachRatingView.getRatingStats()
 
-        uid = "mTFQAS8YmlXK89siWb36PwIe1x82"
-        try {
-            uid = intent.getStringExtra("userId") ?: user!!.uid
-        } catch (e: java.lang.Exception){
-        
-        }
+        uid = intent.getStringExtra(USER_ID_EXTRA) ?: userRepository.getUserUid()
+        val currentUserId = userRepository.getUserUid()
 
-        var currentUserId = user?.uid ?: uid
+        checkIfDifferentUser(currentUserId)
 
-        if (uid == currentUserId) {
-            btnFollow.visibility = View.GONE
-            btnUnfollow.visibility = View.GONE
-            btnEdit.visibility = View.VISIBLE
-        } else {
-            btnEdit.visibility = View.GONE
-            // Check if the user is already following the profile
-            launch {
-                val isFollowing = userRepository.checkIfUserFollows(currentUserId, uid)
-                if (isFollowing) {
+        setOnClickListeners(currentUserId)
 
-                    // If the user is following the profile, show the 'btnUnfollow' button
-                    btnFollow.visibility = View.GONE
-                    btnUnfollow.visibility = View.VISIBLE
-                } else {
+        habitsAdapter = ProfileHabitsAdapter()
+        binding.habitsRecyclerView.adapter = habitsAdapter
+        galleryAdapter = ProfileGalleryAdapter()
+        binding.galleryRecyclerView.adapter = galleryAdapter
 
-                    btnFollow.visibility = View.VISIBLE
-                    btnUnfollow.visibility = View.GONE
-                }
-            }
-        }
-
-        btnFollow.setOnClickListener {
-            followUser(currentUserId, uid)
-        }
-
-        btnUnfollow.setOnClickListener {
-            unfollowUser(currentUserId, uid)
-        }
-
-        changeUsernameButton.setOnClickListener {
-            val intent = Intent(this, UsernameActivity.EntryPoint::class.java).apply {
-                putExtra(UsernameActivity.OLD_USERNAME_KEY, usernameTextView.text)
-            }
-            startActivity(intent)
-        }
-
-        btnEdit.setOnClickListener {
-            // We enable the name and email edit texts such that they can be edited
-            nameEditText.isEnabled = true
-            nameEditText.isClickable = true
-            nameEditText.visibility = View.VISIBLE
-            nameEditText.setText(nameTextView.text)
-            nameTextView.visibility = View.GONE
-            emailEditText.isEnabled = true
-            emailEditText.isClickable = true
-            emailEditText.visibility = View.VISIBLE
-            emailEditText.setText(emailTextView.text)
-            emailTextView.visibility = View.GONE
-            usernameTextView.visibility = View.GONE
-            changeUsernameButton.visibility = View.VISIBLE
-
-            // We hide the edit button and show the save button
-            btnEdit.visibility = View.GONE
-            btnSave.visibility = View.VISIBLE
-
-            profileImage.setOnClickListener {
-                val openGalleryIntent = Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                startActivityForResult(openGalleryIntent,1000)
-            }
-        }
-
-        btnSave.setOnClickListener {
-            // We save the updated value to your database or data storage
-            val newName = nameEditText.text.toString()
-            val newEmail = emailEditText.text.toString()
-
-            // We change the EditText's properties back to make it non-editable
-            nameTextView.visibility = View.VISIBLE
-            nameEditText.isEnabled = false
-            nameEditText.isClickable = false
-            nameEditText.visibility = View.GONE
-            nameTextView.text = newName
-            emailTextView.visibility = View.VISIBLE
-            emailEditText.isEnabled = false
-            emailEditText.isClickable = false
-            emailEditText.visibility = View.GONE
-            emailTextView.text = newEmail
-            usernameTextView.visibility = View.VISIBLE
-            changeUsernameButton.visibility= View.GONE
-
-            // We hide the save button and show the edit button
-            btnEdit.visibility = View.VISIBLE
-            btnSave.visibility = View.GONE
-
-            profileImage.setOnClickListener { }
-
-            db.child("users").child(uid).child("name").setValue(newName)
-            db.child("users").child(uid).child("email").setValue(newEmail)
-
-            val storageRef = Firebase.storage.reference
-            val imagesRef = storageRef.child("users/${uid}/images/${UUID.randomUUID()}.jpg")
-            if (imageUri != null) {
-                val uploadTask = imagesRef.putFile(imageUri!!)
-                uploadTask.addOnSuccessListener { uri ->
-                    db.child("users").child(uid).child("url").setValue(uri.toString())
-                }
-            }
-
-            val profileUpdates = UserProfileChangeRequest.Builder()
-                .setDisplayName(newName)
-                .build()
-
-            user?.updateProfile(profileUpdates)
-        }
-
-        db.child("users").child(uid).child("url").get().addOnSuccessListener { it ->
-            val url = it.getValue(String::class.java)
-            Glide.with(applicationContext)
-                .load(url)
-                .into(profileImage)
-        }
-
-        db.child("users").child(uid).child("name").get().addOnSuccessListener { it ->
-            nameTextView.text = it.getValue(String::class.java)
-        }
-        db.child("users").child(uid).child("email").get().addOnSuccessListener { it ->
-            emailTextView.text = it.getValue(String::class.java)
-        }
-
-        // Retrieval of list of habits
-        // First, we take the reference of the database
-        val ref = db.child("users/${uid}/habitsPath")
-
-        // Then, we create a list of names, ids and textViews, where we store habits data
-        // and we set the value listener
-        val names = mutableListOf<String>()
-        val ids = mutableListOf<String>()
-        val daysList = mutableListOf<List<DayOfWeek>>()
-        val starts = mutableListOf<String>()
-        val ends = mutableListOf<String>()
-        val textViews = mutableListOf<TextView>()
-        var numberOfhabits: Int = 0
-        var averageRepetitionsPerWeek: Int = 0
-        var numberOfFollowers: Int = 0
-        var numberOfFollowing: Int = 0
-
-        // Retrieval of list of habits
-        // First, we take the reference of the database
-        val refHab = db.child("users/${uid}/habitsPath")
-        refHab.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                val params = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                var top = 0
-
-                // Initialize some variables to calculate the statistics
-                var daysCount: ArrayList<Int> = ArrayList()
-
-                // There, we access the snapshot of the db and for each
-                // habit we take each value into a variable
-                dataSnapshot.children.forEach { childSnapshot ->
-                    // Increment the number of habits
-                    numberOfhabits++
-
-                    val id = childSnapshot.child("id").getValue(String::class.java)!!
-                    ids.add(id)
-                    val name = childSnapshot.child("name").getValue(String::class.java)!!
-                    names.add(name)
-                    val startTime = childSnapshot.child("startTime").getValue(String::class.java)!!
-                    starts.add(startTime)
-                    val endTime = childSnapshot.child("endTime").getValue(String::class.java)!!
-                    ends.add(endTime)
-                    // for the days fiel
-                    // for the days field, as it's an enum, we have to iterate once again,
-                    // and we do it for every not null value, getting back a list of
-                    // DayOfWeek object the we wrap as an ArrayList as needed in the Habit.
-                    val days = ArrayList(childSnapshot.child("days").children.mapNotNull {
-                        enumValueOf<DayOfWeek>(it.value.toString())
-                    })
-                    daysCount.add(days.size)
-                    daysList.add(days)
-
-                    val textView = TextView(this@ProfileActivity)
-                    params.setMargins(16, 16 + top, 8, 8)
-
-                    // We set the textView text to display the name and days of the habit
-                    textView.text = name.plus(" : ").plus(days.joinToString(", ") {it.name})
-                    textView.textSize = 20F
-                    textView.id = R.id.habitImage
-                    textView.layoutParams = params
-                    textViews.add(textView)
-                    top += 10
-                }
-
-                // Set the number of habits and the average repetitions per week
-                if (daysCount.size == 0) {
-                    averageRepetitionsPerWeek = 0
-                } else {
-                    averageRepetitionsPerWeek = daysCount.sum() / daysCount.size
-                }
-                habitCountText.text = getString(R.string.posted_habits) + numberOfhabits.toString()
-                avgPerWeekText.text = getString(R.string.avg_days_week) + averageRepetitionsPerWeek.toString()
-
-                // Get the earliest and latest habit
-                if (starts.size != 0) {
-                    var earliestHour = starts[0].split(":")[0].toInt()
-                    var earliestMinute = starts[0].split(":")[1].toInt()
-                    for (i in 1 until starts.size) {
-                        val hour = starts[i].split(":")[0].toInt()
-                        val minute = starts[i].split(":")[1].toInt()
-                        if (hour < earliestHour || (hour == earliestHour && minute < earliestMinute)) {
-                            earliestHour = hour
-                            earliestMinute = minute
-                        }
-                    }
-                    earliestText.text = getString(R.string.earlystart) + earliestHour.toString() + ":" + earliestMinute.toString()
-                } else {
-                    earliestText.text = getString(R.string.na)
-                }
-
-                if (ends.size != 0) {
-                    var latestHour = ends[0].split(":")[0].toInt()
-                    var latestMinute = ends[0].split(":")[1].toInt()
-                    for (i in 1 until ends.size) {
-                        val hour = ends[i].split(":")[0].toInt()
-                        val minute = ends[i].split(":")[1].toInt()
-                        if (hour > latestHour || (hour == latestHour && minute > latestMinute)) {
-                            latestHour = hour
-                            latestMinute = minute
-                        }
-                    }
-                    latestText.text =
-                        getString(R.string.lateend) + latestHour.toString() + ":" + latestMinute.toString()
-                } else {
-                    latestText.text = getString(R.string.na)
-                }
-            }
-
-
-
-            override fun onCancelled(error: DatabaseError) {
-                print("Failed to read value." + error.toException())
-            }
-        })
-
-        val refImg = db.child("users/${uid}/imagesPath")
-        refImg.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                var imagesList:ArrayList<HabitImageEntity>
-                val prevView:View = findViewById(R.id.profileGalleryTitle)
-
-                // We create a ScrollView to allow the horizontal scroll of images.
-                val scrollView = ScrollView(this@ProfileActivity)
-
-                val parentLayout = LinearLayout(this@ProfileActivity)
-                parentLayout.orientation = LinearLayout.VERTICAL
-
-                // We insert in the scrollView the layout to allow the vertical scrolling,
-                // inside which we'll insert the horizontally scrolling recyclerViews
-                scrollView.addView(parentLayout)
-
-                for (i in 0 until textViews.size) {
-                    // First, we get the list of images related to the actual habit by scrolling all
-                    // the habits images and taking only the ones matching our habit's id
-                    imagesList = arrayListOf()
-                    for (snapshot in dataSnapshot.children){
-                        val image = snapshot.getValue(HabitImageEntity::class.java)
-                        if (image!!.habitId == ids[i]) {
-                            image.let {imagesList.add(image)}
-                        }
-                    }
-
-                    parentLayout.addView(
-                        textViews[i],
-                        LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                        ))
-
-                    // We create the recyclerView that will contain the images
-                    val recyclerView = RecyclerView(this@ProfileActivity)
-                    recyclerView.layoutManager = LinearLayoutManager(
-                        this@ProfileActivity,
-                        LinearLayoutManager.HORIZONTAL,
-                        false)
-
-                    val adapter = ImageAdapter(imagesList, this@ProfileActivity)
-                    recyclerView.adapter = adapter
-                    // Add the RecyclerView to the parent LinearLayout
-                    parentLayout.addView(
-                        recyclerView,
-                        LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                        )
-                    )
-                }
-                binding.profileActivity.addView(scrollView, binding.profileActivity.indexOfChild(prevView)+1)
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                print("Failed to read value." + error.toException())
-            }
-        })
-
-        val refFollow = db.child("users/${uid}/followingPath")
-        refFollow.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                numberOfFollowing = dataSnapshot.childrenCount.toInt()
-                followingText.text = getString(R.string.following) + numberOfFollowing.toString()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                print("Failed to read value." + error.toException())
-            }
-        })
-
-        val refFollowers = db.child("users/${uid}/followersPath")
-        refFollowers.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                numberOfFollowers = dataSnapshot.childrenCount.toInt()
-                followersText.text = getString(R.string.followers) + numberOfFollowers.toString()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                print("Failed to read value." + error.toException())
-            }
-        })
-
-
+        setLiveDataObservers()
     }
 
     override fun onResume() {
         super.onResume()
 
-        db.child("users").child(uid).child("username").get().addOnSuccessListener { it ->
-            usernameTextView.text = it.getValue(String::class.java)
-        }
+        profileViewModel.getUserInfo(uid)
+        profileViewModel.getHabitImages(uid)
+        profileViewModel.getFollowingNumber(uid)
+        profileViewModel.getFollowersNumber(uid)
+        profileViewModel.getHabits(uid)
+        binding.coachRatingView.getRatingStats(uid)
     }
 
     @Override
@@ -482,7 +110,7 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
         if (requestCode == 1000) {
             if (resultCode == Activity.RESULT_OK) {
                 imageUri = data?.data!!
-                profileImage.setImageURI(imageUri)
+                binding.profileImage.setImageURI(imageUri)
             }
         }
     }
@@ -500,24 +128,170 @@ abstract class ProfileActivity : BaseActivity(), CoroutineScope {
                 finish()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-
     private fun followUser(currentUserId: String, targetUserId: String) {
         launch {
             userRepository.followUser(currentUserId, targetUserId)
-            btnFollow.visibility = View.GONE
-            btnUnfollow.visibility = View.VISIBLE
+            binding.btnFollow.visibility = View.GONE
+            binding.btnUnfollow.visibility = View.VISIBLE
         }
     }
 
     private fun unfollowUser(currentUserId: String, targetUserId: String){
         launch {
             userRepository.unfollowUser(currentUserId, targetUserId)
-            btnFollow.visibility = View.VISIBLE
-            btnUnfollow.visibility = View.GONE
+            binding.btnFollow.visibility = View.VISIBLE
+            binding.btnUnfollow.visibility = View.GONE
+        }
+    }
+
+    private fun handleProfileInfoChange(isEditCLicked: Boolean) {
+        binding.btnEdit.visibility = if (isEditCLicked) View.GONE else View.VISIBLE
+        binding.btnSave.visibility = if (isEditCLicked) View.VISIBLE else View.GONE
+        
+        binding.nameTextView.visibility = if (isEditCLicked) View.GONE else View.VISIBLE
+        binding.nameEditText.isEnabled = isEditCLicked
+        binding.nameEditText.isClickable = isEditCLicked
+        binding.nameEditText.visibility = if (isEditCLicked) View.VISIBLE else View.GONE
+        binding.emailTextView.visibility = if (isEditCLicked) View.GONE else View.VISIBLE
+        binding.emailEditText.isEnabled = isEditCLicked
+        binding.emailEditText.isClickable = isEditCLicked
+        binding.emailEditText.visibility = if (isEditCLicked) View.VISIBLE else View.GONE
+        binding.usernameTextView.visibility = if (isEditCLicked) View.GONE else View.VISIBLE
+        binding.changeUsernameButton.visibility = if (isEditCLicked) View.VISIBLE else View.GONE
+    }
+
+    private fun setLiveDataObservers() {
+        profileViewModel.habitLiveData.observe(this) {
+            habitsAdapter.habits = it
+        }
+        profileViewModel.habitImagesLiveData.observe(this) {
+            galleryAdapter.galleryItems = it
+        }
+        profileViewModel.statsLiveData.observe(this) { statsUiModel ->
+            setStatsData(statsUiModel)
+        }
+
+        profileViewModel.followingLiveData.observe(this) {
+            binding.followingTextView.text = getString(R.string.following, it.toString())
+        }
+        profileViewModel.followersLiveData.observe(this) {
+            binding.followersTextView.text = getString(R.string.followers, it.toString())
+        }
+        profileViewModel.userInfoLiveData.observe(this) { userInfo ->
+            binding.nameTextView.text = userInfo.name
+            binding.emailTextView.text = userInfo.email
+            binding.usernameTextView.text = userInfo.username
+
+            Glide.with(applicationContext)
+                .load(userInfo.url)
+                .placeholder(R.mipmap.ic_launcher)
+                .into(binding.profileImage)
+        }
+    }
+
+    private fun onSaveButtonClicked(currentUserId: String) {
+        // We save the updated value to your database or data storage
+        val newName = binding.nameEditText.text.toString()
+        val newEmail = binding.emailEditText.text.toString()
+        binding.nameTextView.text = newName
+        binding.emailTextView.text = newEmail
+
+        handleProfileInfoChange(false)
+
+        binding.profileImage.setOnClickListener { }
+
+        db.child("users").child(uid).child("name").setValue(newName)
+        db.child("users").child(uid).child("email").setValue(newEmail)
+
+        userImageStorageService.storeImage(currentUserId, imageUri)
+
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName(newName)
+            .build()
+
+        user?.updateProfile(profileUpdates)
+    }
+
+    private fun onEditButtonClicked() {
+        // We enable the name and email edit texts such that they can be edited
+        handleProfileInfoChange(true)
+        binding.nameEditText.setText(binding.nameTextView.text)
+        binding.emailEditText.setText(binding.emailTextView.text)
+
+        binding.profileImage.setOnClickListener {
+            val openGalleryIntent =
+                Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(openGalleryIntent, 1000)
+        }
+    }
+
+    private fun onChangeUsernameClicked() {
+        val intent = Intent(this, UsernameActivity.EntryPoint::class.java).apply {
+            putExtra(UsernameActivity.OLD_USERNAME_KEY, binding.usernameTextView.text)
+        }
+        startActivity(intent)
+    }
+
+    private fun setOnClickListeners(currentUserId: String) {
+        binding.btnFollow.setOnClickListener {
+            followUser(currentUserId, uid)
+        }
+        binding.btnUnfollow.setOnClickListener {
+            unfollowUser(currentUserId, uid)
+        }
+        binding.changeUsernameButton.setOnClickListener {
+            onChangeUsernameClicked()
+        }
+        binding.btnEdit.setOnClickListener {
+            onEditButtonClicked()
+        }
+        binding.btnSave.setOnClickListener {
+            onSaveButtonClicked(currentUserId)
+        }
+    }
+
+    private fun checkIfDifferentUser(currentUserId: String) {
+        if (uid == currentUserId) {
+            binding.btnFollow.visibility = View.GONE
+            binding.btnUnfollow.visibility = View.GONE
+            binding.btnEdit.visibility = View.VISIBLE
+        } else {
+            binding.btnEdit.visibility = View.GONE
+            // Check if the user is already following the profile
+            launch {
+                val isFollowing = userRepository.checkIfUserFollows(currentUserId, uid)
+                if (isFollowing) {
+                    // If the user is following the profile, show the 'btnUnfollow' button
+                    binding.btnFollow.visibility = View.GONE
+                    binding.btnUnfollow.visibility = View.VISIBLE
+                } else {
+                    binding.btnFollow.visibility = View.VISIBLE
+                    binding.btnUnfollow.visibility = View.GONE
+                }
+            }
+        }
+    }
+
+    private fun setStatsData(statsUiModel: ProfileStatsUiModel) {
+        binding.habitCountText.text =
+            getString(R.string.posted_habits, statsUiModel.totalNumberOfHabits.toString())
+        binding.avgPerWeekText.text =
+            getString(R.string.avg_days_week, statsUiModel.averageDaysInWeek.toString())
+
+        binding.earliestTextView.text = if (statsUiModel.earliestStart != "0") {
+            getString(R.string.earlystart, statsUiModel.earliestStart)
+        } else {
+            getString(R.string.na)
+        }
+        binding.latestTextView.text = if (statsUiModel.earliestStart != "0") {
+            getString(R.string.lateend, statsUiModel.latestEnd)
+        } else {
+            getString(R.string.na)
         }
     }
 }

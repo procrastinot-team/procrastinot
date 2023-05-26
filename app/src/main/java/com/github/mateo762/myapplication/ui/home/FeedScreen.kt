@@ -32,6 +32,7 @@ import com.github.mateo762.myapplication.R
 import com.github.mateo762.myapplication.models.PostEntity
 import com.github.mateo762.myapplication.post.PostActivity
 import com.github.mateo762.myapplication.profile.ProfileActivity
+import com.github.mateo762.myapplication.profile.ProfileActivity.Companion.USER_ID_EXTRA
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -192,6 +193,6 @@ private fun fetchUserId(username: String, onUserIdFetched: (String) -> Unit) {
 
 private fun onUserItemClick(context: Context, userId: String) {
     val intent = Intent(context, ProfileActivity.EntryPoint::class.java)
-    intent.putExtra("userId", userId)
+    intent.putExtra(USER_ID_EXTRA, userId)
     startActivity(context, intent, null)
 }
