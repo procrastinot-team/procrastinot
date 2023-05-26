@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.lifecycleScope
+import com.github.mateo762.myapplication.coaching.CoachingActivity
 import com.github.mateo762.myapplication.followers.UserRepository
 import com.github.mateo762.myapplication.models.HabitEntity
 import com.github.mateo762.myapplication.models.UserEntity
@@ -23,8 +24,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-@AndroidEntryPoint
-class OffersFragment : Fragment() {
+abstract class OffersFragment : Fragment() {
+
+    @AndroidEntryPoint
+    class OffersEntryPoint: OffersFragment()
 
     //Reference to the habits database
     @Inject
@@ -77,9 +80,8 @@ class OffersFragment : Fragment() {
         if (connectionExists) {
             val currentUser = FirebaseAuth.getInstance().currentUser
             if (currentUser != null) {
-                val habitsPath = "/habits"
                 lifecycleScope.launch {
-                    getFirebaseHabits(habitsPath)
+                    getFirebaseHabits("habits")
                 }
             }
         }
@@ -110,7 +112,7 @@ class OffersFragment : Fragment() {
     private suspend fun getFirebaseHabits(path: String) {
 
         //Get the path from the habitsRef using Firebase injected database reference
-        val habitsSnapshot = habitsRef.child(path).get().await()
+        val habitsSnapshot = habitsRef.child(path).get().await() // Path: / -> /habits
 
         val coachableHabits = mutableListOf<HabitEntity>()
 

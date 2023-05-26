@@ -68,7 +68,7 @@ class RequestsFragmentTest {
         val mockDatabaseReference = mock(DatabaseReference::class.java)
         `when`(mockDataSnapshot.ref).thenReturn(mockDatabaseReference)
 
-        val requestsFragment = RequestsFragment()
+        val requestsFragment = RequestsFragment.RequestsEntryPoint()
         requestsFragment.updateCoachStateCallback(
             mockDataSnapshot,
             habitWithCoachRequested,

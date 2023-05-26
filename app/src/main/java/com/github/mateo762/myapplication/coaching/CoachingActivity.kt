@@ -35,10 +35,10 @@ abstract class CoachingActivity : BaseActivity() {
         lateinit var selectedFragment: Fragment
         when (it.itemId) {
             R.id.offersFragment -> {
-                selectedFragment = OffersFragment()
+                selectedFragment = OffersFragment.OffersEntryPoint()
             }
             R.id.requestsFragment -> {
-                selectedFragment = RequestsFragment()
+                selectedFragment = RequestsFragment.RequestsEntryPoint()
             }
         }
         openFragmentSelected(selectedFragment)

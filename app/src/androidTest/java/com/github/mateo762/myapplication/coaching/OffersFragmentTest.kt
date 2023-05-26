@@ -111,7 +111,7 @@ class OffersFragmentTest {
 
     @Test
     fun testGetCurrentUser(){
-        val offersFragment = OffersFragment()
+        val offersFragment = OffersFragment.OffersEntryPoint()
         val currentUser = offersFragment.getCurrentUser()
 
         //Assert that the currentUser is a UserEntity(uid="", name="")
