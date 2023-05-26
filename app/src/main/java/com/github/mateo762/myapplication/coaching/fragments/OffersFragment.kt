@@ -18,12 +18,17 @@ import com.github.mateo762.myapplication.ui.coaching.OffersScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.getValue
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class OffersFragment : Fragment() {
 
     //Reference to the habits database
-    private lateinit var habitsRef: DatabaseReference
+    @Inject
+    lateinit var habitsRef: DatabaseReference
 
     //Create an empty habit list state
     val habitsState = mutableStateOf(emptyList<HabitEntity>())
@@ -80,7 +85,7 @@ class OffersFragment : Fragment() {
         }
     }
 
-    private fun getCurrentUser(): UserEntity{
+    fun getCurrentUser(): UserEntity{
         val firebaseEntity = FirebaseAuth.getInstance().currentUser
         return if (firebaseEntity == null) {
             UserEntity(uid="", name ="")
@@ -102,29 +107,28 @@ class OffersFragment : Fragment() {
     }
 
     //Retrieve the list of all habits from firebase
-    private fun getFirebaseHabits(path: String) {
-        // Initialize Firebase database reference
-        habitsRef = FirebaseDatabase.getInstance().getReference(path)
-        habitsRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val coachableHabits = mutableListOf<HabitEntity>()
-                for (childSnapshot in snapshot.children) {
-                    println("Offers Screen: $snapshot")
-                    val habit = childSnapshot.getValue(HabitEntity::class.java)
-                    // BUG? snapshot.getValue forces isCoached to false, but not the other values?
+    private suspend fun getFirebaseHabits(path: String) {
 
-                    if (habit != null) {
-                        coachableHabits.add(habit)
-                    }
-                }
-                lifecycleScope.launch {
-                    habitsState.value = coachableHabits
-                    getCoachableHabits()
-                }
+        //Get the path from the habitsRef using Firebase injected database reference
+        val habitsSnapshot = habitsRef.child(path).get().await()
+
+        val coachableHabits = mutableListOf<HabitEntity>()
+
+        for (child in habitsSnapshot.children){
+            println("Offers Screen: $habitsSnapshot")
+            val habit = child.getValue(HabitEntity::class.java)
+            // BUG? snapshot.getValue forces isCoached to false, but not the other values?
+
+            if (habit != null) {
+                coachableHabits.add(habit)
             }
+        }
 
-            override fun onCancelled(error: DatabaseError) {}
-        })
+        lifecycleScope.launch {
+            habitsState.value = coachableHabits
+            getCoachableHabits()
+        }
+
     }
 
     /*
