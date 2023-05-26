@@ -78,4 +78,14 @@ class FeedFragmentTestt {
     fun getLocalPostsTest() {
         feedFragment.getLocalPosts()
     }
+
+    @Test
+    fun testFetchUsernameForImage() {
+        feedFragment.fetchUsernameForImage("RMFHtwaJIDOe7ZMIVb8Lj5eizAu2")
+    }
+
+    @Test
+    fun testFetchHabitNameForImage() {
+        feedFragment.fetchHabitNameForImage("RMFHtwaJIDOe7ZMIVb8Lj5eizAu2","bd7f7185-a52a-4ea8-a01b-83596ed6ef48")
+    }
 }

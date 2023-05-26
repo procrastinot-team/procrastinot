@@ -172,7 +172,7 @@ class FeedFragment : Fragment() {
         }
     }
 
-    private fun fetchUsernameForImage(userId: String): Task<String> {
+    fun fetchUsernameForImage(userId: String): Task<String> {
         return FirebaseDatabase.getInstance().getReference("/users/$userId/username")
             .get()
             .continueWith { task ->
@@ -181,7 +181,7 @@ class FeedFragment : Fragment() {
             }
     }
 
-    private fun fetchHabitNameForImage(userId: String, habitId: String): Task<String> {
+    fun fetchHabitNameForImage(userId: String, habitId: String): Task<String> {
         return FirebaseDatabase.getInstance().getReference("/users/$userId/habitsPath")
             .get()
             .continueWith { task ->
