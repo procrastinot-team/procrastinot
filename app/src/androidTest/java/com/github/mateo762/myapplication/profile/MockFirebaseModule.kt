@@ -1,5 +1,6 @@
 package com.github.mateo762.myapplication.profile
 
+import android.util.Log
 import com.github.mateo762.myapplication.di.FirebaseModule
 import com.github.mateo762.myapplication.di.ProfileModule
 import com.google.firebase.auth.FirebaseAuth
@@ -26,7 +27,11 @@ class MockFirebaseModule {
     @Singleton
     fun provideFirebase(): DatabaseReference {
         val db = Firebase.database
-        db.useEmulator("10.0.2.2", 9000)
+        try {
+            db.useEmulator("10.0.2.2", 9000)
+        } catch (exception: Exception) {
+            Log.d("MockFirebaseModule", exception.toString())
+        }
 
         return db.reference
     }
