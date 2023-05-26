@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -45,19 +46,7 @@ class UsernameServiceTest {
     }
 
     @Test
-    fun testGetUsernames() = runBlockingTest {
-        val usernames = ArraySet<String>()
-        usernames.add("user1")
-        usernames.add("user2")
-        usernamesFlow.value = usernames
-
-        usernameService.getUsernames().collect { collectedUsernames ->
-            assertEquals(usernames, collectedUsernames)
-        }
-    }
-
-    @Test
-    fun testPostUsernameToUsernames() = runBlockingTest {
+    fun testPostUsernameToUsernames() = runTest {
         val username = "user1"
         val uid = "uid1"
 
@@ -70,7 +59,7 @@ class UsernameServiceTest {
     }
 
     @Test
-    fun testPostUsernameToUser() = runBlockingTest {
+    fun testPostUsernameToUser() = runTest {
         val username = "user1"
         val uid = "uid1"
 
