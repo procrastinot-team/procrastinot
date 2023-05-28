@@ -28,7 +28,7 @@ fun HabitListScreen(habits: List<HabitEntity>, onClick: (habit:HabitEntity) -> U
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    val intent = Intent(context, HabitsActivity::class.java)
+                    val intent = Intent(context, HabitsActivity.HabitsEntryPoint::class.java)
                     context.startActivity(intent)
                 },
                 backgroundColor = Color.White,
