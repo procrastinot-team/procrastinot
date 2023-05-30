@@ -189,6 +189,7 @@ class TakePhotoActivity : BaseActivity() {
         takePhotoButton.visibility = View.GONE
         takePhotoText.visibility = View.VISIBLE
         takePhotoLoader.visibility = View.VISIBLE
+        dropdownSpinner.visibility = View.GONE
         uploadImage()
     }
 
